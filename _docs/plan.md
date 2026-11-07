@@ -1,6 +1,6 @@
 # Ledger Keeper Mobile — Product Plan
 
-The mobile app is the main Ledger Keeper product. It brings the web app's ledger-first experience to Android first, then iOS, and adds one mobile-only feature: **automatic transaction capture from notifications**.
+The mobile app is the main Ledger Keeper product. It brings the web app's ledger-first experience to Android first, then iOS, and adds one mobile-only feature: **automatic transaction capture from notifications**. Current working Scope is Android Only, Don't do anything for IOS
 
 This plan is the source of truth for scope. Every GitHub issue must trace back to a section here. If an issue needs something this plan doesn't cover, the Product Manager updates this plan first. See [teams/README.md](./teams/README.md) for how issues move.
 
@@ -12,7 +12,7 @@ This plan is the source of truth for scope. Every GitHub issue must trace back t
 | --- | --- |
 | Product | AI-powered income and expense tracker |
 | Users | People tracking personal or small-business money, many in Bangladesh (BDT, Bangla and English, bKash/Nagad, bank SMS) |
-| Platforms | Android (v1), iOS (v1.1) |
+| Platforms | Android (v1) |
 | Modes | **Manual mode** is always free. **AI mode** (natural language, voice, receipts, insights, auto-capture parsing) spends credits |
 | Backend | Existing Express API (`ledger-keeper-backend`), Better Auth, PostgreSQL. Mobile uses the same API |
 | Design | Same design system as the web app. See [design.md](./design.md) |
@@ -23,6 +23,7 @@ This plan is the source of truth for scope. Every GitHub issue must trace back t
 3. **Nothing is saved without the user knowing.** AI and auto-capture produce reviewable cards; destructive actions confirm first.
 4. **Privacy by default.** Sensitive features (notification access) are off until the user turns them on after a clear explanation.
 5. **Fast on mid-range Android.** Judge performance on a release build on a mid-range phone, not on a simulator.
+6. Handle Loading, Error, Failed State Gently
 
 ---
 
