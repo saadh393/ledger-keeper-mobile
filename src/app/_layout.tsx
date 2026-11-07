@@ -12,6 +12,7 @@ import { useThemeConfig } from '@/components/ui/use-theme-config';
 
 import { APIProvider } from '@/lib/api';
 import { loadSelectedTheme } from '@/lib/hooks/use-selected-theme';
+import { useFontsReady } from '@/lib/theme/use-fonts-ready';
 // Import  global CSS file
 import '../global.css';
 
@@ -32,6 +33,12 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
+  const fontsReady = useFontsReady();
+
+  if (!fontsReady) {
+    return null;
+  }
+
   return (
     <Providers>
       <Stack>

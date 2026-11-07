@@ -1,40 +1,20 @@
 import type { ColorToken, ThemeName } from '@/lib/theme/colors';
-import fs from 'node:fs';
-import path from 'node:path';
-import vm from 'node:vm';
 import { render, screen } from '@testing-library/react-native';
 import * as React from 'react';
 
 import { Uniwind } from 'uniwind';
-import { colors } from '@/lib/theme/colors';
 
-const uniwindDir = path.dirname(require.resolve('uniwind/package.json'));
-const { generateCSSForThemes } = require(path.join(uniwindDir, 'src/css/themes'));
-const { compileVirtual } = require(path.join(uniwindDir, 'src/metro/compileVirtual'));
-const { View } = require('uniwind/components/View');
+import { loadUniwindStyles } from '@/lib/test-uniwind';
+import { colors } from '@/lib/theme/colors';
 
 const themes: ThemeName[] = ['light', 'dark'];
 const tokens = Object.keys(colors.light) as ColorToken[];
-const cssPath = path.join(__dirname, '../../global.css');
+const { View } = require('uniwind/components/View');
 
-type Compiled = { scopedVars: Record<string, Record<string, string>> };
-
-let compiled: Compiled;
+let compiled: Awaited<ReturnType<typeof loadUniwindStyles>>;
 
 beforeAll(async () => {
-  const themeCSS: string = await generateCSSForThemes(themes, cssPath);
-  const code: string = await compileVirtual({
-    css: `${fs.readFileSync(cssPath, 'utf8')}\n${themeCSS}`,
-    cssPath,
-    platform: 'ios',
-    themes,
-    polyfills: undefined,
-    debug: false,
-    candidates: tokens.map(token => `bg-${token}`),
-  });
-  const factory = vm.runInThisContext(`rt => ${code}`) as (rt: unknown) => Compiled;
-  (Uniwind as unknown as { __reinit: (f: typeof factory, t: ThemeName[]) => void }).__reinit(factory, themes);
-  compiled = factory({});
+  compiled = await loadUniwindStyles(tokens.map(token => `bg-${token}`));
 });
 
 describe('color tokens', () => {

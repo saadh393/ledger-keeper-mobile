@@ -1,11 +1,14 @@
-/* eslint-disable better-tailwindcss/no-unknown-classes */
 import type { TextProps, TextStyle } from 'react-native';
 import type { TxKeyPath } from '@/lib/i18n';
+import { isLoaded } from 'expo-font';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { I18nManager, Text as NNText, StyleSheet } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
-import { twMerge } from 'tailwind-merge';
 import { translate } from '@/lib/i18n';
+import { fontClass } from '@/lib/theme/font-class';
+import { twMerge } from '@/lib/tw-merge';
 
 type Props = {
   className?: string;
@@ -19,27 +22,25 @@ export function Text({
   children,
   ...props
 }: Props) {
-  const textStyle = React.useMemo(
-    () =>
-      twMerge(
-        'font-inter text-base font-normal text-black dark:text-white',
-        className,
-      ),
-    [className],
+  const { i18n } = useTranslation();
+  const classStyle = useResolveClassNames(
+    twMerge('text-body text-black dark:text-white', className),
   );
+  const textStyle = StyleSheet.flatten([
+    { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
+    classStyle,
+    style,
+  ]) as TextStyle;
+  const { fontFamily } = useResolveClassNames(
+    fontClass(textStyle.fontWeight, i18n.language),
+  ) as TextStyle;
+  const { fontWeight, ...rest } = textStyle;
 
-  const nStyle = React.useMemo(
-    () =>
-      StyleSheet.flatten([
-        {
-          writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-        },
-        style,
-      ]) as TextStyle,
-    [style],
-  );
   return (
-    <NNText className={textStyle} style={nStyle} {...props}>
+    <NNText
+      style={fontFamily && isLoaded(fontFamily) ? { ...rest, fontFamily } : textStyle}
+      {...props}
+    >
       {tx ? translate(tx) : children}
     </NNText>
   );

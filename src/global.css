@@ -2,7 +2,30 @@
 @import 'uniwind';
 
 @theme {
-  --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-manrope-400: 'Manrope_400Regular';
+  --font-manrope-500: 'Manrope_500Medium';
+  --font-manrope-600: 'Manrope_600SemiBold';
+  --font-manrope-700: 'Manrope_700Bold';
+  --font-bengali-400: 'NotoSansBengali_400Regular';
+  --font-bengali-500: 'NotoSansBengali_500Medium';
+  --font-bengali-600: 'NotoSansBengali_600SemiBold';
+  --font-bengali-700: 'NotoSansBengali_700Bold';
+  --text-headline: 28px;
+  --text-headline--font-weight: 500;
+  --text-title: 20px;
+  --text-title--font-weight: 500;
+  --text-hero: 22px;
+  --text-hero--font-weight: 600;
+  --text-body-l: 16px;
+  --text-body-l--font-weight: 400;
+  --text-body: 15px;
+  --text-body--font-weight: 400;
+  --text-row-title: 15px;
+  --text-row-title--font-weight: 500;
+  --text-label: 13px;
+  --text-label--font-weight: 500;
+  --text-meta: 12px;
+  --text-meta--font-weight: 400;
   --color-paper-100: unset;
   --color-paper-200: unset;
   --color-surface: unset;

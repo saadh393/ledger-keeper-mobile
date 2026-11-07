@@ -1,4 +1,3 @@
-/* eslint-disable better-tailwindcss/no-unknown-classes */
 import type { TextInputProps } from 'react-native';
 import * as React from 'react';
 import { I18nManager, TextInput as NTextInput, StyleSheet, View } from 'react-native';
@@ -13,7 +12,7 @@ const inputTv = tv({
     container: 'mb-2',
     label: 'mb-1 text-lg text-ink-900',
     input:
-      'font-inter mt-0 rounded-xl border-[0.5px] border-border bg-surface-container px-4 py-3 text-base/5 font-medium text-ink-900',
+      'mt-0 rounded-xl border-[0.5px] border-border bg-surface-container px-4 py-3 text-base/5 font-medium text-ink-900',
   },
 
   variants: {
