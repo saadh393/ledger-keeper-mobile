@@ -70,3 +70,7 @@ pnpm build:production:ios       # EAS production build
 - ✅ **DO** use EAS Build for production: `pnpm build:production:ios`
 - ✅ **DO** prefix env vars with `EXPO_PUBLIC_*` for app access
 - ❌ **DO NOT** modify `android/` or `ios/` directly (use Expo config plugins)
+
+# Backlog Implementation Guideline
+- `_docs/process.md` - how work is organized
+- For anything touching the UI, read `_docs/design.md`
