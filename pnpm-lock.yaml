@@ -8,9 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@expo-google-fonts/inter':
-        specifier: ^0.4.2
-        version: 0.4.2
+      '@expo-google-fonts/manrope':
+        specifier: ^0.4.3
+        version: 0.4.3
+      '@expo-google-fonts/noto-sans-bengali':
+        specifier: ^0.4.4
+        version: 0.4.4
       '@expo/metro-runtime':
         specifier: ^6.1.2
         version: 6.1.2(expo@54.0.38)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.6)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -1257,8 +1260,11 @@ packages:
     resolution: {integrity: sha512-hZ2uC1jbf6JMSsF2ZklhRQqf6GLpYyux6DlzegnW/aFlpu6qJj5GO7ub7WOETCrEl6pl6DAX7RgTgj/fyG+6BQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@expo-google-fonts/inter@0.4.2':
-    resolution: {integrity: sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ==}
+  '@expo-google-fonts/manrope@0.4.3':
+    resolution: {integrity: sha512-Jvu9AYoSfjum1maq5JT01OLj1xlr90/tmb+6beHRhL1bC/lYzXMrieH6PzACP7YcE03PT9/Ks9l0WphoLEV/wg==}
+
+  '@expo-google-fonts/noto-sans-bengali@0.4.4':
+    resolution: {integrity: sha512-Ya58tLTEdP4P5EF3ZXTM829/g57mbfW8OrD16MMZr2sC3nIKItl/3J9tZlk1nrtqfFGzIgxb+zt/hLjAaTAQgQ==}
 
   '@expo/cli@54.0.28':
     resolution: {integrity: sha512-lql0oETgps4OZaewYb11jYvTu7K30CyVZqggPUMRX4sQU7nrnFdOnDgpWIj2TWnZBWgau5MftjwANVgSjJHjrg==}
@@ -9376,7 +9382,9 @@ snapshots:
       '@eslint/core': 1.0.1
       levn: 0.4.1
 
-  '@expo-google-fonts/inter@0.4.2': {}
+  '@expo-google-fonts/manrope@0.4.3': {}
+
+  '@expo-google-fonts/noto-sans-bengali@0.4.4': {}
 
   '@expo/cli@54.0.28(expo-router@6.0.24)(expo@54.0.38)(react-native@0.81.5(@babel/core@7.28.6)(@types/react@19.1.17)(react@19.1.0))':
     dependencies:
