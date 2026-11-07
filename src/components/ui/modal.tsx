@@ -153,7 +153,7 @@ const ModalHeader = React.memo(({ title, dismiss }: ModalHeaderProps) => {
         <View className="flex-row px-2 py-4">
           <View className="size-6" />
           <View className="flex-1">
-            <Text className="text-center text-[16px] font-bold text-[#26313D] dark:text-white">
+            <Text className="text-center text-[16px] font-bold text-ink-900">
               {title}
             </Text>
           </View>
@@ -175,7 +175,7 @@ function CloseButton({ close }: { close: () => void }) {
       accessibilityHint="closes the modal"
     >
       <Svg
-        className="fill-neutral-300 dark:fill-white"
+        className="fill-ink-500"
         width={24}
         height={24}
         fill="none"

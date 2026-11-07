@@ -1,4 +1,3 @@
-/* eslint-disable better-tailwindcss/no-unknown-classes */
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { PressableProps } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
@@ -12,38 +11,36 @@ import { Platform, Pressable, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { tv } from 'tailwind-variants';
 
-import { useUniwind } from 'uniwind';
-import colors from '@/components/ui/colors';
-
 import { CaretDown } from '@/components/ui/icons';
+import { useThemeColors } from '@/lib/theme/use-theme-colors';
 import { Modal, useModal } from './modal';
 import { Text } from './text';
 
 const selectTv = tv({
   slots: {
     container: 'mb-4',
-    label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
+    label: 'mb-1 text-lg text-ink-900',
     input:
-      'border-grey-50 mt-0 flex-row items-center justify-center rounded-xl border-[0.5px] p-3 dark:border-neutral-500 dark:bg-neutral-800',
-    inputValue: 'dark:text-neutral-100',
+      'mt-0 flex-row items-center justify-center rounded-xl border-[0.5px] border-border bg-surface-container p-3',
+    inputValue: 'text-ink-900',
   },
 
   variants: {
     focused: {
       true: {
-        input: 'border-neutral-600',
+        input: 'border-border-strong',
       },
     },
     error: {
       true: {
-        input: 'border-danger-600',
-        label: 'text-danger-600 dark:text-danger-600',
-        inputValue: 'text-danger-600',
+        input: 'border-clay-500',
+        label: 'text-clay-500',
+        inputValue: 'text-clay-500',
       },
     },
     disabled: {
       true: {
-        input: 'bg-neutral-200',
+        input: 'bg-paper-200',
       },
     },
   },
@@ -71,8 +68,7 @@ function keyExtractor(item: OptionType) {
 export function Options({ ref, options, onSelect, value, testID }: OptionsProps & { ref?: React.RefObject<BottomSheetModal | null> }) {
   const height = options.length * 70 + 100;
   const snapPoints = React.useMemo(() => [height], [height]);
-  const { theme } = useUniwind();
-  const isDark = theme === 'dark';
+  const themeColors = useThemeColors();
 
   const renderSelectItem = React.useCallback(
     ({ item }: { item: OptionType }) => (
@@ -93,7 +89,7 @@ export function Options({ ref, options, onSelect, value, testID }: OptionsProps 
       index={0}
       snapPoints={snapPoints}
       backgroundStyle={{
-        backgroundColor: isDark ? colors.neutral[800] : colors.white,
+        backgroundColor: themeColors.surface,
       }}
     >
       <List
@@ -118,10 +114,10 @@ const Option = React.memo(
   }) => {
     return (
       <Pressable
-        className="flex-row items-center border-b border-neutral-300 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-800"
+        className="flex-row items-center border-b border-border bg-surface px-3 py-2"
         {...props}
       >
-        <Text className="flex-1 dark:text-neutral-100">{label}</Text>
+        <Text className="flex-1 text-ink-900">{label}</Text>
         {selected && <Check />}
       </Pressable>
     );
@@ -202,7 +198,7 @@ export function Select(props: SelectProps) {
         {error && (
           <Text
             testID={`${testID}-error`}
-            className="text-sm text-danger-300 dark:text-danger-600"
+            className="text-sm text-clay-500"
           >
             {error}
           </Text>
