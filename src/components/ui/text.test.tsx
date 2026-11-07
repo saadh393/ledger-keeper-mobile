@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react-native';
+import { act, render, screen } from '@testing-library/react-native';
 import { isLoaded } from 'expo-font';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -10,6 +11,19 @@ import { loadUniwindStyles } from '@/lib/test-uniwind';
 jest.mock('expo-font', () => ({ isLoaded: jest.fn() }));
 
 const mockIsLoaded = jest.mocked(isLoaded);
+
+function FontProbe({ seen }: { seen: string[] }) {
+  const { i18n } = useTranslation();
+  const mounted = React.useRef(false);
+  React.useLayoutEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    seen.push(StyleSheet.flatten(screen.getByTestId('text').props.style).fontFamily);
+  });
+  return i18n.language;
+}
 
 function textStyle(className?: string) {
   render(<Text testID="text" className={className}>111.11</Text>);
@@ -24,11 +38,6 @@ beforeAll(async () => {
     'text-black',
     'font-bold',
     'tabular-nums',
-    'font-manrope-400',
-    'font-manrope-500',
-    'font-manrope-600',
-    'font-manrope-700',
-    'font-bengali-500',
   ]);
 });
 
@@ -57,6 +66,25 @@ describe('text', () => {
   it('uses Noto Sans Bengali at the same size and weight in Bangla', async () => {
     await i18n.changeLanguage('bn');
     expect(textStyle('text-headline')).toMatchObject({ fontSize: 28, fontFamily: 'NotoSansBengali_500Medium' });
+  });
+
+  it('switches font on the first render after the language changes', async () => {
+    const seen: string[] = [];
+    render(
+      <>
+        <Text testID="text">999.99</Text>
+        <FontProbe seen={seen} />
+      </>,
+    );
+    await act(() => i18n.changeLanguage('bn'));
+    expect(seen).toEqual(['NotoSansBengali_400Regular']);
+  });
+
+  it('shows the translation for the current language', async () => {
+    render(<Text testID="text" tx="home.title" />);
+    expect(screen.getByTestId('text')).toHaveTextContent('Ledger Keeper');
+    await act(() => i18n.changeLanguage('bn'));
+    expect(screen.getByTestId('text')).toHaveTextContent('লেজার কিপার');
   });
 
   it('falls back to the system font with the class weight when fonts fail to load', () => {

@@ -3,11 +3,10 @@ import type { TxKeyPath } from '@/lib/i18n';
 import { isLoaded } from 'expo-font';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { I18nManager, Text as NNText, StyleSheet } from 'react-native';
+import { Text as NNText, StyleSheet } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 
-import { translate } from '@/lib/i18n';
-import { fontClass } from '@/lib/theme/font-class';
+import { fontFamily } from '@/lib/theme/font-family';
 import { twMerge } from '@/lib/tw-merge';
 
 type Props = {
@@ -22,26 +21,20 @@ export function Text({
   children,
   ...props
 }: Props) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const classStyle = useResolveClassNames(
     twMerge('text-body text-black dark:text-white', className),
   );
-  const textStyle = StyleSheet.flatten([
-    { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
-    classStyle,
-    style,
-  ]) as TextStyle;
-  const { fontFamily } = useResolveClassNames(
-    fontClass(textStyle.fontWeight, i18n.language),
-  ) as TextStyle;
+  const textStyle = StyleSheet.flatten([classStyle, style]) as TextStyle;
+  const family = fontFamily(textStyle.fontWeight, i18n.language);
   const { fontWeight, ...rest } = textStyle;
 
   return (
     <NNText
-      style={fontFamily && isLoaded(fontFamily) ? { ...rest, fontFamily } : textStyle}
+      style={isLoaded(family) ? { ...rest, fontFamily: family } : textStyle}
       {...props}
     >
-      {tx ? translate(tx) : children}
+      {tx ? t(tx) : children}
     </NNText>
   );
 }
