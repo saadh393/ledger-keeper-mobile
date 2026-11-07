@@ -7,7 +7,7 @@
 # As a first step, it will generate a test APK using the Gradle build and then upload it as an artifact.
 # A new job will be started to run the tests using the test APK generated in the previous job.
 # To test the app, we set up an Android emulator using the `reactivecircus/android-emulator-runner` action. This runner requires macOS as the operating system for the runner.
-# This workflow will be triggered on pull requests (PRs) with the label "android-test-github" or can be manually triggered from the Actions tab.
+# Manual only (Actions tab): it boots an Android emulator on a macOS runner.
 #
 
 # 🚨 GITHUB SECRETS REQUIRED: None
@@ -16,8 +16,6 @@ name: E2E Tests Android (Maestro + Github Action)
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main, master]
 
 jobs:
   generate-test-apk:
