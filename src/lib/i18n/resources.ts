@@ -1,12 +1,12 @@
-import ar from '@/translations/ar.json';
+import bn from '@/translations/bn.json';
 import en from '@/translations/en.json';
 
 export const resources = {
   en: {
     translation: en,
   },
-  ar: {
-    translation: ar,
+  bn: {
+    translation: bn,
   },
 };
 

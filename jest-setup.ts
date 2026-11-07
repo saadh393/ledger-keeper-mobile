@@ -95,6 +95,8 @@ jest.mock('react-native-mmkv', () => ({
   })),
 }));
 
+require('@/lib/i18n');
+
 // Global window object setup for React Native testing
 // @ts-expect-error
 global.window = {};

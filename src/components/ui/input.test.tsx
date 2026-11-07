@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { I18nManager } from 'react-native';
 
 import { cleanup, render, screen, setup } from '@/lib/test-utils';
 
@@ -12,22 +11,6 @@ describe('input component ', () => {
     render(<Input testID="input" />);
     expect(screen.getByTestId('input')).toBeOnTheScreen();
   });
-  it('should use the right direction for rtl layout', () => {
-    I18nManager.isRTL = true;
-    render(<Input testID="input" />);
-    expect(screen.getByTestId('input')).toHaveStyle({
-      writingDirection: 'rtl',
-    });
-  });
-
-  it('should use the right direction for ltr layout', () => {
-    I18nManager.isRTL = false;
-    render(<Input testID="input" />);
-    expect(screen.getByTestId('input')).toHaveStyle({
-      writingDirection: 'ltr',
-    });
-  });
-
   it('should render the placeholder correctly ', () => {
     render(<Input testID="input" placeholder="Enter your username" />);
     expect(screen.getByTestId('input')).toBeOnTheScreen();

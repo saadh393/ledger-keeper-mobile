@@ -1,6 +1,6 @@
 import type { TextInputProps } from 'react-native';
 import * as React from 'react';
-import { I18nManager, TextInput as NTextInput, StyleSheet, View } from 'react-native';
+import { TextInput as NTextInput, View } from 'react-native';
 import { tv } from 'tailwind-variants';
 
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
@@ -91,11 +91,6 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
         onBlur={onBlur}
         onFocus={onFocus}
         {...inputProps}
-        style={StyleSheet.flatten([
-          { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
-          { textAlign: I18nManager.isRTL ? 'right' : 'left' },
-          inputProps.style,
-        ])}
       />
       {error && (
         <Text
