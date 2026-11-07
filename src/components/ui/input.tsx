@@ -4,32 +4,33 @@ import * as React from 'react';
 import { I18nManager, TextInput as NTextInput, StyleSheet, View } from 'react-native';
 import { tv } from 'tailwind-variants';
 
-import colors from './colors';
+import { useThemeColors } from '@/lib/theme/use-theme-colors';
+
 import { Text } from './text';
 
 const inputTv = tv({
   slots: {
     container: 'mb-2',
-    label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
+    label: 'mb-1 text-lg text-ink-900',
     input:
-      'font-inter mt-0 rounded-xl border-[0.5px] border-neutral-300 bg-neutral-100 px-4 py-3 text-base/5 font-medium dark:border-neutral-700 dark:bg-neutral-800 dark:text-white',
+      'font-inter mt-0 rounded-xl border-[0.5px] border-border bg-surface-container px-4 py-3 text-base/5 font-medium text-ink-900',
   },
 
   variants: {
     focused: {
       true: {
-        input: 'border-neutral-400 dark:border-neutral-300',
+        input: 'border-border-strong',
       },
     },
     error: {
       true: {
-        input: 'border-danger-600',
-        label: 'text-danger-600 dark:text-danger-600',
+        input: 'border-clay-500',
+        label: 'text-clay-500',
       },
     },
     disabled: {
       true: {
-        input: 'bg-neutral-200',
+        input: 'bg-paper-200',
       },
     },
   },
@@ -49,6 +50,7 @@ export type NInputProps = {
 export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextInput | null> }) {
   const { label, error, testID, onBlur: onBlurProp, onFocus: onFocusProp, ...inputProps } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
+  const themeColors = useThemeColors();
 
   const onBlur = React.useCallback(
     (e: any) => {
@@ -85,7 +87,7 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
       <NTextInput
         testID={testID}
         ref={ref}
-        placeholderTextColor={colors.neutral[400]}
+        placeholderTextColor={themeColors['ink-500']}
         className={styles.input()}
         onBlur={onBlur}
         onFocus={onFocus}
@@ -99,7 +101,7 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
       {error && (
         <Text
           testID={testID ? `${testID}-error` : undefined}
-          className="text-sm text-danger-400 dark:text-danger-600"
+          className="text-sm text-clay-500"
         >
           {error}
         </Text>

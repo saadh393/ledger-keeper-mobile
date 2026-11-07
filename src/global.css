@@ -3,6 +3,30 @@
 
 @theme {
   --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-paper-100: unset;
+  --color-paper-200: unset;
+  --color-surface: unset;
+  --color-surface-container: unset;
+  --color-border: unset;
+  --color-border-strong: unset;
+  --color-ink-900: unset;
+  --color-ink-700: unset;
+  --color-ink-500: unset;
+  --color-accent: unset;
+  --color-on-accent: unset;
+  --color-link: unset;
+  --color-selected: unset;
+  --color-on-selected: unset;
+  --color-forest-500: unset;
+  --color-forest-100: unset;
+  --color-clay-500: unset;
+  --color-clay-100: unset;
+  --color-wheat-500: unset;
+  --color-wheat-200: unset;
+  --color-brand-blue: unset;
+  --color-brand-green: unset;
+  --color-brand-yellow: unset;
+  --color-brand-red: unset;
 }
 
 @layer theme {

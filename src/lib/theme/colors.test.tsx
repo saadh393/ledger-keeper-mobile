@@ -49,8 +49,8 @@ describe('color tokens', () => {
   it.each(themes)('bg-* classes render the %s token values', (theme) => {
     Uniwind.setTheme(theme);
     tokens.forEach((token) => {
-      const className = `bg-${token}`;
-      render(<View testID={token} className={className} />);
+      const tokenClass = `bg-${token}`;
+      render(<View testID={token} className={tokenClass} />);
       expect(screen.getByTestId(token)).toHaveStyle({ backgroundColor: colors[theme][token] });
     });
   });
