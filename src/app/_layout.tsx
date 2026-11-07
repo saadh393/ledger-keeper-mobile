@@ -11,7 +11,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
 import { APIProvider } from '@/lib/api';
-import { loadSelectedTheme } from '@/lib/hooks/use-selected-theme';
+import { syncTheme } from '@/lib/theme/sync-theme';
 import { useFontsReady } from '@/lib/theme/use-fonts-ready';
 // Import  global CSS file
 import '../global.css';
@@ -23,7 +23,7 @@ export const unstable_settings = {
   initialRouteName: '(app)',
 };
 
-loadSelectedTheme();
+syncTheme();
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 // Set the animation options. This is optional.
