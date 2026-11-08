@@ -27,6 +27,16 @@ let inFlightHydrate: Promise<void> | null = null;
 let inFlightSignOut: Promise<void> | null = null;
 let cleanupAuthSessionGuard: (() => void) | null = null;
 
+type SignOutHook = () => void | Promise<void>;
+const signOutHooks = new Set<SignOutHook>();
+
+export function registerSignOutHook(hook: SignOutHook): () => void {
+  signOutHooks.add(hook);
+  return () => {
+    signOutHooks.delete(hook);
+  };
+}
+
 export const useAuthStore = create<AuthState>(set => ({
   status: 'idle',
   sessionNotice: null,
@@ -130,6 +140,16 @@ export const useAuthStore = create<AuthState>(set => ({
       }
       catch {
         // Storage cleanup should not crash signOut
+      }
+
+      // 5. Run registered sign-out hooks (e.g. active book store reset)
+      for (const hook of signOutHooks) {
+        try {
+          await hook();
+        }
+        catch {
+          // Sign-out hook failure should not crash signOut
+        }
       }
 
       set({ status: 'signedOut', needsSessionRecheck: false });
