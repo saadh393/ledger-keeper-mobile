@@ -24,6 +24,8 @@ export type AuthMode = 'signin' | 'signup';
 export type EmailPasswordFormProps = {
   initialMode?: AuthMode;
   onSuccess?: (token: string) => void;
+  disabled?: boolean;
+  onSubmittingChange?: (isSubmitting: boolean) => void;
 };
 
 function PasswordToggle({
@@ -75,10 +77,12 @@ function FormErrorMessage({ message }: { message: string }) {
 function AuthModeToggle({
   prompt,
   actionText,
+  disabled = false,
   onToggle,
 }: {
   prompt: string;
   actionText: string;
+  disabled?: boolean;
   onToggle: () => void;
 }) {
   return (
@@ -90,10 +94,13 @@ function AuthModeToggle({
       <Pressable
         testID="toggle-auth-mode"
         accessibilityRole="button"
+        disabled={disabled}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        onPress={onToggle}
+        onPress={disabled ? undefined : onToggle}
       >
-        <Text className="text-row-title font-medium text-link">{actionText}</Text>
+        <Text className={`text-row-title font-medium ${disabled ? 'text-ink-500 opacity-50' : 'text-link'}`}>
+          {actionText}
+        </Text>
       </Pressable>
     </View>
   );
@@ -327,6 +334,8 @@ function PasswordFormField({
 export function EmailPasswordForm({
   initialMode = 'signin',
   onSuccess,
+  disabled = false,
+  onSubmittingChange,
 }: EmailPasswordFormProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -350,7 +359,16 @@ export function EmailPasswordForm({
     onSuccess,
   });
 
+  React.useEffect(() => {
+    onSubmittingChange?.(isSubmitting);
+  }, [isSubmitting, onSubmittingChange]);
+
+  const isFormDisabled = isSubmitting || disabled;
+
   const handleToggleMode = React.useCallback(() => {
+    if (isFormDisabled) {
+      return;
+    }
     const nextMode = mode === 'signin' ? 'signup' : 'signin';
     const currentEmail = form.getFieldValue('email') ?? '';
     form.reset();
@@ -359,7 +377,7 @@ export function EmailPasswordForm({
     }
     setFormError(null);
     setMode(nextMode);
-  }, [mode, form, setFormError]);
+  }, [isFormDisabled, mode, form, setFormError]);
 
   const submitLabel = isSubmitting
     ? (isSignUp ? t('auth.creatingAccount') : t('auth.signingIn'))
@@ -373,7 +391,7 @@ export function EmailPasswordForm({
           validator={nameValidator}
           label={t('auth.name')}
           placeholder={t('auth.namePlaceholder')}
-          disabled={isSubmitting}
+          disabled={isFormDisabled}
         />
       )}
 
@@ -382,7 +400,7 @@ export function EmailPasswordForm({
         validator={emailValidator}
         label={t('auth.email')}
         placeholder={t('auth.emailPlaceholder')}
-        disabled={isSubmitting}
+        disabled={isFormDisabled}
       />
 
       <PasswordFormField
@@ -390,7 +408,7 @@ export function EmailPasswordForm({
         validator={isSignUp ? signUpPasswordValidator : signInPasswordValidator}
         label={t('auth.password')}
         placeholder={isSignUp ? t('auth.newPasswordPlaceholder') : t('auth.passwordPlaceholder')}
-        disabled={isSubmitting}
+        disabled={isFormDisabled}
         isSignUp={isSignUp}
         showPassword={showPassword}
         onTogglePassword={() => setShowPassword(prev => !prev)}
@@ -406,13 +424,14 @@ export function EmailPasswordForm({
         variant="primary"
         label={submitLabel}
         pending={isSubmitting}
-        disabled={isSubmitting}
+        disabled={isFormDisabled}
         onPress={() => form.handleSubmit()}
       />
 
       <AuthModeToggle
         prompt={isSignUp ? t('auth.alreadyHaveAccount') : t('auth.dontHaveAccount')}
         actionText={isSignUp ? t('auth.switchToSignIn') : t('auth.switchToSignUp')}
+        disabled={isFormDisabled}
         onToggle={handleToggleMode}
       />
     </View>

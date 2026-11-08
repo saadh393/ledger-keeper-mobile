@@ -4,10 +4,13 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 
 import { FocusAwareStatusBar, SafeAreaView, Text } from '@/components/ui';
 import { EmailPasswordForm } from '@/features/auth/components/email-password-form';
+import { GoogleSignInButton } from '@/features/auth/components/google-sign-in-button';
 import { Logo } from '@/features/auth/components/logo';
 
 export function AuthScreen() {
   const { t } = useTranslation();
+  const [isGooglePending, setIsGooglePending] = React.useState(false);
+  const [isEmailSubmitting, setIsEmailSubmitting] = React.useState(false);
 
   return (
     <SafeAreaView
@@ -42,7 +45,23 @@ export function AuthScreen() {
               {t('auth.headline')}
             </Text>
 
-            <EmailPasswordForm />
+            <GoogleSignInButton
+              disabled={isEmailSubmitting}
+              onPendingChange={setIsGooglePending}
+            />
+
+            <View testID="auth-divider" className="my-6 flex-row items-center">
+              <View className="h-px flex-1 bg-border" />
+              <Text testID="auth-divider-text" className="mx-4 text-meta text-ink-500">
+                {t('auth.or')}
+              </Text>
+              <View className="h-px flex-1 bg-border" />
+            </View>
+
+            <EmailPasswordForm
+              disabled={isGooglePending}
+              onSubmittingChange={setIsEmailSubmitting}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

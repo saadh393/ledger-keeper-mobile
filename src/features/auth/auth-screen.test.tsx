@@ -1,4 +1,6 @@
 /* eslint-disable max-lines-per-function */
+import type { SocialSignInResponse } from '@/features/auth/api/auth-client';
+import { onlineManager } from '@tanstack/react-query';
 import * as React from 'react';
 
 import { authClient } from '@/features/auth/api/auth-client';
@@ -23,27 +25,39 @@ describe('authScreen and EmailPasswordForm', () => {
     jest.clearAllMocks();
     _resetAuthStore();
     useAuthStore.setState({ status: 'signedOut' });
+    jest.spyOn(onlineManager, 'isOnline').mockReturnValue(true);
   });
 
   describe('screen rendering & elements', () => {
-    it('shows logo, headline, email field, password field, and primary button', () => {
+    it('shows logo, headline, Google button, divider, email field, password field, and primary button', () => {
       render(<AuthScreen />);
 
       expect(screen.getByTestId('auth-screen')).toBeOnTheScreen();
       expect(screen.getByTestId('auth-scroll-view')).toBeOnTheScreen();
       expect(screen.getByTestId('auth-logo')).toBeOnTheScreen();
       expect(screen.getByTestId('auth-headline')).toHaveTextContent('Your money, in plain words.');
+
+      // Google button and divider above email form
+      expect(screen.getByTestId('google-sign-in-button')).toBeOnTheScreen();
+      expect(screen.getByText('Continue with Google')).toBeOnTheScreen();
+      expect(screen.getByTestId('google-icon')).toBeOnTheScreen();
+      expect(screen.getByTestId('auth-divider')).toBeOnTheScreen();
+      expect(screen.getByTestId('auth-divider-text')).toHaveTextContent('or');
+
+      // Email form elements
       expect(screen.getByTestId('email-input')).toBeOnTheScreen();
       expect(screen.getByTestId('password-input')).toBeOnTheScreen();
       expect(screen.getByTestId('auth-submit-button')).toBeOnTheScreen();
       expect(screen.getByText('Sign in')).toBeOnTheScreen();
     });
 
-    it('shows localized headline in Bangla', async () => {
+    it('shows localized headline, Google button, and divider in Bangla', async () => {
       await i18n.changeLanguage('bn');
       try {
         render(<AuthScreen />);
         expect(screen.getByTestId('auth-headline')).toHaveTextContent('আপনার টাকা, সহজ ভাষায়।');
+        expect(screen.getByText('গুগল দিয়ে চালিয়ে যান')).toBeOnTheScreen();
+        expect(screen.getByTestId('auth-divider-text')).toHaveTextContent('অথবা');
       }
       finally {
         cleanup();
@@ -83,6 +97,187 @@ describe('authScreen and EmailPasswordForm', () => {
 
       expect(passwordInput.props.secureTextEntry).toBe(true);
       expect(toggleButton.props.accessibilityLabel).toBe('Show password');
+    });
+  });
+
+  describe('google sign-in', () => {
+    it('signs in with Google successfully, stores bearer token, and navigates away', async () => {
+      const socialSpy = jest.spyOn(authClient.signIn, 'social').mockResolvedValue({
+        token: 'google-bearer-token-123',
+        canceled: false,
+      });
+
+      render(<AuthScreen />);
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      fireEvent.press(googleButton);
+
+      await waitFor(() => {
+        expect(socialSpy).toHaveBeenCalledWith({
+          provider: 'google',
+          callbackURL: expect.stringMatching(/ledgerkeeper.*:\/\//),
+        });
+        expect(useAuthStore.getState().status).toBe('signedIn');
+        expect(mockReplace).toHaveBeenCalledWith('/');
+      });
+
+      expect(screen.queryByTestId('google-auth-error')).toBeNull();
+      socialSpy.mockRestore();
+    });
+
+    it('closing the browser or pressing back returns to auth screen with no error and enables button again', async () => {
+      const socialSpy = jest.spyOn(authClient.signIn, 'social').mockResolvedValue({
+        token: null,
+        canceled: true,
+      });
+
+      render(<AuthScreen />);
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      fireEvent.press(googleButton);
+
+      await waitFor(() => {
+        expect(socialSpy).toHaveBeenCalledTimes(1);
+      });
+
+      // No error shown
+      expect(screen.queryByTestId('google-auth-error')).toBeNull();
+      // Not signed in
+      expect(useAuthStore.getState().status).toBe('signedOut');
+      expect(mockReplace).not.toHaveBeenCalled();
+
+      // Button is enabled again
+      await waitFor(() => {
+        expect(screen.getByText('Continue with Google')).toBeOnTheScreen();
+        expect(googleButton.props.accessibilityState.disabled).toBe(false);
+      });
+
+      socialSpy.mockRestore();
+    });
+
+    it('shows error when Google sign-in fails on server or redirect, and enables button again', async () => {
+      const socialSpy = jest.spyOn(authClient.signIn, 'social').mockRejectedValue(
+        new Error('Server failed to authenticate with Google'),
+      );
+
+      render(<AuthScreen />);
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      fireEvent.press(googleButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('google-auth-error')).toHaveTextContent(
+          'Couldn\'t sign in with Google. Try again.',
+        );
+      });
+
+      expect(useAuthStore.getState().status).toBe('signedOut');
+      expect(mockReplace).not.toHaveBeenCalled();
+      expect(googleButton.props.accessibilityState.disabled).toBe(false);
+
+      socialSpy.mockRestore();
+    });
+
+    it('shows offline error when tapping Google button while offline and opens no browser', async () => {
+      jest.spyOn(onlineManager, 'isOnline').mockReturnValue(false);
+      const socialSpy = jest.spyOn(authClient.signIn, 'social');
+
+      render(<AuthScreen />);
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      fireEvent.press(googleButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('google-auth-error')).toHaveTextContent(
+          'You\'re offline. Check your connection and try again.',
+        );
+      });
+
+      expect(socialSpy).not.toHaveBeenCalled();
+      expect(useAuthStore.getState().status).toBe('signedOut');
+      expect(mockReplace).not.toHaveBeenCalled();
+      expect(googleButton.props.accessibilityState.disabled).toBe(false);
+
+      socialSpy.mockRestore();
+    });
+
+    it('shows pending state and disables email form while waiting for browser result, ignoring second tap', async () => {
+      let resolvePromise: (val: SocialSignInResponse) => void = () => {};
+      const pendingPromise = new Promise<SocialSignInResponse>((resolve) => {
+        resolvePromise = resolve;
+      });
+
+      const socialSpy = jest.spyOn(authClient.signIn, 'social').mockImplementation(() => pendingPromise);
+
+      render(<AuthScreen />);
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      const emailInput = screen.getByTestId('email-input');
+      const passwordInput = screen.getByTestId('password-input');
+      const emailSubmitButton = screen.getByTestId('auth-submit-button');
+
+      fireEvent.press(googleButton);
+
+      // While waiting for Google sign-in result:
+      await waitFor(() => {
+        expect(screen.getByText('Continue with Google…')).toBeOnTheScreen();
+        expect(screen.getByTestId('google-button-loading')).toBeOnTheScreen();
+      });
+
+      // Email form should be disabled
+      expect(emailInput.props.editable).toBe(false);
+      expect(passwordInput.props.editable).toBe(false);
+      expect(emailSubmitButton.props.accessibilityState.disabled).toBe(true);
+
+      // Second press on Google button should be ignored
+      fireEvent.press(googleButton);
+      expect(socialSpy).toHaveBeenCalledTimes(1);
+
+      // Resolve Google sign-in
+      resolvePromise({ token: 'resolved-token', canceled: false });
+
+      await waitFor(() => {
+        expect(useAuthStore.getState().status).toBe('signedIn');
+        expect(mockReplace).toHaveBeenCalledWith('/');
+      });
+
+      socialSpy.mockRestore();
+    });
+
+    it('disables Google button while email form is submitting', async () => {
+      let resolveEmailPromise: (token: string) => void = () => {};
+      const pendingEmail = new Promise<string>((resolve) => {
+        resolveEmailPromise = resolve;
+      });
+
+      const signInSpy = jest.spyOn(authClient, 'signInWithEmail').mockImplementation(() => pendingEmail);
+      const socialSpy = jest.spyOn(authClient.signIn, 'social');
+
+      render(<AuthScreen />);
+
+      fireEvent.changeText(screen.getByTestId('email-input'), 'user@example.com');
+      fireEvent.changeText(screen.getByTestId('password-input'), 'password123');
+
+      const emailSubmit = screen.getByTestId('auth-submit-button');
+      fireEvent.press(emailSubmit);
+
+      await waitFor(() => {
+        expect(screen.getByText('Signing in…')).toBeOnTheScreen();
+      });
+
+      const googleButton = screen.getByTestId('google-sign-in-button');
+      expect(googleButton.props.accessibilityState.disabled).toBe(true);
+
+      fireEvent.press(googleButton);
+      expect(socialSpy).not.toHaveBeenCalled();
+
+      resolveEmailPromise('token-email');
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith('/');
+      });
+
+      signInSpy.mockRestore();
+      socialSpy.mockRestore();
     });
   });
 

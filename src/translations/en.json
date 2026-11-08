@@ -1,6 +1,7 @@
 {
   "auth": {
     "alreadyHaveAccount": "Already have an account?",
+    "continueWithGoogle": "Continue with Google",
     "createAccount": "Create account",
     "creatingAccount": "Creating account…",
     "dontHaveAccount": "Don't have an account?",
@@ -9,6 +10,7 @@
     "errors": {
       "emailInvalid": "Please enter a valid email address",
       "emailRequired": "Email is required",
+      "googleFailed": "Couldn't sign in with Google. Try again.",
       "invalidCredentials": "Email or password is incorrect",
       "nameRequired": "Name is required",
       "offline": "You're offline. Check your connection and try again.",
@@ -22,6 +24,7 @@
     "name": "Full name",
     "namePlaceholder": "Your name",
     "newPasswordPlaceholder": "At least 8 characters",
+    "or": "or",
     "password": "Password",
     "passwordPlaceholder": "Your password",
     "showPassword": "Show password",

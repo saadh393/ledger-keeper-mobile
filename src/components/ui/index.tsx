@@ -9,6 +9,7 @@ export * from './checkbox';
 export * from './chip';
 export * from './empty-state';
 export * from './focus-aware-status-bar';
+export * from './icons';
 export * from './image';
 export * from './input';
 export * from './list';

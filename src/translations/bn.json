@@ -1,6 +1,7 @@
 {
   "auth": {
     "alreadyHaveAccount": "ইতিমধ্যে একটি অ্যাকাউন্ট আছে?",
+    "continueWithGoogle": "গুগল দিয়ে চালিয়ে যান",
     "createAccount": "অ্যাকাউন্ট তৈরি করুন",
     "creatingAccount": "অ্যাকাউন্ট তৈরি হচ্ছে…",
     "dontHaveAccount": "কোনো অ্যাকাউন্ট নেই?",
@@ -9,6 +10,7 @@
     "errors": {
       "emailInvalid": "একটি বৈধ ইমেইল ঠিকানা লিখুন",
       "emailRequired": "ইমেইল আবশ্যক",
+      "googleFailed": "গুগল দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।",
       "invalidCredentials": "ইমেইল বা পাসওয়ার্ড সঠিক নয়",
       "nameRequired": "নাম আবশ্যক",
       "offline": "আপনি অফলাইনে আছেন। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
@@ -22,6 +24,7 @@
     "name": "পুরো নাম",
     "namePlaceholder": "আপনার নাম",
     "newPasswordPlaceholder": "কমপক্ষে ৮ অক্ষর",
+    "or": "অথবা",
     "password": "পাসওয়ার্ড",
     "passwordPlaceholder": "আপনার পাসওয়ার্ড",
     "showPassword": "পাসওয়ার্ড দেখান",
