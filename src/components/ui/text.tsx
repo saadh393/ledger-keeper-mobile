@@ -31,6 +31,7 @@ export function Text({
 
   return (
     <NNText
+      className={className}
       style={isLoaded(family) ? { ...rest, fontFamily: family } : textStyle}
       {...props}
     >
