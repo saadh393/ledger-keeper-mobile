@@ -41,6 +41,15 @@ jest.mock('react-native-reanimated', () => {
     },
     useSharedValue: jest.fn((init = 0) => ({ value: init })),
     useAnimatedStyle: jest.fn(fn => fn()),
+    useDerivedValue: jest.fn((fn: () => any) => ({ value: fn() })),
+    useAnimatedProps: jest.fn((fn: () => any) => fn()),
+    runOnJS: jest.fn((fn: any) => fn),
+    interpolate: jest.fn((value: number, _input: number[], output: number[]) => output[0] ?? value),
+    ReduceMotion: {
+      System: 'system',
+      Always: 'always',
+      Never: 'never',
+    },
     useReducedMotion: jest.fn(() => false),
     withTiming: jest.fn((value, _config, cb) => {
       cb?.(true);

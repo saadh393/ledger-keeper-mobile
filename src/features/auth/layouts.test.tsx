@@ -18,6 +18,13 @@ jest.mock('expo-router', () => {
   };
 });
 
+jest.mock('expo-router/drawer', () => {
+  const React = require('react');
+  const Drawer = (props: any) => React.createElement('Drawer', props, props.children);
+  Drawer.Screen = (props: any) => React.createElement('Drawer.Screen', props);
+  return { Drawer };
+});
+
 describe('appLayout and AuthLayout route guards', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -38,7 +45,7 @@ describe('appLayout and AuthLayout route guards', () => {
       expect(mockRedirect).toHaveBeenCalledWith({ href: '/auth' });
     });
 
-    it('renders stack when auth status is signedIn', () => {
+    it('renders drawer layout when auth status is signedIn', () => {
       useAuthStore.setState({ status: 'signedIn' });
       const { toJSON } = render(<AppLayout />);
       expect(toJSON()).not.toBeNull();

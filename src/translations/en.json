@@ -52,6 +52,17 @@
   "home": {
     "title": "Ledger Keeper"
   },
+  "navigation": {
+    "bookSwitcherSlot": "Book switcher",
+    "closeMenu": "Close menu",
+    "credits": "Credits",
+    "installments": "Installments",
+    "ledger": "Ledger",
+    "loans": "Loans",
+    "openMenu": "Open menu",
+    "profileLoading": "Loading profile…",
+    "settings": "Settings"
+  },
   "offline": {
     "banner": "You're offline"
   }

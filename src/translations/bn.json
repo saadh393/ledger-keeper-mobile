@@ -52,6 +52,17 @@
   "home": {
     "title": "লেজার কিপার"
   },
+  "navigation": {
+    "bookSwitcherSlot": "বই পরিবর্তনকারী",
+    "closeMenu": "মেনু বন্ধ করুন",
+    "credits": "ক্রেডিট",
+    "installments": "কিস্তি",
+    "ledger": "লেজার",
+    "loans": "ঋণ",
+    "openMenu": "মেনু খুলুন",
+    "profileLoading": "প্রোফাইল লোড হচ্ছে…",
+    "settings": "সেটিংস"
+  },
   "offline": {
     "banner": "আপনি অফলাইনে আছেন"
   }

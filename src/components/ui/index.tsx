@@ -13,6 +13,7 @@ export * from './icons';
 export * from './image';
 export * from './input';
 export * from './list';
+export * from './logo';
 export * from './progress-bar';
 export * from './segmented-control';
 export * from './select';

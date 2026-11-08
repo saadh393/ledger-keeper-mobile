@@ -1,0 +1,6 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
+patchedDependencies:
+  react-native-drawer-layout: patches/react-native-drawer-layout.patch

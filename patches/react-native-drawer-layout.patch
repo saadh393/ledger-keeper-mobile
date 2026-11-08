@@ -1,0 +1,26 @@
+diff --git a/lib/module/views/Drawer.native.js b/lib/module/views/Drawer.native.js
+index f463263048cc838af4f6a8263a668d28fb5c3677..decd7c77006daff5515774ad5fe1aaad5345bfdf 100644
+--- a/lib/module/views/Drawer.native.js
++++ b/lib/module/views/Drawer.native.js
+@@ -146,7 +146,7 @@ export function Drawer({
+       damping: 500,
+       mass: 3,
+       overshootClamping: true,
+-      reduceMotion: ReduceMotion.Never
++      reduceMotion: ReduceMotion.System
+     }, finished => runOnJS(onAnimationEnd)(open, finished));
+     if (open) {
+       runOnJS(onOpenLatest)();
+diff --git a/src/views/Drawer.native.tsx b/src/views/Drawer.native.tsx
+index 0c3e0385c52f4abb56bb7194ba2d996f6a4aa8c1..598fb49b3d18f288a4162c4b13d92a26cc2be911 100644
+--- a/src/views/Drawer.native.tsx
++++ b/src/views/Drawer.native.tsx
+@@ -204,7 +204,7 @@ export function Drawer({
+           damping: 500,
+           mass: 3,
+           overshootClamping: true,
+-          reduceMotion: ReduceMotion.Never,
++          reduceMotion: ReduceMotion.System,
+         },
+         (finished) => runOnJS(onAnimationEnd)(open, finished)
+       );
