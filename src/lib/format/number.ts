@@ -6,5 +6,7 @@ export function formatNumber(
   locale: Language,
   options: Intl.NumberFormatOptions = {},
 ) {
-  return new Intl.NumberFormat(resolveLocale(locale), options).format(Object.is(value, -0) ? 0 : value);
+  const formatter = new Intl.NumberFormat(resolveLocale(locale), options);
+  const zero = formatter.format(0);
+  return formatter.format(Math.abs(value)) === zero ? zero : formatter.format(value);
 }

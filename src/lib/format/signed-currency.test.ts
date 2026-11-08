@@ -27,13 +27,19 @@ describe('formatSignedCurrency', () => {
   });
 
   it.each([
-    [0, 0, '৳0'],
-    [-0, 0, '৳0'],
-    [0.4, 0, '৳0'],
-    [0.004, 2, '৳0.00'],
-  ])('shows %p with %p decimals without a sign', (value, fractionDigits, expected) => {
-    expect(formatSignedCurrency(value, 'en', { kind: 'expense', fractionDigits })).toBe(expected);
-    expect(formatSignedCurrency(value, 'en', { kind: 'income', fractionDigits })).toBe(expected);
+    { value: 0, locale: 'en', fractionDigits: 0, expected: '৳0' },
+    { value: -0, locale: 'en', fractionDigits: 0, expected: '৳0' },
+    { value: 0.4, locale: 'en', fractionDigits: 0, expected: '৳0' },
+    { value: 0.004, locale: 'en', fractionDigits: 2, expected: '৳0.00' },
+    { value: -0.4, locale: 'en', fractionDigits: 0, expected: '৳0' },
+    { value: -0.4, locale: 'bn', fractionDigits: 0, expected: '৳০' },
+    { value: -0.004, locale: 'en', fractionDigits: 2, expected: '৳0.00' },
+    { value: -0.004, locale: 'bn', fractionDigits: 2, expected: '৳০.০০' },
+    { value: 0.3 - 0.1 - 0.2, locale: 'en', fractionDigits: 0, expected: '৳0' },
+    { value: 0.3 - 0.1 - 0.2, locale: 'bn', fractionDigits: 2, expected: '৳০.০০' },
+  ] as const)('shows $value in $locale with $fractionDigits decimals without a sign', ({ value, locale, fractionDigits, expected }) => {
+    expect(formatSignedCurrency(value, locale, { kind: 'expense', fractionDigits })).toBe(expected);
+    expect(formatSignedCurrency(value, locale, { kind: 'income', fractionDigits })).toBe(expected);
   });
 
   it('shows an unknown currency code as a prefix', () => {

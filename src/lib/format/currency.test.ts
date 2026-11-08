@@ -25,8 +25,14 @@ describe('formatCurrency', () => {
     expect(formatCurrency(1200, 'en')).toBe('৳1,200');
   });
 
-  it('never shows negative zero', () => {
-    expect(formatCurrency(-0, 'en', 'BDT')).toBe('৳0');
+  it.each([
+    { value: -0, locale: 'en', expected: '৳0' },
+    { value: -0.0004, locale: 'en', expected: '৳0' },
+    { value: -0.0004, locale: 'bn', expected: '৳০' },
+    { value: 0.3 - 0.1 - 0.2, locale: 'en', expected: '৳0' },
+    { value: 0.3 - 0.1 - 0.2, locale: 'bn', expected: '৳০' },
+  ] as const)('never shows negative zero for $value in $locale', ({ value, locale, expected }) => {
+    expect(formatCurrency(value, locale, 'BDT')).toBe(expected);
   });
 
   it('falls back to the code when formatToParts is missing', () => {
