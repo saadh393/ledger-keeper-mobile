@@ -3,21 +3,34 @@ import z from 'zod';
 import packageJSON from './package.json';
 
 // Single unified environment schema
-const envSchema = z.object({
-  EXPO_PUBLIC_APP_ENV: z.enum(['development', 'preview', 'production']),
-  EXPO_PUBLIC_NAME: z.string(),
-  EXPO_PUBLIC_SCHEME: z.string(),
-  EXPO_PUBLIC_BUNDLE_ID: z.string(),
-  EXPO_PUBLIC_PACKAGE: z.string(),
-  EXPO_PUBLIC_VERSION: z.string(),
-  EXPO_PUBLIC_API_URL: z.string().url(),
-  EXPO_PUBLIC_ASSOCIATED_DOMAIN: z.string().url().optional(),
-  EXPO_PUBLIC_VAR_NUMBER: z.number(),
-  EXPO_PUBLIC_VAR_BOOL: z.boolean(),
+export const envSchema = z
+  .object({
+    EXPO_PUBLIC_APP_ENV: z.enum(['development', 'preview', 'production']),
+    EXPO_PUBLIC_NAME: z.string(),
+    EXPO_PUBLIC_SCHEME: z.string(),
+    EXPO_PUBLIC_BUNDLE_ID: z.string(),
+    EXPO_PUBLIC_PACKAGE: z.string(),
+    EXPO_PUBLIC_VERSION: z.string(),
+    EXPO_PUBLIC_API_URL: z.string().url(),
+    EXPO_PUBLIC_ASSOCIATED_DOMAIN: z.string().url().optional(),
+    EXPO_PUBLIC_VAR_NUMBER: z.number(),
+    EXPO_PUBLIC_VAR_BOOL: z.boolean(),
 
-  // only available for app.config.ts usage
-  APP_BUILD_ONLY_VAR: z.string().optional(),
-});
+    // only available for app.config.ts usage
+    APP_BUILD_ONLY_VAR: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.EXPO_PUBLIC_APP_ENV === 'preview' || data.EXPO_PUBLIC_APP_ENV === 'production') {
+        return data.EXPO_PUBLIC_API_URL.startsWith('https://');
+      }
+      return true;
+    },
+    {
+      message: 'EXPO_PUBLIC_API_URL must use HTTPS in preview and production environments',
+      path: ['EXPO_PUBLIC_API_URL'],
+    },
+  );
 
 // Config records per environment
 const EXPO_PUBLIC_APP_ENV = (process.env.EXPO_PUBLIC_APP_ENV
@@ -61,19 +74,20 @@ const _env: z.infer<typeof envSchema> = {
   APP_BUILD_ONLY_VAR: process.env.APP_BUILD_ONLY_VAR,
 };
 
-function getValidatedEnv(env: z.infer<typeof envSchema>) {
+export function getValidatedEnv(env: z.infer<typeof envSchema>) {
   const parsed = envSchema.safeParse(env);
 
   if (parsed.success === false) {
     const errorMessage
       = `❌ Invalid environment variables:${
         JSON.stringify(parsed.error.flatten().fieldErrors, null, 2)
-      }\n❌ Missing variables in .env file for APP_ENV=${EXPO_PUBLIC_APP_ENV}`
+      }\n❌ Missing or invalid variables in .env file for APP_ENV=${env.EXPO_PUBLIC_APP_ENV}`
       + `\n💡 Tip: If you recently updated the .env file, try restarting with -c flag to clear the cache.`;
 
-    if (STRICT_ENV_VALIDATION) {
+    const shouldThrow = STRICT_ENV_VALIDATION || env.EXPO_PUBLIC_APP_ENV === 'preview' || env.EXPO_PUBLIC_APP_ENV === 'production';
+    if (shouldThrow) {
       console.error(errorMessage);
-      throw new Error('Invalid environment variables');
+      throw new Error(`Invalid environment variables: ${JSON.stringify(parsed.error.flatten().fieldErrors)}`);
     }
   }
   else {
@@ -83,6 +97,7 @@ function getValidatedEnv(env: z.infer<typeof envSchema>) {
   return parsed.success ? parsed.data : env;
 }
 
-const Env = STRICT_ENV_VALIDATION ? getValidatedEnv(_env) : _env;
+const shouldValidate = STRICT_ENV_VALIDATION || EXPO_PUBLIC_APP_ENV === 'preview' || EXPO_PUBLIC_APP_ENV === 'production';
+const Env = shouldValidate ? getValidatedEnv(_env) : _env;
 
 export default Env;

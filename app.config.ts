@@ -75,6 +75,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     ['expo-localization', { supportsRTL: false }],
     'expo-router',
+    'expo-secure-store',
     ['app-icon-badge', appIconBadgeConfig],
   ],
   extra: EAS_PROJECT_ID ? { eas: { projectId: EAS_PROJECT_ID } } : {},
