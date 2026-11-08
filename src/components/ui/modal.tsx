@@ -79,7 +79,7 @@ export function Modal({ ref, snapPoints: _snapPoints = ['60%'] as (string | numb
   const renderHandleComponent = React.useCallback(
     () => (
       <>
-        <View className="mt-2 mb-8 h-1 w-12 self-center rounded-lg bg-gray-400 dark:bg-gray-700" />
+        <View className="mt-2 mb-8 h-1 w-12 self-center rounded-lg bg-border-strong" />
         <ModalHeader title={title} dismiss={modal.dismiss} />
       </>
     ),
@@ -113,7 +113,7 @@ function CustomBackdrop({ style }: BottomSheetBackdropProps) {
       onPress={() => close()}
       entering={FadeIn.duration(50)}
       exiting={FadeOut.duration(20)}
-      style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.4)' }]}
+      style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}
     />
   );
 }

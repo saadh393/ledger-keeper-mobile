@@ -222,7 +222,7 @@ function Check({ ...props }: SvgProps) {
       fill="none"
       viewBox="0 0 25 24"
       {...props}
-      className="stroke-black dark:stroke-white"
+      className="stroke-ink-900"
     >
       <Path
         d="m20.256 6.75-10.5 10.5L4.506 12"

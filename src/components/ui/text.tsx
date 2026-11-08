@@ -23,7 +23,7 @@ export function Text({
 }: Props) {
   const { t, i18n } = useTranslation();
   const classStyle = useResolveClassNames(
-    twMerge('text-body text-black dark:text-white', className),
+    twMerge('text-body text-ink-900', className),
   );
   const textStyle = StyleSheet.flatten([classStyle, style]) as TextStyle;
   const family = fontFamily(textStyle.fontWeight, i18n.language);

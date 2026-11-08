@@ -229,7 +229,7 @@ export function SwitchIcon({ checked = false }: IconProps) {
           height: THUMB_HEIGHT,
           width: THUMB_WIDTH,
           position: 'absolute',
-          backgroundColor: 'white',
+          backgroundColor: themeColors['paper-100'],
           borderRadius: 13,
           right: 0,
         }}
