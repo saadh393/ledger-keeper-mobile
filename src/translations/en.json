@@ -1,4 +1,35 @@
 {
+  "auth": {
+    "alreadyHaveAccount": "Already have an account?",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account…",
+    "dontHaveAccount": "Don't have an account?",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "errors": {
+      "emailInvalid": "Please enter a valid email address",
+      "emailRequired": "Email is required",
+      "invalidCredentials": "Email or password is incorrect",
+      "nameRequired": "Name is required",
+      "offline": "You're offline. Check your connection and try again.",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordRequired": "Password is required",
+      "serverError": "Something went wrong. Try again.",
+      "userAlreadyExists": "User already exists"
+    },
+    "headline": "Your money, in plain words.",
+    "hidePassword": "Hide password",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "newPasswordPlaceholder": "At least 8 characters",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "showPassword": "Show password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "switchToSignIn": "Sign in",
+    "switchToSignUp": "Create account"
+  },
   "dayHeader": {
     "today": "Today",
     "yesterday": "Yesterday"

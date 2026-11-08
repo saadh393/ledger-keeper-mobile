@@ -1,4 +1,35 @@
 {
+  "auth": {
+    "alreadyHaveAccount": "ইতিমধ্যে একটি অ্যাকাউন্ট আছে?",
+    "createAccount": "অ্যাকাউন্ট তৈরি করুন",
+    "creatingAccount": "অ্যাকাউন্ট তৈরি হচ্ছে…",
+    "dontHaveAccount": "কোনো অ্যাকাউন্ট নেই?",
+    "email": "ইমেইল",
+    "emailPlaceholder": "you@example.com",
+    "errors": {
+      "emailInvalid": "একটি বৈধ ইমেইল ঠিকানা লিখুন",
+      "emailRequired": "ইমেইল আবশ্যক",
+      "invalidCredentials": "ইমেইল বা পাসওয়ার্ড সঠিক নয়",
+      "nameRequired": "নাম আবশ্যক",
+      "offline": "আপনি অফলাইনে আছেন। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+      "passwordMinLength": "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে",
+      "passwordRequired": "পাসওয়ার্ড আবশ্যক",
+      "serverError": "কিছু ভুল হয়েছে। আবার চেষ্টা করুন।",
+      "userAlreadyExists": "ব্যবহারকারী ইতিমধ্যে বিদ্যমান"
+    },
+    "headline": "আপনার টাকা, সহজ ভাষায়।",
+    "hidePassword": "পাসওয়ার্ড লুকান",
+    "name": "পুরো নাম",
+    "namePlaceholder": "আপনার নাম",
+    "newPasswordPlaceholder": "কমপক্ষে ৮ অক্ষর",
+    "password": "পাসওয়ার্ড",
+    "passwordPlaceholder": "আপনার পাসওয়ার্ড",
+    "showPassword": "পাসওয়ার্ড দেখান",
+    "signIn": "সাইন ইন",
+    "signingIn": "সাইন ইন হচ্ছে…",
+    "switchToSignIn": "সাইন ইন",
+    "switchToSignUp": "অ্যাকাউন্ট তৈরি করুন"
+  },
   "dayHeader": {
     "today": "আজ",
     "yesterday": "গতকাল"

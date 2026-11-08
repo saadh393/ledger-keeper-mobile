@@ -75,6 +75,18 @@ describe('input rendering and typography', () => {
     expect(input.props.className).toContain('text-body-l');
     expect(input.props.className).toContain('text-ink-900');
   });
+
+  it('should render rightAccessory when provided', () => {
+    const { Text: RText } = require('react-native');
+    render(
+      <Input
+        testID="input"
+        rightAccessory={<RText testID="accessory">Toggle</RText>}
+      />,
+    );
+    expect(screen.getByTestId('accessory')).toBeOnTheScreen();
+    expect(screen.getByTestId('input').props.className).toContain('pr-12');
+  });
 });
 
 describe('input states, borders, and events', () => {

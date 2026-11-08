@@ -12,6 +12,18 @@ jest.mock('@dev-plugins/react-query', () => ({
   useReactQueryDevTools: jest.fn(),
 }));
 
+// Mock @tanstack/devtools-event-client
+jest.mock('@tanstack/devtools-event-client', () => ({
+  EventClient: class {
+    emit = jest.fn();
+    on = jest.fn(() => () => {});
+    off = jest.fn();
+    subscribe = jest.fn(() => () => {});
+    startConnectLoop = jest.fn();
+    stopConnectLoop = jest.fn();
+  },
+}));
+
 // Mock @react-native-community/netinfo
 jest.mock('@react-native-community/netinfo', () =>
   require('@react-native-community/netinfo/jest/netinfo-mock.js'));

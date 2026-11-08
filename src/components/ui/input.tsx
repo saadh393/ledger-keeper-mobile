@@ -56,6 +56,7 @@ export type NInputProps = {
   disabled?: boolean;
   error?: string;
   containerClassName?: string;
+  rightAccessory?: React.ReactNode;
 } & TextInputProps;
 
 export function Input({
@@ -74,6 +75,7 @@ export function Input({
     style,
     multiline,
     editable,
+    rightAccessory,
     ...inputProps
   } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
@@ -113,24 +115,33 @@ export function Input({
           {label}
         </Text>
       )}
-      <NTextInput
-        testID={testID}
-        ref={ref}
-        placeholderTextColor={themeColors['ink-500']}
-        className={styles.input({ className })}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        editable={isEditable}
-        accessibilityState={{
-          disabled: Boolean(disabled),
-        }}
-        aria-invalid={Boolean(error)}
-        aria-errormessage={error && testID ? `${testID}-error` : undefined}
-        multiline={multiline}
-        style={[multiline ? { textAlignVertical: 'top' } : undefined, style]}
-        {...inputProps}
-        {...(disabled !== undefined ? { disabled } : {})}
-      />
+      <View className="relative justify-center">
+        <NTextInput
+          testID={testID}
+          ref={ref}
+          placeholderTextColor={themeColors['ink-500']}
+          className={styles.input({ className: rightAccessory ? `${className} pr-12` : className })}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          editable={isEditable}
+          accessibilityState={{
+            disabled: Boolean(disabled),
+          }}
+          aria-invalid={Boolean(error)}
+          aria-errormessage={error && testID ? `${testID}-error` : undefined}
+          multiline={multiline}
+          style={[multiline ? { textAlignVertical: 'top' } : undefined, style]}
+          {...inputProps}
+          {...(disabled !== undefined ? { disabled } : {})}
+        />
+        {rightAccessory
+          ? (
+              <View className="absolute right-3 items-center justify-center">
+                {rightAccessory}
+              </View>
+            )
+          : null}
+      </View>
       {error && (
         <Text
           testID={testID ? `${testID}-error` : undefined}
