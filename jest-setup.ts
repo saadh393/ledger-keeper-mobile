@@ -83,30 +83,30 @@ jest.mock('expo-localization', () => ({
 }));
 
 // Mock react-native-mmkv
-jest.mock('react-native-mmkv', () => ({
-  MMKV: jest.fn(() => ({
-    set: jest.fn(),
-    getString: jest.fn(),
-    getNumber: jest.fn(),
-    getBoolean: jest.fn(),
-    delete: jest.fn(),
-    clearAll: jest.fn(),
-    getAllKeys: jest.fn(() => []),
-  })),
-  useMMKVString: jest.fn((_key: string) => [undefined, jest.fn()]),
-  useMMKVNumber: jest.fn((_key: string) => [undefined, jest.fn()]),
-  useMMKVBoolean: jest.fn((_key: string) => [undefined, jest.fn()]),
-  useMMKVObject: jest.fn((_key: string) => [undefined, jest.fn()]),
-  createMMKV: jest.fn(() => ({
-    set: jest.fn(),
-    getString: jest.fn(),
-    getNumber: jest.fn(),
-    getBoolean: jest.fn(),
-    delete: jest.fn(),
-    clearAll: jest.fn(),
-    getAllKeys: jest.fn(() => []),
-  })),
-}));
+jest.mock('react-native-mmkv', () => {
+  const createMockInstance = () => {
+    const deleteFn = jest.fn();
+    return {
+      set: jest.fn(),
+      getString: jest.fn(),
+      getNumber: jest.fn(),
+      getBoolean: jest.fn(),
+      delete: deleteFn,
+      remove: deleteFn,
+      clearAll: jest.fn(),
+      getAllKeys: jest.fn(() => []),
+    };
+  };
+
+  return {
+    MMKV: jest.fn(() => createMockInstance()),
+    useMMKVString: jest.fn((_key: string) => [undefined, jest.fn()]),
+    useMMKVNumber: jest.fn((_key: string) => [undefined, jest.fn()]),
+    useMMKVBoolean: jest.fn((_key: string) => [undefined, jest.fn()]),
+    useMMKVObject: jest.fn((_key: string) => [undefined, jest.fn()]),
+    createMMKV: jest.fn(() => createMockInstance()),
+  };
+});
 
 require('@/lib/i18n');
 

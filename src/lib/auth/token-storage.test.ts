@@ -44,10 +44,19 @@ describe('token-storage', () => {
       expect(SecureStore.setItemAsync).toHaveBeenCalledWith(TOKEN_KEY, 'new-token');
     });
 
-    it('propagates error when saving fails', async () => {
+    it('propagates error when saving fails and never logs raw token', async () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      (SecureStore.setItemAsync as jest.Mock).mockRejectedValueOnce(new Error('Storage full'));
-      await expect(setToken('new-token')).rejects.toThrow('Storage full');
+      const rawSecret = 'super-secret-jwt-token-12345';
+      (SecureStore.setItemAsync as jest.Mock).mockRejectedValueOnce(
+        new Error(`Failed to store token: ${rawSecret}`),
+      );
+      await expect(setToken(rawSecret)).rejects.toThrow();
+      expect(errorSpy).toHaveBeenCalled();
+      for (const call of errorSpy.mock.calls) {
+        for (const arg of call) {
+          expect(String(arg)).not.toContain(rawSecret);
+        }
+      }
       errorSpy.mockRestore();
     });
   });
