@@ -74,4 +74,5 @@ pnpm build:production:ios       # EAS production build
 # Backlog Implementation Guideline
 - `_docs/process.md` - how work is organized
 - For anything touching the UI, read `_docs/design.md`
-- If you need to run the App use `device product:SCV42_jp_kdi model:SCV42 device:SCV42` never run Emulator
+- If you need to run the App use `device product:dreamltexx model:SM_G950F device:dreamlte transport_id:3` never run Emulator
+- Never create multiple branches, Always work in Main branach
