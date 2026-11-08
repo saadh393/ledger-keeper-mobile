@@ -11,10 +11,10 @@ import { Platform, Pressable, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { tv } from 'tailwind-variants';
 
+import { BottomSheet, useBottomSheetModalRef } from '@/components/ui/bottom-sheet';
 import { CaretDown } from '@/components/ui/icons';
+import { Text } from '@/components/ui/text';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
-import { Modal, useModal } from './modal';
-import { Text } from './text';
 
 const selectTv = tv({
   slots: {
@@ -84,10 +84,11 @@ export function Options({ ref, options, onSelect, value, testID }: OptionsProps 
   );
 
   return (
-    <Modal
+    <BottomSheet
       ref={ref}
       index={0}
       snapPoints={snapPoints}
+      showCloseButton={false}
       backgroundStyle={{
         backgroundColor: themeColors.surface,
       }}
@@ -99,7 +100,7 @@ export function Options({ ref, options, onSelect, value, testID }: OptionsProps 
         testID={testID ? `${testID}-modal` : undefined}
         estimatedItemSize={52}
       />
-    </Modal>
+    </BottomSheet>
   );
 }
 
@@ -146,7 +147,7 @@ export function Select(props: SelectProps) {
     onSelect,
     testID,
   } = props;
-  const modal = useModal();
+  const modal = useBottomSheetModalRef();
 
   const onSelectOption = React.useCallback(
     (option: OptionType) => {

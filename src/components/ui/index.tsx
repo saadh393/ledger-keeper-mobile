@@ -2,6 +2,7 @@
 import Svg from 'react-native-svg';
 import { withUniwind } from 'uniwind';
 
+export * from './bottom-sheet';
 export * from './button';
 export * from './checkbox';
 export * from './chip';
@@ -10,8 +11,8 @@ export * from './focus-aware-status-bar';
 export * from './image';
 export * from './input';
 export * from './list';
-export * from './modal';
 export * from './progress-bar';
+export * from './segmented-control';
 export * from './select';
 export * from './stat-tile';
 export * from './text';
