@@ -1,25 +1,70 @@
 diff --git a/lib/module/views/Drawer.native.js b/lib/module/views/Drawer.native.js
-index f463263048cc838af4f6a8263a668d28fb5c3677..decd7c77006daff5515774ad5fe1aaad5345bfdf 100644
+index f463263048cc838af4f6a8263a668d28fb5c3677..b15fb66f22a7b36a305b6cc9af5719722344aedf 100644
 --- a/lib/module/views/Drawer.native.js
 +++ b/lib/module/views/Drawer.native.js
-@@ -146,7 +146,7 @@ export function Drawer({
-       damping: 500,
-       mass: 3,
-       overshootClamping: true,
+@@ -2,7 +2,7 @@
+ 
+ import * as React from 'react';
+ import { I18nManager, Keyboard, Platform, StatusBar, StyleSheet, useWindowDimensions } from 'react-native';
+-import Animated, { interpolate, ReduceMotion, runOnJS, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
++import Animated, { Easing, interpolate, ReduceMotion, runOnJS, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+ import useLatestCallback from 'use-latest-callback';
+ import { DrawerGestureContext } from "../utils/DrawerGestureContext.js";
+ import { DrawerProgressContext } from "../utils/DrawerProgressContext.js";
+@@ -140,13 +140,10 @@ export function Drawer({
+     }
+     touchStartX.value = 0;
+     touchX.value = 0;
+-    translationX.value = withSpring(translateX, {
+-      velocity,
+-      stiffness: 1000,
+-      damping: 500,
+-      mass: 3,
+-      overshootClamping: true,
 -      reduceMotion: ReduceMotion.Never
++    translationX.value = withTiming(translateX, {
++      duration: 240,
++      easing: Easing.bezier(0.2, 0, 0, 1),
 +      reduceMotion: ReduceMotion.System
      }, finished => runOnJS(onAnimationEnd)(open, finished));
      if (open) {
        runOnJS(onOpenLatest)();
 diff --git a/src/views/Drawer.native.tsx b/src/views/Drawer.native.tsx
-index 0c3e0385c52f4abb56bb7194ba2d996f6a4aa8c1..598fb49b3d18f288a4162c4b13d92a26cc2be911 100644
+index 0c3e0385c52f4abb56bb7194ba2d996f6a4aa8c1..60a75e1c50a27c54db3922f113b78a28646db02d 100644
 --- a/src/views/Drawer.native.tsx
 +++ b/src/views/Drawer.native.tsx
-@@ -204,7 +204,7 @@ export function Drawer({
-           damping: 500,
-           mass: 3,
-           overshootClamping: true,
+@@ -9,6 +9,7 @@ import {
+   type ViewProps,
+ } from 'react-native';
+ import Animated, {
++  Easing,
+   interpolate,
+   ReduceMotion,
+   runOnJS,
+@@ -17,6 +18,7 @@ import Animated, {
+   useDerivedValue,
+   useSharedValue,
+   withSpring,
++  withTiming,
+ } from 'react-native-reanimated';
+ import useLatestCallback from 'use-latest-callback';
+ 
+@@ -196,15 +198,12 @@ export function Drawer({
+ 
+       touchStartX.value = 0;
+       touchX.value = 0;
+-      translationX.value = withSpring(
++      translationX.value = withTiming(
+         translateX,
+         {
+-          velocity,
+-          stiffness: 1000,
+-          damping: 500,
+-          mass: 3,
+-          overshootClamping: true,
 -          reduceMotion: ReduceMotion.Never,
++          duration: 240,
++          easing: Easing.bezier(0.2, 0, 0, 1),
 +          reduceMotion: ReduceMotion.System,
          },
          (finished) => runOnJS(onAnimationEnd)(open, finished)

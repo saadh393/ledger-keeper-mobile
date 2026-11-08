@@ -1,9 +1,11 @@
+/* eslint-disable max-lines-per-function */
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
 import { BackHandler } from 'react-native';
+import { Easing, ReduceMotion, withTiming } from 'react-native-reanimated';
 import { useAuthStore } from '@/features/auth';
 import { HomeScreen } from '@/features/home/home-screen';
 import {
@@ -156,6 +158,38 @@ describe('navigationDrawer integration', () => {
       fireEvent.press(ledgerNavItem);
 
       expect(screen.getAllByText('Ledger Keeper').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('drawer animation configuration (Criterion 11)', () => {
+    it('animates opening/closing with 240 ms timing, bezier(0.2,0,0,1), and system reduce-motion', () => {
+      const withTimingSpy = jest.mocked(withTiming);
+      const bezierSpy = jest.mocked(Easing.bezier);
+      withTimingSpy.mockClear();
+      bezierSpy.mockClear();
+
+      const { render: rawRender } = jest.requireActual('@testing-library/react-native');
+
+      rawRender(
+        <QueryClientProvider client={testQueryClient}>
+          <NavigationContainer>
+            <TestDrawerNavigator initialRouteName="loans" />
+          </NavigationContainer>
+        </QueryClientProvider>,
+      );
+
+      const menuButton = screen.getByTestId('top-bar-menu-button');
+      fireEvent.press(menuButton);
+
+      expect(bezierSpy).toHaveBeenCalledWith(0.2, 0, 0, 1);
+      expect(withTimingSpy).toHaveBeenCalledWith(
+        expect.any(Number),
+        expect.objectContaining({
+          duration: 240,
+          reduceMotion: ReduceMotion.System,
+        }),
+        expect.any(Function),
+      );
     });
   });
 });
