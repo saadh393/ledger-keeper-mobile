@@ -7,6 +7,11 @@ jest.mock('react-native-worklets', () => ({
   default: {},
 }));
 
+// Mock @dev-plugins/react-query
+jest.mock('@dev-plugins/react-query', () => ({
+  useReactQueryDevTools: jest.fn(),
+}));
+
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const View = require('react-native').View;
