@@ -45,8 +45,13 @@ To run the app on Android
 pnpm android
 ```
 
+## Continuous Integration & Workflows
+
+Automated CI/CD workflows are documented in [`.github/workflows/README.md`](./.github/workflows/README.md). Every pull request to `main` and push to `main` runs a consolidated Android-focused CI pipeline with Node 22 and pnpm caching, executing ESLint, TypeScript validation, translation key parity checks, Jest unit tests, and Expo doctor.
+
 ## ✍️ Documentation
 
+- [CI/CD Workflows](.github/workflows/README.md)
 - [Rules and Conventions](https://starter.obytes.com/getting-started/rules-and-conventions/)
 - [Project structure](https://starter.obytes.com/getting-started/project-structure)
 - [Environment vars and config](https://starter.obytes.com/getting-started/environment-vars-config)

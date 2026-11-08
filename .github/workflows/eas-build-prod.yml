@@ -3,7 +3,7 @@
 # Starter releasing process: https://starter.obytes.com/ci-cd/app-releasing-process/
 
 # ✍️ Description:
-# This workflow is used to trigger a build on EAS for Prod environment.
+# This workflow is used to trigger an Android build on EAS for Prod environment.
 # Can be triggered manually from the actions tab.
 # This workflow will use ./actions/eas-build action to trigger the build on EAS with production env.
 
@@ -11,14 +11,14 @@
 #         - EXPO_TOKEN: Expo token to authenticate with EAS
 #         - You can get it from https://expo.dev/settings/access-tokens
 
-name: EAS Production Build (Android & IOS) (EAS)
+name: EAS Production Build (Android) (EAS)
 
 on:
   workflow_dispatch:
 
 jobs:
   Build:
-    name: EAS Production Build (Android & IOS) (EAS)
+    name: EAS Production Build (Android) (EAS)
     runs-on: ubuntu-latest
     steps:
       - name: Check for EXPO_TOKEN

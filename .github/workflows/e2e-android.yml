@@ -19,7 +19,6 @@ on:
 
 jobs:
   generate-test-apk:
-    if: github.event_name != 'pull_request' || ( github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'android-test-github'))
     name: Generate Test APK (Gradle)
     runs-on: ubuntu-latest
 
@@ -100,7 +99,7 @@ jobs:
           profile: Nexus 6
           script: |
             adb install "${{ github.workspace }}/app-release.apk"
-            $HOME/.maestro/bin/maestro test .maestro/ --env=APP_ID=com.obytes.staging  --format junit
+            $HOME/.maestro/bin/maestro test .maestro/ --env=APP_ID=com.ledgerkeeper.app.preview --format junit
 
       - name: Upload artifacts
         if: always()
