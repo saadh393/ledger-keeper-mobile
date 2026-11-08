@@ -133,3 +133,18 @@ export function useActiveBookExample() {
 }
 ```
 Changing the active book via `setActiveBook` or `setActiveBookId` updates every screen using `useActiveBook()` instantly without an app restart.
+
+---
+
+## 7. Book Switcher Component
+
+Located at `src/features/books/components/book-switcher.tsx`:
+- Mounted in the navigation drawer slot (`testID="drawer-book-switcher-slot"`).
+- Displays the active book's name and currency code; long names truncate with ellipsis (`…`).
+- Tapping opens `BookSwitcherSheet` (standard `@gorhom/bottom-sheet` component at 60% height).
+- Books are sorted default book first, then alphabetically by name (`sortBooks()`).
+- In the sheet, default book is badged "Default" and active book has a checkmark.
+- Tapping another book updates the active book, dismisses the sheet, and closes the drawer.
+- Tapping the active book only dismisses the sheet (drawer remains open).
+- While books load, shows a placeholder skeleton. On error, shows "Couldn't load books" with a Retry button.
+- Each row is accessible with name, currency, and selected state announced.

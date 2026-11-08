@@ -34,6 +34,15 @@
     "switchToSignIn": "সাইন ইন",
     "switchToSignUp": "অ্যাকাউন্ট তৈরি করুন"
   },
+  "books": {
+    "activeBookHint": "বই পরিবর্তন করতে তালিকা খুলুন",
+    "default": "ডিফল্ট",
+    "errorLoading": "বই লোড করা যায়নি",
+    "loading": "বই লোড হচ্ছে…",
+    "noBooks": "কোনো বই পাওয়া যায়নি",
+    "retry": "আবার চেষ্টা করুন",
+    "switcherTitle": "বই পরিবর্তন"
+  },
   "currency": {
     "continue": "চালিয়ে যান",
     "noCurrencyFound": "কোনো মুদ্রা পাওয়া যায়নি",

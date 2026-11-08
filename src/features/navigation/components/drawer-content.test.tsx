@@ -46,6 +46,17 @@ describe('appDrawerContent', () => {
       },
     });
     useAuthStore.setState({ status: 'signedIn' });
+    mockApi.onGet('/books').reply(200, {
+      items: [
+        {
+          id: 'b-default',
+          name: 'Personal Expenses',
+          currency: 'BDT',
+          isDefault: true,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+    });
   });
 
   afterEach(async () => {
@@ -105,6 +116,21 @@ describe('appDrawerContent', () => {
       await act(() => i18n.changeLanguage('bn'));
       renderDrawer();
       expect(screen.getByTestId('drawer-app-title')).toHaveTextContent('লেজার কিপার');
+    });
+
+    it('renders book switcher with active book inside drawer slot and opens sheet on tap', async () => {
+      renderDrawer();
+
+      await waitFor(() => {
+        expect(screen.getByTestId('book-switcher-trigger')).toBeOnTheScreen();
+      });
+
+      expect(screen.getByTestId('book-switcher-active-name')).toHaveTextContent('Personal Expenses');
+      expect(screen.getByTestId('book-switcher-active-currency')).toHaveTextContent('BDT');
+
+      fireEvent.press(screen.getByTestId('book-switcher-trigger'));
+      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-item-b-default')).toBeOnTheScreen();
     });
   });
 

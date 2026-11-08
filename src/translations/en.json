@@ -34,6 +34,15 @@
     "switchToSignIn": "Sign in",
     "switchToSignUp": "Create account"
   },
+  "books": {
+    "activeBookHint": "Opens list of books to switch",
+    "default": "Default",
+    "errorLoading": "Couldn't load books",
+    "loading": "Loading books…",
+    "noBooks": "No books found",
+    "retry": "Retry",
+    "switcherTitle": "Switch book"
+  },
   "currency": {
     "continue": "Continue",
     "noCurrencyFound": "No currency found",

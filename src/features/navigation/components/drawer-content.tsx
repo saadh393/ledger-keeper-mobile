@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { Logo, Text, View } from '@/components/ui';
+import { BookSwitcher } from '@/features/books';
 import { DrawerNavItem } from '@/features/navigation/components/drawer-item';
 import { DrawerProfileFooter } from '@/features/navigation/components/drawer-profile-footer';
 import { DRAWER_WIDTH, NAV_ITEMS } from '@/features/navigation/constants';
@@ -62,7 +63,9 @@ export function AppDrawerContent(props: AppDrawerContentProps) {
       <View
         testID="drawer-book-switcher-slot"
         className="px-4 py-1"
-      />
+      >
+        <BookSwitcher navigation={navigation} />
+      </View>
 
       {/* 3. Nav rows */}
       <View testID="drawer-nav-items" className="flex-1 gap-1 px-3 py-2">
