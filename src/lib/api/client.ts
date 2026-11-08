@@ -1,8 +1,9 @@
 import type { UnauthorizedListener } from '@/lib/api/types';
 import Env from '@env';
+import { onlineManager } from '@tanstack/react-query';
 
 import axios from 'axios';
-import { toApiError } from '@/lib/api/errors';
+import { ApiError, toApiError } from '@/lib/api/errors';
 import { getToken } from '@/lib/auth/token-storage';
 
 export const DEFAULT_TIMEOUT_MS = 30000;
@@ -59,6 +60,13 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(async (config) => {
+  if (!onlineManager.isOnline()) {
+    throw new ApiError({
+      kind: 'offline',
+      message: 'Network error: could not connect to server',
+    });
+  }
+
   const token = await getToken();
   if (token) {
     if (config.headers && typeof config.headers.set === 'function') {

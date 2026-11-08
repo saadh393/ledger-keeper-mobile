@@ -12,6 +12,10 @@ jest.mock('@dev-plugins/react-query', () => ({
   useReactQueryDevTools: jest.fn(),
 }));
 
+// Mock @react-native-community/netinfo
+jest.mock('@react-native-community/netinfo', () =>
+  require('@react-native-community/netinfo/jest/netinfo-mock.js'));
+
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const View = require('react-native').View;
