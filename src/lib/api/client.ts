@@ -67,6 +67,16 @@ apiClient.interceptors.request.use(async (config) => {
     });
   }
 
+  const scheme = Env.EXPO_PUBLIC_SCHEME || 'ledgerkeeper';
+  const expoOrigin = `${scheme}://`;
+  if (config.headers && typeof config.headers.set === 'function') {
+    config.headers.set('expo-origin', expoOrigin);
+  }
+  else {
+    config.headers = config.headers ?? {};
+    config.headers['expo-origin'] = expoOrigin;
+  }
+
   const token = await getToken();
   if (token) {
     if (config.headers && typeof config.headers.set === 'function') {

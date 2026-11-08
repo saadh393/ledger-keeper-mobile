@@ -175,11 +175,20 @@ export function getAuthErrorMessage(
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<string> {
+  const scheme = Env.EXPO_PUBLIC_SCHEME || 'ledgerkeeper';
   const trimmedEmail = email.trim();
-  const response = await apiClient.post('/auth/sign-in/email', {
-    email: trimmedEmail,
-    password,
-  });
+  const response = await apiClient.post(
+    '/auth/sign-in/email',
+    {
+      email: trimmedEmail,
+      password,
+    },
+    {
+      headers: {
+        'expo-origin': `${scheme}://`,
+      },
+    },
+  );
 
   const token = extractBearerToken(response);
   if (!token) {
@@ -197,13 +206,22 @@ export async function signUpWithEmail(
   email: string,
   password: string,
 ): Promise<string> {
+  const scheme = Env.EXPO_PUBLIC_SCHEME || 'ledgerkeeper';
   const trimmedName = name.trim();
   const trimmedEmail = email.trim();
-  const response = await apiClient.post('/auth/sign-up/email', {
-    name: trimmedName,
-    email: trimmedEmail,
-    password,
-  });
+  const response = await apiClient.post(
+    '/auth/sign-up/email',
+    {
+      name: trimmedName,
+      email: trimmedEmail,
+      password,
+    },
+    {
+      headers: {
+        'expo-origin': `${scheme}://`,
+      },
+    },
+  );
 
   const token = extractBearerToken(response);
   if (!token) {
@@ -325,8 +343,12 @@ export type GetSessionResponse = {
 } | null;
 
 export async function getSession(): Promise<GetSessionResponse> {
+  const scheme = Env.EXPO_PUBLIC_SCHEME || 'ledgerkeeper';
   const response = await apiClient.get<GetSessionResponse>('/auth/get-session', {
     timeout: 9500,
+    headers: {
+      'expo-origin': `${scheme}://`,
+    },
   });
   return response.data;
 }
@@ -335,8 +357,18 @@ export async function signOutServer(): Promise<void> {
   if (!onlineManager.isOnline()) {
     return;
   }
+  const scheme = Env.EXPO_PUBLIC_SCHEME || 'ledgerkeeper';
   try {
-    await apiClient.post('/auth/sign-out', {}, { timeout: 5000 });
+    await apiClient.post(
+      '/auth/sign-out',
+      {},
+      {
+        timeout: 5000,
+        headers: {
+          'expo-origin': `${scheme}://`,
+        },
+      },
+    );
   }
   catch {
     // Fail silently on server signout error

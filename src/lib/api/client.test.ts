@@ -77,6 +77,16 @@ describe('apiClient', () => {
       const res = await apiClient.get('/without-token');
       expect(res.data).toEqual({ ok: true });
     });
+
+    it('injects expo-origin header with app scheme on requests', async () => {
+      mock.onGet('/with-origin').reply((config) => {
+        expect(config.headers?.['expo-origin']).toBe('ledgerkeeper.dev://');
+        return [200, { ok: true }];
+      });
+
+      const res = await apiClient.get('/with-origin');
+      expect(res.data).toEqual({ ok: true });
+    });
   });
 
   describe('error handling and typed ApiError kinds', () => {
