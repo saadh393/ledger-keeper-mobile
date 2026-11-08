@@ -37,8 +37,41 @@
   "books": {
     "activeBookHint": "Opens list of books to switch",
     "default": "Default",
+    "delete": "Delete",
+    "deleteSheet": {
+      "body": "All its transactions, loans, installment plans and chats are deleted and cannot be recovered.",
+      "cancel": "Cancel",
+      "confirm": "Delete book",
+      "deleting": "Deleting…",
+      "title": "Delete “{{name}}”?"
+    },
+    "edit": "Edit",
     "errorLoading": "Couldn't load books",
+    "errors": {
+      "currencyLocked": "Currency can only change while the book is empty",
+      "defaultBook": "The default book can't be deleted",
+      "nameRequired": "Name is required",
+      "nameTaken": "You already have a book with this name",
+      "nameTooLong": "Name must be at most 60 characters",
+      "offline": "You're offline. Check your connection and try again.",
+      "server": "Something went wrong. Please try again."
+    },
+    "form": {
+      "back": "Back",
+      "chooseCurrency": "Choose currency",
+      "create": "Create",
+      "createTitle": "New book",
+      "creating": "Creating…",
+      "currency": "Currency",
+      "editTitle": "Edit book",
+      "name": "Name",
+      "namePlaceholder": "e.g. Business",
+      "save": "Save",
+      "saving": "Saving…",
+      "searchCurrency": "Search currency"
+    },
     "loading": "Loading books…",
+    "newBook": "New book",
     "noBooks": "No books found",
     "retry": "Retry",
     "switcherTitle": "Switch book"

@@ -7,6 +7,7 @@ import {
   BottomSheet,
   BottomSheetFlatList,
 } from '@/components/ui/bottom-sheet';
+import { Button } from '@/components/ui/button';
 import { BookSwitcherItem } from '@/features/books/components/book-switcher-item';
 import { sortBooks } from '@/features/books/utils/sort-books';
 
@@ -14,6 +15,9 @@ export type BookSwitcherSheetProps = {
   books: Book[];
   activeBookId: string | null;
   onSelectBook: (book: Book) => void;
+  onCreateBook: () => void;
+  onEditBook: (book: Book) => void;
+  onDeleteBook: (book: Book) => void;
   onDismiss?: () => void;
   testID?: string;
   sheetRef: React.RefObject<BottomSheetModal | null>;
@@ -23,6 +27,9 @@ export function BookSwitcherSheet({
   books,
   activeBookId,
   onSelectBook,
+  onCreateBook,
+  onEditBook,
+  onDeleteBook,
   onDismiss,
   testID = 'book-switcher-sheet',
   sheetRef,
@@ -37,9 +44,11 @@ export function BookSwitcherSheet({
         book={item}
         isActive={item.id === activeBookId}
         onSelect={onSelectBook}
+        onEdit={onEditBook}
+        onDelete={onDeleteBook}
       />
     ),
-    [activeBookId, onSelectBook],
+    [activeBookId, onSelectBook, onEditBook, onDeleteBook],
   );
 
   return (
@@ -60,6 +69,15 @@ export function BookSwitcherSheet({
           renderItem={renderItem}
           initialNumToRender={15}
           maxToRenderPerBatch={20}
+          ListFooterComponent={(
+            <Button
+              testID={`${testID}-new-book`}
+              variant="secondary"
+              label={t('books.newBook')}
+              onPress={onCreateBook}
+              className="mt-3"
+            />
+          )}
         />
       </View>
     </BottomSheet>

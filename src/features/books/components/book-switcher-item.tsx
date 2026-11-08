@@ -1,5 +1,5 @@
 import type { Book } from '@/features/books/schemas/book-schema';
-import { Check } from 'lucide-react-native';
+import { Check, Pencil, Trash2 } from 'lucide-react-native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -10,6 +10,8 @@ export type BookSwitcherItemProps = {
   book: Book;
   isActive: boolean;
   onSelect: (book: Book) => void;
+  onEdit: (book: Book) => void;
+  onDelete: (book: Book) => void;
   testID?: string;
 };
 
@@ -17,6 +19,8 @@ export function BookSwitcherItem({
   book,
   isActive,
   onSelect,
+  onEdit,
+  onDelete,
   testID,
 }: BookSwitcherItemProps) {
   const { t } = useTranslation();
@@ -84,6 +88,30 @@ export function BookSwitcherItem({
           </View>
         )}
       </View>
+
+      <Pressable
+        testID={`book-item-edit-${book.id}`}
+        accessibilityRole="button"
+        accessibilityLabel={`${t('books.edit')}, ${book.name}`}
+        onPress={() => onEdit(book)}
+        className="ml-1 size-11 items-center justify-center rounded-full active:bg-paper-200"
+      >
+        <Pencil size={18} strokeWidth={1.75} color={themeColors['ink-700']} />
+      </Pressable>
+
+      {book.isDefault
+        ? <View className="size-11" />
+        : (
+            <Pressable
+              testID={`book-item-delete-${book.id}`}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('books.delete')}, ${book.name}`}
+              onPress={() => onDelete(book)}
+              className="size-11 items-center justify-center rounded-full active:bg-paper-200"
+            >
+              <Trash2 size={18} strokeWidth={1.75} color={themeColors['clay-500']} />
+            </Pressable>
+          )}
     </Pressable>
   );
 }

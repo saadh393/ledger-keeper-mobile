@@ -1,13 +1,11 @@
-import type { CurrencyItem } from '@/features/currency/data/currencies';
 import type { UserProfile } from '@/features/currency/types';
 
-import { Book, Check } from 'lucide-react-native';
+import { Book } from 'lucide-react-native';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import {
   BottomSheet,
-  BottomSheetFlatList,
   useBottomSheetModalRef,
 } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
@@ -19,72 +17,18 @@ import {
   useUpdateDefaultCurrency,
   useUserProfile,
 } from '@/features/currency/api/use-user-profile';
+import { CurrencyList } from '@/features/currency/components/currency-list';
 import {
   filterCurrencies,
   getOrderedCurrencies,
 } from '@/features/currency/utils/currency-list';
 import { translate } from '@/lib/i18n';
-import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type CurrencyPickerSheetProps = {
   profile?: UserProfile;
   onSuccess?: () => void;
   testID?: string;
 };
-
-type CurrencyRowProps = {
-  item: CurrencyItem;
-  isSelected: boolean;
-  onSelect: (code: string) => void;
-  testID?: string;
-};
-
-function CurrencyRow({ item, isSelected, onSelect, testID }: CurrencyRowProps) {
-  const themeColors = useThemeColors();
-
-  return (
-    <Pressable
-      testID={testID ? `${testID}-item-${item.code}` : `currency-item-${item.code}`}
-      accessibilityRole="button"
-      accessibilityLabel={`${item.name}, ${item.code}, ${item.symbol}`}
-      accessibilityState={{ selected: isSelected }}
-      onPress={() => onSelect(item.code)}
-      className={`my-0.5 min-h-[48px] flex-row items-center rounded-2xl px-3 py-2.5 ${
-        isSelected ? 'bg-selected' : 'active:bg-paper-200'
-      }`}
-    >
-      <Text
-        className={`w-12 text-row-title font-semibold ${
-          isSelected ? 'text-on-selected' : 'text-ink-900'
-        }`}
-      >
-        {item.code}
-      </Text>
-      <Text
-        numberOfLines={1}
-        className={`flex-1 text-row-title ${
-          isSelected ? 'font-medium text-on-selected' : 'text-ink-700'
-        }`}
-      >
-        {item.name}
-      </Text>
-      <Text
-        className={`mr-3 text-row-title font-medium ${
-          isSelected ? 'text-on-selected' : 'text-ink-500'
-        }`}
-      >
-        {item.symbol}
-      </Text>
-      <View className="w-5 items-center justify-center">
-        {isSelected
-          ? (
-              <Check size={18} strokeWidth={2.2} color={themeColors.link} />
-            )
-          : null}
-      </View>
-    </Pressable>
-  );
-}
 
 function CurrencyPickerHeader({ testID }: { testID?: string }) {
   return (
@@ -102,61 +46,6 @@ function CurrencyPickerHeader({ testID }: { testID?: string }) {
           tx="currency.pickerSubtitle"
         />
       </View>
-    </View>
-  );
-}
-
-type CurrencyPickerListProps = {
-  filteredCurrencies: CurrencyItem[];
-  selectedCurrency: string;
-  onSelect: (code: string) => void;
-  testID?: string;
-};
-
-function CurrencyPickerList({
-  filteredCurrencies,
-  selectedCurrency,
-  onSelect,
-  testID,
-}: CurrencyPickerListProps) {
-  const renderItem = React.useCallback(
-    ({ item }: { item: CurrencyItem }) => (
-      <CurrencyRow
-        item={item}
-        isSelected={item.code === selectedCurrency}
-        onSelect={onSelect}
-        testID={testID}
-      />
-    ),
-    [selectedCurrency, testID, onSelect],
-  );
-
-  return (
-    <View className="min-h-[160px] flex-1">
-      {filteredCurrencies.length === 0
-        ? (
-            <View
-              testID={testID ? `${testID}-empty` : undefined}
-              className="flex-1 items-center justify-center py-8"
-            >
-              <Text
-                className="text-center text-body text-ink-500"
-                tx="currency.noCurrencyFound"
-              />
-            </View>
-          )
-        : (
-            <BottomSheetFlatList
-              testID={testID ? `${testID}-list` : undefined}
-              data={filteredCurrencies}
-              keyExtractor={(item: CurrencyItem) => item.code}
-              renderItem={renderItem}
-              keyboardShouldPersistTaps="handled"
-              initialNumToRender={15}
-              maxToRenderPerBatch={20}
-              windowSize={5}
-            />
-          )}
     </View>
   );
 }
@@ -314,7 +203,7 @@ export function CurrencyPickerSheet({
           />
         </View>
 
-        <CurrencyPickerList
+        <CurrencyList
           filteredCurrencies={filteredCurrencies}
           selectedCurrency={selectedCurrency}
           onSelect={handleSelect}

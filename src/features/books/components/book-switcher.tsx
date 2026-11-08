@@ -4,6 +4,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { Button, Text, useBottomSheetModalRef } from '@/components/ui';
+import { BookDeleteSheet } from '@/features/books/components/book-delete-sheet';
+import { BookFormSheet } from '@/features/books/components/book-form-sheet';
 import { BookSwitcherSheet } from '@/features/books/components/book-switcher-sheet';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
@@ -133,6 +135,8 @@ export function BookSwitcher({
   } = useActiveBook();
 
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+  const [formTarget, setFormTarget] = React.useState<{ book?: Book } | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<Book | null>(null);
   const sheetModal = useBottomSheetModalRef();
 
   const handleOpenSheet = React.useCallback(() => {
@@ -183,8 +187,17 @@ export function BookSwitcher({
           books={books}
           activeBookId={activeBookId}
           onSelectBook={handleSelectBook}
+          onCreateBook={() => setFormTarget({})}
+          onEditBook={book => setFormTarget({ book })}
+          onDeleteBook={setDeleteTarget}
           onDismiss={handleCloseSheet}
         />
+      )}
+      {formTarget && (
+        <BookFormSheet book={formTarget.book} onDismiss={() => setFormTarget(null)} />
+      )}
+      {deleteTarget && (
+        <BookDeleteSheet book={deleteTarget} onDismiss={() => setDeleteTarget(null)} />
       )}
     </View>
   );

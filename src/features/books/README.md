@@ -148,3 +148,13 @@ Located at `src/features/books/components/book-switcher.tsx`:
 - Tapping the active book only dismisses the sheet (drawer remains open).
 - While books load, shows a placeholder skeleton. On error, shows "Couldn't load books" with a Retry button.
 - Each row is accessible with name, currency, and selected state announced.
+
+---
+
+## 8. Create, Edit and Delete
+
+- **New book** (footer of the switcher list) opens `BookFormSheet` with Name and Currency (defaults to the user's currency; picker reuses `CurrencyList` from the currency feature).
+- **Edit** (pencil on each row) opens the same sheet prefilled; `getBookChanges()` builds the `PATCH` payload from changed fields only, and Save stays disabled while it is empty.
+- **Delete** (trash on non-default rows) opens `BookDeleteSheet`, a destructive confirmation. On success `getActiveBookIdAfterDelete()` moves the active book to the default book when the deleted book was active.
+- `useCreateBook`, `useUpdateBook`, `useDeleteBook` update the `['books']` cache and refetch it after every change (and after a 409, since the list may have changed on another device).
+- `getBookError()` maps server errors: `book_name_taken` under Name, `book_not_empty` under Currency, `default_book` as a sheet message; offline and server errors keep the sheet open with a Retry.
