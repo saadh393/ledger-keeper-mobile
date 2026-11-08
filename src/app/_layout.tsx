@@ -1,7 +1,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
@@ -12,6 +12,7 @@ import { OfflineBanner } from '@/components/ui/offline-banner';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
 import { APIProvider } from '@/lib/api';
+import { initSentry, routingInstrumentation, Sentry } from '@/lib/sentry';
 import { syncTheme } from '@/lib/theme/sync-theme';
 import { useFontsReady } from '@/lib/theme/use-fonts-ready';
 import '@/lib/i18n';
@@ -25,6 +26,7 @@ export const unstable_settings = {
   initialRouteName: '(app)',
 };
 
+initSentry();
 syncTheme();
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,8 +36,15 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-export default function RootLayout() {
+function RootLayout() {
   const fontsReady = useFontsReady();
+  const navigationRef = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if (navigationRef) {
+      routingInstrumentation.registerNavigationContainer(navigationRef);
+    }
+  }, [navigationRef]);
 
   if (!fontsReady) {
     return null;
@@ -50,6 +59,10 @@ export default function RootLayout() {
     </Providers>
   );
 }
+
+const SentryRootLayout = Sentry.wrap(RootLayout);
+
+export default SentryRootLayout;
 
 function Providers({ children }: { children: React.ReactNode }) {
   const theme = useThemeConfig();
