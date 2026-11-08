@@ -28,4 +28,15 @@ describe('formatCurrency', () => {
   it('never shows negative zero', () => {
     expect(formatCurrency(-0, 'en', 'BDT')).toBe('৳0');
   });
+
+  it('falls back to the code when formatToParts is missing', () => {
+    const { formatToParts } = Intl.NumberFormat.prototype;
+    Reflect.deleteProperty(Intl.NumberFormat.prototype, 'formatToParts');
+    try {
+      expect(formatCurrency(1200, 'en', 'BDT')).toBe('BDT 1,200');
+    }
+    finally {
+      Intl.NumberFormat.prototype.formatToParts = formatToParts;
+    }
+  });
 });
