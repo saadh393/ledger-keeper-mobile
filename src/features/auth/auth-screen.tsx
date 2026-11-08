@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { FocusAwareStatusBar } from '@/components/ui/focus-aware-status-bar';
-import { Text } from '@/components/ui/text';
+import { FocusAwareStatusBar, SafeAreaView, Text } from '@/components/ui';
 import { EmailPasswordForm } from '@/features/auth/components/email-password-form';
 import { Logo } from '@/features/auth/components/logo';
 
@@ -12,7 +10,11 @@ export function AuthScreen() {
   const { t } = useTranslation();
 
   return (
-    <SafeAreaView testID="auth-screen" className="flex-1 bg-paper-100">
+    <SafeAreaView
+      testID="auth-screen"
+      style={{ flex: 1 }}
+      className="flex-1 bg-paper-100"
+    >
       <FocusAwareStatusBar />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
