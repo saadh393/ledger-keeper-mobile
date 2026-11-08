@@ -1,4 +1,8 @@
 {
+  "dayHeader": {
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
   "home": {
     "title": "Ledger Keeper"
   }

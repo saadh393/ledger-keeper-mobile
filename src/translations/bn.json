@@ -1,4 +1,8 @@
 {
+  "dayHeader": {
+    "today": "আজ",
+    "yesterday": "গতকাল"
+  },
   "home": {
     "title": "লেজার কিপার"
   }
