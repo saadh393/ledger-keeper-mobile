@@ -1,14 +1,14 @@
 import type { Language } from '@/lib/i18n/resources';
 import { resolveLocale, timeZone } from '@/lib/format/locale';
 
-type DateInput = Date | string;
+export type DateInput = Date | string;
 
 type OrderedDateOptions = {
   month: 'short' | 'long';
   includeYear: boolean;
 };
 
-function resolveDate(value: DateInput) {
+export function resolveDate(value: DateInput) {
   return value instanceof Date ? value : new Date(value);
 }
 
