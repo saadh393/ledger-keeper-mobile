@@ -2,6 +2,7 @@
 import type { SocialSignInResponse } from '@/features/auth/api/auth-client';
 import { onlineManager } from '@tanstack/react-query';
 import * as React from 'react';
+import { BackHandler } from 'react-native';
 
 import { authClient } from '@/features/auth/api/auth-client';
 import { AuthScreen } from '@/features/auth/auth-screen';
@@ -548,6 +549,40 @@ describe('authScreen and EmailPasswordForm', () => {
       });
 
       signInSpy.mockRestore();
+    });
+
+    it('displays session ended notice banner when sessionNotice is present in store', () => {
+      useAuthStore.setState({ sessionNotice: 'Your session has ended. Sign in again.' });
+
+      render(<AuthScreen />);
+
+      expect(screen.getByTestId('auth-session-notice')).toBeOnTheScreen();
+      expect(screen.getByTestId('auth-session-notice-text')).toHaveTextContent(
+        'Your session has ended. Sign in again.',
+      );
+    });
+
+    it('closes the app via BackHandler on Android back press', () => {
+      const exitAppSpy = jest.spyOn(BackHandler, 'exitApp').mockImplementation(() => {});
+      const addListenerSpy = jest.spyOn(BackHandler, 'addEventListener').mockReturnValue({ remove: jest.fn() });
+
+      render(<AuthScreen />);
+
+      const backCalls = addListenerSpy.mock.calls.filter(
+        call => call[0] === 'hardwareBackPress',
+      );
+      expect(backCalls.length).toBeGreaterThan(0);
+
+      const authHandler = backCalls.map(c => c[1]).find((h) => {
+        exitAppSpy.mockClear();
+        const res = h();
+        return res === true && exitAppSpy.mock.calls.length > 0;
+      });
+
+      expect(authHandler).toBeDefined();
+
+      addListenerSpy.mockRestore();
+      exitAppSpy.mockRestore();
     });
   });
 });

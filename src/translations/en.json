@@ -27,6 +27,7 @@
     "or": "or",
     "password": "Password",
     "passwordPlaceholder": "Your password",
+    "sessionEnded": "Your session has ended. Sign in again.",
     "showPassword": "Show password",
     "signIn": "Sign in",
     "signingIn": "Signing in…",

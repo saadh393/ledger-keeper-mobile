@@ -3,5 +3,6 @@ export * from '@/features/auth/auth-screen';
 export * from '@/features/auth/components/email-password-form';
 export * from '@/features/auth/components/google-sign-in-button';
 export * from '@/features/auth/components/logo';
+export * from '@/features/auth/route-guard';
 export * from '@/features/auth/schemas/auth-schemas';
 export * from '@/features/auth/use-auth-store';

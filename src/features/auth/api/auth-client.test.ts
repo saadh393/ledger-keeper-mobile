@@ -313,4 +313,53 @@ describe('auth-client', () => {
       await expect(signInSocial({ provider: 'google' })).rejects.toThrow(ApiError);
     });
   });
+
+  describe('getSession', () => {
+    it('fetches session successfully and returns session data', async () => {
+      const mockSession = {
+        session: { id: 'session-123', userId: 'user-456' },
+        user: { id: 'user-456', email: 'test@example.com', name: 'Tester' },
+      };
+      mock.onGet('/auth/get-session').reply(200, mockSession);
+
+      const result = await authClient.getSession();
+      expect(result).toEqual(mockSession);
+    });
+
+    it('returns null if server returns 200 with null session', async () => {
+      mock.onGet('/auth/get-session').reply(200, null);
+
+      const result = await authClient.getSession();
+      expect(result).toBeNull();
+    });
+
+    it('propagates 401 unauthorized ApiError', async () => {
+      mock.onGet('/auth/get-session').reply(401, { message: 'Unauthorized' });
+
+      await expect(authClient.getSession()).rejects.toThrow();
+    });
+  });
+
+  describe('signOutServer', () => {
+    it('posts to /auth/sign-out successfully', async () => {
+      mock.onPost('/auth/sign-out').reply(200, { success: true });
+
+      await expect(authClient.signOut()).resolves.toBeUndefined();
+      expect(mock.history.post.length).toBe(1);
+      expect(mock.history.post[0].url).toBe('/auth/sign-out');
+    });
+
+    it('does not make network request if phone is offline', async () => {
+      jest.spyOn(onlineManager, 'isOnline').mockReturnValue(false);
+
+      await expect(authClient.signOut()).resolves.toBeUndefined();
+      expect(mock.history.post.length).toBe(0);
+    });
+
+    it('swallows server errors gracefully without throwing', async () => {
+      mock.onPost('/auth/sign-out').reply(500, { message: 'Server error' });
+
+      await expect(authClient.signOut()).resolves.toBeUndefined();
+    });
+  });
 });

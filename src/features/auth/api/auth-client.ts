@@ -304,10 +304,51 @@ export async function signInSocial(options: SocialSignInOptions): Promise<Social
   };
 }
 
+export type AuthSessionData = {
+  id: string;
+  userId: string;
+  token?: string;
+  expiresAt?: string | Date;
+  [key: string]: unknown;
+};
+
+export type AuthUserData = {
+  id: string;
+  email: string;
+  name?: string;
+  [key: string]: unknown;
+};
+
+export type GetSessionResponse = {
+  session: AuthSessionData | null;
+  user: AuthUserData | null;
+} | null;
+
+export async function getSession(): Promise<GetSessionResponse> {
+  const response = await apiClient.get<GetSessionResponse>('/auth/get-session', {
+    timeout: 9500,
+  });
+  return response.data;
+}
+
+export async function signOutServer(): Promise<void> {
+  if (!onlineManager.isOnline()) {
+    return;
+  }
+  try {
+    await apiClient.post('/auth/sign-out', {}, { timeout: 5000 });
+  }
+  catch {
+    // Fail silently on server signout error
+  }
+}
+
 export const authClient = {
   signInWithEmail,
   signUpWithEmail,
   signInSocial,
+  getSession,
+  signOut: signOutServer,
   signIn: {
     social: signInSocial,
   },

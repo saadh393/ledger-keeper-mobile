@@ -11,12 +11,13 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { OfflineBanner } from '@/components/ui/offline-banner';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
+import { hydrate, setupAuthSessionGuard, useAuthStatus } from '@/features/auth';
 import { APIProvider } from '@/lib/api';
 import { initSentry, routingInstrumentation, Sentry } from '@/lib/sentry';
 import { syncTheme } from '@/lib/theme/sync-theme';
 import { useFontsReady } from '@/lib/theme/use-fonts-ready';
 import '@/lib/i18n';
-// Import  global CSS file
+// Import global CSS file
 import '../global.css';
 
 export { ErrorBoundary } from 'expo-router';
@@ -38,7 +39,13 @@ SplashScreen.setOptions({
 
 function RootLayout() {
   const fontsReady = useFontsReady();
+  const authStatus = useAuthStatus();
   const navigationRef = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    setupAuthSessionGuard();
+    hydrate();
+  }, []);
 
   React.useEffect(() => {
     if (navigationRef) {
@@ -46,7 +53,22 @@ function RootLayout() {
     }
   }, [navigationRef]);
 
-  if (!fontsReady) {
+  // Safeguard: splash never stays longer than 10 seconds
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide splash only when fonts are ready and auth state is known
+  React.useEffect(() => {
+    if (fontsReady && authStatus !== 'idle') {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsReady, authStatus]);
+
+  if (!fontsReady || authStatus === 'idle') {
     return null;
   }
 
@@ -55,7 +77,7 @@ function RootLayout() {
       <OfflineBanner />
       <Stack>
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );
