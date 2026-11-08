@@ -3,8 +3,11 @@ import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { Text, View } from '@/components/ui';
 import { CurrencyPickerSheet } from '@/features/currency';
+import { MonthSwitcher, useLedgerMonth } from '@/features/ledger';
 
 export function HomeScreen() {
+  const ledgerMonth = useLedgerMonth();
+
   useFocusEffect(
     React.useCallback(() => {
       const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -19,8 +22,17 @@ export function HomeScreen() {
   );
 
   return (
-    <View className="flex-1 items-center justify-center bg-paper-100 px-4">
-      <Text className="text-center text-headline text-ink-900" tx="home.title" />
+    <View className="flex-1 bg-paper-100">
+      <MonthSwitcher
+        month={ledgerMonth.month}
+        isCurrentMonth={ledgerMonth.isCurrentMonth}
+        onPrevious={ledgerMonth.goToPreviousMonth}
+        onNext={ledgerMonth.goToNextMonth}
+        onCurrent={ledgerMonth.goToCurrentMonth}
+      />
+      <View className="flex-1 items-center justify-center px-4">
+        <Text className="text-center text-headline text-ink-900" tx="home.title" />
+      </View>
       <CurrencyPickerSheet />
     </View>
   );

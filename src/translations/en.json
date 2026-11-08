@@ -94,6 +94,11 @@
   "home": {
     "title": "Ledger Keeper"
   },
+  "ledger": {
+    "nextMonth": "Next month",
+    "previousMonth": "Previous month",
+    "thisMonth": "This month"
+  },
   "navigation": {
     "bookSwitcherSlot": "Book switcher",
     "closeMenu": "Close menu",

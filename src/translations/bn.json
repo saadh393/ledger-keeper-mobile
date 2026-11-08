@@ -94,6 +94,11 @@
   "home": {
     "title": "লেজার কিপার"
   },
+  "ledger": {
+    "nextMonth": "পরের মাস",
+    "previousMonth": "আগের মাস",
+    "thisMonth": "এই মাস"
+  },
   "navigation": {
     "bookSwitcherSlot": "বই পরিবর্তনকারী",
     "closeMenu": "মেনু বন্ধ করুন",
