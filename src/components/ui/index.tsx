@@ -18,6 +18,7 @@ export * from './stat-tile';
 export * from './text';
 export * from './tone-tile';
 export * from './utils';
+export * from '@/components/ui/offline-banner';
 
 // export base components from react-native
 export {

@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { OfflineBanner } from '@/components/ui/offline-banner';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
 import { APIProvider } from '@/lib/api';
@@ -42,6 +43,7 @@ export default function RootLayout() {
 
   return (
     <Providers>
+      <OfflineBanner />
       <Stack>
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
       </Stack>
