@@ -1,12 +1,36 @@
-import { HomeScreen } from '@/features/home/home-screen';
-import i18n from '@/lib/i18n';
-import { act, render, screen } from '@/lib/test-utils';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import MockAdapter from 'axios-mock-adapter';
 
-afterEach(async () => {
-  await act(() => i18n.changeLanguage('en'));
-});
+import { useAuthStore } from '@/features/auth';
+import { HomeScreen } from '@/features/home/home-screen';
+import { apiClient } from '@/lib/api/client';
+import i18n from '@/lib/i18n';
+import { act, render, screen, waitFor } from '@/lib/test-utils';
 
 describe('homeScreen', () => {
+  let mock: MockAdapter;
+  let testQueryClient: QueryClient;
+
+  beforeEach(() => {
+    useAuthStore.setState({ status: 'idle' });
+    mock = new MockAdapter(apiClient);
+    testQueryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+  });
+
+  afterEach(async () => {
+    mock.restore();
+    testQueryClient.clear();
+    act(() => {
+      useAuthStore.setState({ status: 'idle' });
+    });
+    await act(() => i18n.changeLanguage('en'));
+  });
+
   it('shows the app name', () => {
     render(<HomeScreen />);
     expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
@@ -16,5 +40,65 @@ describe('homeScreen', () => {
     await act(() => i18n.changeLanguage('bn'));
     render(<HomeScreen />);
     expect(screen.getByText('লেজার কিপার')).toBeOnTheScreen();
+  });
+
+  it('opens currency picker sheet when currencyConfirmed is false', async () => {
+    useAuthStore.setState({ status: 'signedIn' });
+    mock.onGet('/users/me').reply(200, {
+      id: 'user-1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      image: null,
+      role: 'user',
+      locale: 'en',
+      currency: 'BDT',
+      currencyConfirmed: false,
+      defaultBookId: 'book-1',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+
+    render(
+      <QueryClientProvider client={testQueryClient}>
+        <HomeScreen />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('currency-picker-sheet')).toBeOnTheScreen();
+    });
+
+    expect(screen.getByText('Choose your currency')).toBeOnTheScreen();
+  });
+
+  it('does not open currency picker sheet when currencyConfirmed is true', async () => {
+    useAuthStore.setState({ status: 'signedIn' });
+    mock.onGet('/users/me').reply(200, {
+      id: 'user-1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      image: null,
+      role: 'user',
+      locale: 'en',
+      currency: 'BDT',
+      currencyConfirmed: true,
+      defaultBookId: 'book-1',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+
+    render(
+      <QueryClientProvider client={testQueryClient}>
+        <HomeScreen />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('currency-picker-sheet')).toBeNull();
+    });
+
+    expect(screen.queryByText('Choose your currency')).toBeNull();
   });
 });

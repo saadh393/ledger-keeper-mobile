@@ -34,6 +34,17 @@
     "switchToSignIn": "Sign in",
     "switchToSignUp": "Create account"
   },
+  "currency": {
+    "continue": "Continue",
+    "noCurrencyFound": "No currency found",
+    "pickerSubtitle": "Your books use it by default. Amounts in other currencies are converted with the daily rate.",
+    "pickerTitle": "Choose your currency",
+    "retry": "Retry",
+    "saveError": "Could not save your currency. Try again.",
+    "saving": "Saving…",
+    "searchPlaceholder": "Search by code or name",
+    "signOut": "Sign out"
+  },
   "dayHeader": {
     "today": "Today",
     "yesterday": "Yesterday"
