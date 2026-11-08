@@ -97,3 +97,33 @@ describe('env validation', () => {
     expect(valid.EXPO_PUBLIC_API_URL).toBe('https://api.ledgerkeeper.com');
   });
 });
+
+describe('env validation - Sentry DSN', () => {
+  const baseValidEnv = {
+    EXPO_PUBLIC_APP_ENV: 'development' as const,
+    EXPO_PUBLIC_NAME: 'Ledger Keeper',
+    EXPO_PUBLIC_SCHEME: 'ledgerkeeper.dev',
+    EXPO_PUBLIC_BUNDLE_ID: 'com.ledgerkeeper.app.development',
+    EXPO_PUBLIC_PACKAGE: 'com.ledgerkeeper.app.development',
+    EXPO_PUBLIC_VERSION: '0.0.1',
+    EXPO_PUBLIC_API_URL: 'http://10.0.2.2:4000/api',
+    EXPO_PUBLIC_VAR_NUMBER: 10,
+    EXPO_PUBLIC_VAR_BOOL: true,
+  };
+
+  it('accepts valid optional EXPO_PUBLIC_SENTRY_DSN URL', () => {
+    const result = envSchema.safeParse({
+      ...baseValidEnv,
+      EXPO_PUBLIC_SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid EXPO_PUBLIC_SENTRY_DSN that is not a URL', () => {
+    const result = envSchema.safeParse({
+      ...baseValidEnv,
+      EXPO_PUBLIC_SENTRY_DSN: 'not-a-valid-url',
+    });
+    expect(result.success).toBe(false);
+  });
+});

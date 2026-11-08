@@ -77,6 +77,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-secure-store',
     ['app-icon-badge', appIconBadgeConfig],
+    [
+      '@sentry/react-native/expo',
+      {
+        organization: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+      },
+    ],
   ],
   extra: EAS_PROJECT_ID ? { eas: { projectId: EAS_PROJECT_ID } } : {},
 });
