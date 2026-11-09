@@ -264,6 +264,12 @@ describe('apiClient', () => {
       }
     });
 
+    it('keeps the server code on a 404', async () => {
+      mock.onDelete('/books/b/transactions/t').reply(404, { code: 'transaction_not_found', message: 'Transaction not found' });
+
+      await expect(apiClient.delete('/books/b/transactions/t')).rejects.toMatchObject({ kind: 'not_found', status: 404, code: 'transaction_not_found' });
+    });
+
     it('maps 429 to ApiError kind: rate_limited', async () => {
       mock.onGet('/rate-limited').reply(429, {
         message: 'Too many requests, slow down',

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import type { Book } from '@/features/books/schemas/book-schema';
 import type { BookTable, TransactionRow } from '@/features/ledger/schemas/book-table-schema';
 import MockAdapter from 'axios-mock-adapter';
@@ -72,19 +71,19 @@ function rowNamed(name: string) {
   return screen.getAllByTestId('ledger-row').find(node => within(node).queryByText(name))!;
 }
 
-describe('ledger row details and actions', () => {
-  let mock: MockAdapter;
+function setupLedgerApi() {
+  const api: { mock: MockAdapter } = { mock: undefined as unknown as MockAdapter };
 
   beforeEach(() => {
-    mock = new MockAdapter(apiClient);
-    mock.onGet('/books').reply(200, { items: [personal] });
+    api.mock = new MockAdapter(apiClient);
+    api.mock.onGet('/books').reply(200, { items: [personal] });
     useAuthStore.setState({ status: 'signedIn' });
     useActiveBookStore.setState({ activeBookId: personal.id });
     jest.clearAllMocks();
   });
 
   afterEach(async () => {
-    mock.restore();
+    api.mock.restore();
     act(() => {
       useAuthStore.setState({ status: 'idle' });
       useActiveBookStore.setState({ activeBookId: null });
@@ -92,8 +91,19 @@ describe('ledger row details and actions', () => {
     await act(() => i18n.changeLanguage('en'));
   });
 
+  return api;
+}
+
+function openDeleteSheet(name: string) {
+  fireEvent(rowNamed(name), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
+  fireEvent.press(screen.getByTestId('ledger-delete-sheet-confirm'));
+}
+
+describe('ledger row details', () => {
+  const api = setupLedgerApi();
+
   it('expands a row on tap, collapses it on a second tap, and keeps only one row open', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch', note: 'With team' }), row({ id: 'Bus', category: 'Transport' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch', note: 'With team' }), row({ id: 'Bus', category: 'Transport' })]));
     render(<TransactionList {...november} />);
 
     fireEvent.press(await screen.findByText('Lunch'));
@@ -110,7 +120,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('shows category, Dhaka date and time, note, merchant and the original amount', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Coffee', note: 'Two cups', merchant: 'Starbucks', original: { amount: 12, currency: 'USD', rate: 121.5 } })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Coffee', note: 'Two cups', merchant: 'Starbucks', original: { amount: 12, currency: 'USD', rate: 121.5 } })]));
     render(<TransactionList {...november} />);
 
     fireEvent.press(await screen.findByText('Coffee'));
@@ -123,7 +133,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('hides empty fields', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     render(<TransactionList {...november} />);
 
     fireEvent.press(await screen.findByText('Lunch'));
@@ -137,7 +147,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('lists receipt items with the adjustment last so the lines add up to the total', async () => {
-    mock.onGet(tableUrl).reply(200, table([receipt, row({ id: 'Refund', amount: 100 })]));
+    api.mock.onGet(tableUrl).reply(200, table([receipt, row({ id: 'Refund', amount: 100 })]));
     render(<TransactionList {...november} />);
 
     fireEvent.press(await screen.findByText('Shwapno'));
@@ -149,7 +159,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('shows a negative adjustment with a minus sign', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Aarong', amount: 900, items: [
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Aarong', amount: 900, items: [
       { id: 'shirt', type: 'item', title: 'Shirt', category: 'Clothing', amount: 1000, quantity: null, note: null },
       { id: 'discount', type: 'adjustment', title: 'Discount', category: null, amount: -100, quantity: null, note: null },
     ] })]));
@@ -162,7 +172,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('animates the details over 120 ms, and not at all with animations removed', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     render(<TransactionList {...november} />);
 
     fireEvent.press(await screen.findByText('Lunch'));
@@ -176,9 +186,13 @@ describe('ledger row details and actions', () => {
     expect(FadeIn.duration).not.toHaveBeenCalled();
     jest.mocked(useReducedMotion).mockReturnValue(false);
   });
+});
+
+describe('ledger row actions', () => {
+  const api = setupLedgerApi();
 
   it('opens Copy and Delete on a 450 ms long-press with a haptic tap', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
@@ -192,7 +206,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('exposes Copy and Delete as screen reader actions on the row', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
@@ -208,7 +222,7 @@ describe('ledger row details and actions', () => {
   });
 
   it('copies the title, signed amount and date in the app language and shows Copied', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     await act(() => i18n.changeLanguage('bn'));
     render(<TransactionList {...november} />);
 
@@ -219,10 +233,14 @@ describe('ledger row details and actions', () => {
     expect(Clipboard.setStringAsync).toHaveBeenCalledWith('Lunch · −৳২৫০ · ৩ নভে ২০২৬');
     expect(showMessage).toHaveBeenCalledWith(expect.objectContaining({ message: 'কপি হয়েছে' }));
   });
+});
+
+describe('ledger row delete', () => {
+  const api = setupLedgerApi();
 
   it('confirms and deletes the transaction, then removes the row and refreshes the totals', async () => {
-    mock.onGet(tableUrl).replyOnce(200, table([row({ id: 'Lunch' }), row({ id: 'Bus' })])).onGet(tableUrl).reply(200, table([row({ id: 'Bus' })]));
-    mock.onDelete('/books/book-1/transactions/Lunch').reply(204);
+    api.mock.onGet(tableUrl).replyOnce(200, table([row({ id: 'Lunch' }), row({ id: 'Bus' })])).onGet(tableUrl).reply(200, table([row({ id: 'Bus' })]));
+    api.mock.onDelete('/books/book-1/transactions/Lunch').reply(204);
     render(<TransactionList {...november} />);
 
     fireEvent(rowNamed(await screen.findByText('Lunch').then(() => 'Lunch')), 'longPress');
@@ -233,14 +251,14 @@ describe('ledger row details and actions', () => {
     fireEvent.press(screen.getByTestId('ledger-delete-sheet-confirm'));
 
     await waitFor(() => expect(screen.queryByText('Lunch')).not.toBeOnTheScreen());
-    expect(mock.history.delete).toHaveLength(1);
-    await waitFor(() => expect(mock.history.get.filter(request => request.url === tableUrl)).toHaveLength(2));
+    expect(api.mock.history.delete).toHaveLength(1);
+    await waitFor(() => expect(api.mock.history.get.filter(request => request.url === tableUrl)).toHaveLength(2));
     expect(screen.getByTestId('ledger-list-footer-count')).toHaveTextContent('Transactions1');
     expect(screen.queryByTestId('ledger-delete-sheet')).not.toBeOnTheScreen();
   });
 
   it('says the items are deleted too for an itemised receipt', async () => {
-    mock.onGet(tableUrl).reply(200, table([receipt]));
+    api.mock.onGet(tableUrl).reply(200, table([receipt]));
     render(<TransactionList {...november} />);
 
     await screen.findByText('Shwapno');
@@ -250,9 +268,9 @@ describe('ledger row details and actions', () => {
   });
 
   it('shows Deleting… and sends one request on repeat taps', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
     let finish: (value: [number]) => void = () => {};
-    mock.onDelete('/books/book-1/transactions/Lunch').reply(() => new Promise((resolve) => {
+    api.mock.onDelete('/books/book-1/transactions/Lunch').reply(() => new Promise((resolve) => {
       finish = resolve;
     }));
     render(<TransactionList {...november} />);
@@ -265,35 +283,54 @@ describe('ledger row details and actions', () => {
     fireEvent.press(confirm);
 
     expect(await screen.findByText('Deleting…')).toBeOnTheScreen();
-    await waitFor(() => expect(mock.history.delete).toHaveLength(1));
+    await waitFor(() => expect(api.mock.history.delete).toHaveLength(1));
     await act(async () => finish([204]));
     await waitFor(() => expect(screen.queryByTestId('ledger-delete-sheet')).not.toBeOnTheScreen());
-    expect(mock.history.delete).toHaveLength(1);
+    expect(api.mock.history.delete).toHaveLength(1);
   });
+});
 
-  it('removes the row without an error when it is already gone', async () => {
-    mock.onGet(tableUrl).replyOnce(200, table([row({ id: 'Lunch' })])).onGet(tableUrl).reply(200, table([]));
-    mock.onDelete('/books/book-1/transactions/Lunch').reply(404, { message: 'Not found' });
+describe('ledger row delete failures', () => {
+  const api = setupLedgerApi();
+
+  it('removes the row without an error when the transaction is already gone', async () => {
+    api.mock.onGet(tableUrl).replyOnce(200, table([row({ id: 'Lunch' })])).onGet(tableUrl).reply(200, table([]));
+    api.mock.onDelete('/books/book-1/transactions/Lunch').reply(404, { code: 'transaction_not_found', message: 'Transaction not found' });
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
-    fireEvent(rowNamed('Lunch'), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
-    fireEvent.press(screen.getByTestId('ledger-delete-sheet-confirm'));
+    openDeleteSheet('Lunch');
 
     await waitFor(() => expect(screen.queryByText('Lunch')).not.toBeOnTheScreen());
-    await waitFor(() => expect(mock.history.get.filter(request => request.url === tableUrl)).toHaveLength(2));
+    await waitFor(() => expect(api.mock.history.get.filter(request => request.url === tableUrl)).toHaveLength(2));
     expect(screen.queryByTestId('ledger-delete-sheet-error')).not.toBeOnTheScreen();
     expect(showMessage).not.toHaveBeenCalled();
   });
 
-  it('keeps the row and shows an error when the server fails', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
-    mock.onDelete('/books/book-1/transactions/Lunch').reply(500);
+  it('keeps the row and offers a retry on a 404 without transaction_not_found', async () => {
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onDelete('/books/book-1/transactions/Lunch').replyOnce(404, { message: 'Route not found' }).onDelete('/books/book-1/transactions/Lunch').reply(204);
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
-    fireEvent(rowNamed('Lunch'), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
+    openDeleteSheet('Lunch');
+
+    expect(await screen.findByTestId('ledger-delete-sheet-error')).toHaveTextContent('Could not delete. Try again.');
+    expect(rowNamed('Lunch')).toBeOnTheScreen();
+    expect(screen.getByTestId('ledger-delete-sheet-confirm')).toHaveTextContent('Delete');
+
     fireEvent.press(screen.getByTestId('ledger-delete-sheet-confirm'));
+    await waitFor(() => expect(screen.queryByTestId('ledger-delete-sheet')).not.toBeOnTheScreen());
+    expect(api.mock.history.delete).toHaveLength(2);
+  });
+
+  it('keeps the row and shows an error when the server fails', async () => {
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onDelete('/books/book-1/transactions/Lunch').reply(500);
+    render(<TransactionList {...november} />);
+
+    await screen.findByText('Lunch');
+    openDeleteSheet('Lunch');
 
     expect(await screen.findByTestId('ledger-delete-sheet-error')).toHaveTextContent('Could not delete. Try again.');
     expect(screen.getAllByText('Lunch').length).toBeGreaterThan(0);
@@ -301,13 +338,12 @@ describe('ledger row details and actions', () => {
   });
 
   it('keeps the row and shows an offline message when there is no connection', async () => {
-    mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
-    mock.onDelete('/books/book-1/transactions/Lunch').networkError();
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch' })]));
+    api.mock.onDelete('/books/book-1/transactions/Lunch').networkError();
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
-    fireEvent(rowNamed('Lunch'), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
-    fireEvent.press(screen.getByTestId('ledger-delete-sheet-confirm'));
+    openDeleteSheet('Lunch');
 
     expect(await screen.findByTestId('ledger-delete-sheet-error')).toHaveTextContent('You’re offline. Try again when you’re connected.');
     expect(rowNamed('Lunch')).toBeOnTheScreen();

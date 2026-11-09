@@ -6,7 +6,7 @@ export async function deleteTransaction(bookId: string, transactionId: string): 
     await apiClient.delete(`/books/${bookId}/transactions/${transactionId}`);
   }
   catch (error) {
-    if (toApiError(error).kind !== 'not_found')
+    if (toApiError(error).code !== 'transaction_not_found')
       throw error;
   }
 }

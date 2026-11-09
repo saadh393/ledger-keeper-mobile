@@ -153,6 +153,7 @@ function createErrorFromResponse(
     case 404:
       return new ApiError({
         cause,
+        code,
         data: responseData,
         kind: 'not_found',
         message: serverMessage ?? 'Not found',
