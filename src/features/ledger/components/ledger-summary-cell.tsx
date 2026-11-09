@@ -20,7 +20,7 @@ export function LedgerSummaryCell({ label, value, valueClassName, loading }: Led
       accessible
       accessibilityLabel={`${label}, ${loading ? t('common.loading') : value}`}
       aria-busy={loading}
-      className="grow px-1.5 py-0.5"
+      className="min-w-0 flex-1 basis-0 px-1.5 py-0.5"
     >
       <Text className="text-label text-ink-500" numberOfLines={1}>
         {label}

@@ -37,7 +37,7 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
   const currency = activeBook.activeBook?.currency ?? 'BDT';
 
   return (
-    <View testID="ledger-stats" className="mx-4 flex-row flex-wrap rounded-2xl bg-surface-container px-1 py-2">
+    <View testID="ledger-stats" className="mx-4 flex-row rounded-2xl bg-surface-container px-1 py-2">
       {stats.map((stat) => {
         const key = getStatLabelKey(stat.label);
         const formatted = formatStat(stat, locale, currency);
