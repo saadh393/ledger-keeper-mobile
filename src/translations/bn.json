@@ -98,6 +98,35 @@
     "title": "লেজার কিপার"
   },
   "ledger": {
+    "actions": {
+      "collapse": "বিস্তারিত লুকান",
+      "copied": "কপি হয়েছে",
+      "copy": "কপি",
+      "delete": "মুছুন",
+      "expand": "বিস্তারিত দেখুন",
+      "menu": "লেনদেনের অপশন"
+    },
+    "delete": {
+      "cancel": "বাতিল",
+      "confirm": "মুছুন",
+      "deleting": "মুছে ফেলা হচ্ছে…",
+      "error": "মোছা যায়নি। আবার চেষ্টা করুন।",
+      "irreversible": "এটি আর ফেরানো যাবে না।",
+      "items": "এর আইটেমগুলোও মুছে যাবে।",
+      "offline": "আপনি অফলাইনে আছেন। সংযোগ পেলে আবার চেষ্টা করুন।",
+      "summary": "{{title}} · {{amount}}",
+      "title": "এই লেনদেন মুছবেন?"
+    },
+    "details": {
+      "category": "বিভাগ",
+      "date": "তারিখ",
+      "items": "আইটেম",
+      "merchant": "বিক্রেতা",
+      "note": "নোট",
+      "original": "মূল পরিমাণ",
+      "quantity": "× {{quantity}}",
+      "total": "মোট"
+    },
     "filter": {
       "all": "সব",
       "expense": "খরচ",

@@ -11,9 +11,13 @@ import { EmptyState, showErrorMessage } from '@/components/ui';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { useBookTable } from '@/features/ledger/api/use-book-table';
 import { LedgerDayHeader } from '@/features/ledger/components/ledger-day-header';
+import { LedgerDeleteSheet } from '@/features/ledger/components/ledger-delete-sheet';
 import { LedgerListFooter } from '@/features/ledger/components/ledger-list-footer';
 import { LedgerRow } from '@/features/ledger/components/ledger-row';
+import { LedgerRowMenuSheet } from '@/features/ledger/components/ledger-row-menu-sheet';
 import { LedgerRowPlaceholder } from '@/features/ledger/components/ledger-row-placeholder';
+import { useCopyTransaction } from '@/features/ledger/hooks/use-copy-transaction';
+import { useLedgerRowActions } from '@/features/ledger/hooks/use-ledger-row-actions';
 import { useLedgerFiltersStore } from '@/features/ledger/store/use-ledger-filters-store';
 import { filterRows, isAmountSort } from '@/features/ledger/utils/filter-rows';
 import { groupRowsByDay } from '@/features/ledger/utils/group-rows-by-day';
@@ -54,12 +58,27 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
   const showDate = isAmountSort(sort);
   const shownRows = React.useMemo(() => filterRows(rows ?? [], { query, kind, sort }), [rows, query, kind, sort]);
   const items = React.useMemo(() => (showDate ? toFlatItems(shownRows) : groupRowsByDay(shownRows)), [showDate, shownRows]);
+  const actions = useLedgerRowActions();
+  const { expandedId, toggle, openMenu, askDelete } = actions;
+  const copy = useCopyTransaction(locale, currency);
 
   const renderItem = React.useCallback<ListRenderItem<LedgerListItem>>(
     ({ item }) => (item.type === 'day'
       ? <LedgerDayHeader label={formatDayHeader(item.day, locale, today)} />
-      : <LedgerRow row={item.row} locale={locale} currency={currency} showDate={showDate} />),
-    [locale, currency, today, showDate],
+      : (
+          <LedgerRow
+            row={item.row}
+            locale={locale}
+            currency={currency}
+            showDate={showDate}
+            expanded={item.row.id === expandedId}
+            onToggle={toggle}
+            onOpenMenu={openMenu}
+            onCopy={copy}
+            onDelete={askDelete}
+          />
+        )),
+    [locale, currency, today, showDate, expandedId, toggle, openMenu, copy, askDelete],
   );
 
   const refresh = async () => {
@@ -92,33 +111,41 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
   }
 
   return (
-    <FlashList
-      testID="ledger-list"
-      data={items}
-      renderItem={renderItem}
-      keyExtractor={item => item.key}
-      getItemType={item => item.type}
-      refreshing={refreshing}
-      onRefresh={refresh}
-      contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
-      ListEmptyComponent={table.data.rows.length
-        ? (
-            <EmptyState
-              testID="ledger-list-no-matches"
-              title={t('ledger.list.noMatches')}
-              actionLabel={t('ledger.list.clearFilters')}
-              onAction={clearFilters}
-            />
-          )
-        : (
-            <EmptyState
-              testID="ledger-list-empty"
-              title={t('ledger.list.empty', { month: formatMonthLabel(month, locale) })}
-            />
-          )}
-      ListFooterComponent={items.length
-        ? <LedgerListFooter count={table.data.rows.length} shown={shownRows.length} stats={table.data.stats} locale={locale} currency={currency} />
+    <>
+      <FlashList
+        testID="ledger-list"
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={item => item.key}
+        getItemType={item => item.type}
+        refreshing={refreshing}
+        onRefresh={refresh}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
+        ListEmptyComponent={table.data.rows.length
+          ? (
+              <EmptyState
+                testID="ledger-list-no-matches"
+                title={t('ledger.list.noMatches')}
+                actionLabel={t('ledger.list.clearFilters')}
+                onAction={clearFilters}
+              />
+            )
+          : (
+              <EmptyState
+                testID="ledger-list-empty"
+                title={t('ledger.list.empty', { month: formatMonthLabel(month, locale) })}
+              />
+            )}
+        ListFooterComponent={items.length
+          ? <LedgerListFooter count={table.data.rows.length} shown={shownRows.length} stats={table.data.stats} locale={locale} currency={currency} />
+          : null}
+      />
+      {actions.menuRow
+        ? <LedgerRowMenuSheet row={actions.menuRow} onCopy={copy} onDelete={askDelete} onDismiss={actions.closeMenu} />
         : null}
-    />
+      {actions.deleteRow && activeBook.activeBookId
+        ? <LedgerDeleteSheet bookId={activeBook.activeBookId} row={actions.deleteRow} locale={locale} currency={currency} onDismiss={actions.closeDelete} />
+        : null}
+    </>
   );
 }

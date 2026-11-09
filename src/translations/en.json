@@ -98,6 +98,35 @@
     "title": "Ledger Keeper"
   },
   "ledger": {
+    "actions": {
+      "collapse": "Hide details",
+      "copied": "Copied",
+      "copy": "Copy",
+      "delete": "Delete",
+      "expand": "Show details",
+      "menu": "Transaction actions"
+    },
+    "delete": {
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "error": "Could not delete. Try again.",
+      "irreversible": "This can’t be undone.",
+      "items": "Its items are deleted too.",
+      "offline": "You’re offline. Try again when you’re connected.",
+      "summary": "{{title}} · {{amount}}",
+      "title": "Delete this transaction?"
+    },
+    "details": {
+      "category": "Category",
+      "date": "Date",
+      "items": "Items",
+      "merchant": "Merchant",
+      "note": "Note",
+      "original": "Original amount",
+      "quantity": "× {{quantity}}",
+      "total": "Total"
+    },
     "filter": {
       "all": "All",
       "expense": "Expense",
