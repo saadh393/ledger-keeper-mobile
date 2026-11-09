@@ -79,7 +79,8 @@ describe('statTile rendering and variants', () => {
     expect(screen.queryByText('0')).toBeNull();
 
     const tile = screen.getByTestId('stat-tile');
-    expect(tile.props.accessibilityLabel).toContain('loading');
+    expect(tile.props.accessibilityLabel).toBe('Net position, Loading');
+    expect(screen.getByTestId('stat-tile-placeholder').props.accessibilityLabel).toBe('Loading');
     expect(tile.props['aria-busy']).toBe(true);
   });
 

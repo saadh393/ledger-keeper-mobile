@@ -130,7 +130,7 @@ describe('transactionList', () => {
     expect(screen.getAllByTestId('ledger-row-meta').map(node => node.props.children)).toEqual(['Food · $12 at 121.5', 'Salary']);
     const amounts = screen.getAllByTestId('ledger-row-amount');
     expect(amounts.map(node => node.props.children)).toEqual(['− ৳1,458', '+ ৳50,000']);
-    expect(amounts[0]?.props.className).toContain('text-ink-900');
+    expect(amounts[0]?.props.className).toContain('text-clay-500');
     expect(amounts[1]?.props.className).toContain('text-forest-500');
     amounts.forEach((amount) => {
       expect(amount.props.style).toEqual(expect.objectContaining({ fontVariant: ['tabular-nums'] }));
@@ -178,6 +178,7 @@ describe('transactionList', () => {
     render(<TransactionList {...november} />);
 
     expect(screen.getAllByTestId('ledger-row-placeholder')).toHaveLength(6);
+    expect(screen.getAllByTestId('ledger-row-placeholder')[0]?.props.accessibilityLabel).toBe('Loading');
     await waitFor(() => expect(mock.history.get.some(request => request.url === '/books/book-1/table')).toBe(true));
     expect(screen.getAllByTestId('ledger-row-placeholder')).toHaveLength(6);
     expect(screen.queryByTestId('ledger-list-empty')).not.toBeOnTheScreen();

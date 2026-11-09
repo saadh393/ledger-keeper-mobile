@@ -76,6 +76,9 @@
     "retry": "Retry",
     "switcherTitle": "Switch book"
   },
+  "common": {
+    "loading": "Loading"
+  },
   "currency": {
     "continue": "Continue",
     "noCurrencyFound": "No currency found",

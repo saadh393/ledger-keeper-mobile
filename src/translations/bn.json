@@ -76,6 +76,9 @@
     "retry": "আবার চেষ্টা করুন",
     "switcherTitle": "বই পরিবর্তন"
   },
+  "common": {
+    "loading": "লোড হচ্ছে"
+  },
   "currency": {
     "continue": "চালিয়ে যান",
     "noCurrencyFound": "কোনো মুদ্রা পাওয়া যায়নি",

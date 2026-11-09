@@ -1,5 +1,6 @@
 import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -43,6 +44,7 @@ export function StatTile({
   accessibilityLabel,
   ...props
 }: StatTileProps) {
+  const { t } = useTranslation();
   const isPressable = Boolean(onPress);
   const dotClass = dotToneStyles[tone] ?? 'bg-ink-500';
 
@@ -53,7 +55,7 @@ export function StatTile({
   );
 
   const defaultAccessibilityLabel = loading
-    ? `${label}, loading`
+    ? `${label}, ${t('common.loading')}`
     : `${label}: ${value ?? ''}`;
 
   const content = (
@@ -80,7 +82,7 @@ export function StatTile({
             <View
               testID="stat-tile-placeholder"
               className="mt-1 h-6 w-24 rounded-md bg-border"
-              accessibilityLabel="Loading"
+              accessibilityLabel={t('common.loading')}
             />
           )
         : (

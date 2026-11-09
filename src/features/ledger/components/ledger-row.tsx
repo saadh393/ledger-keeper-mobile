@@ -34,7 +34,7 @@ export const LedgerRow = React.memo(({ row, locale, currency }: LedgerRowProps) 
       </View>
       <Text
         testID="ledger-row-amount"
-        className={row.kind === 'income' ? 'shrink-0 text-row-title font-semibold text-forest-500' : 'shrink-0 text-row-title font-semibold text-ink-900'}
+        className={row.kind === 'income' ? 'shrink-0 text-row-title font-semibold text-forest-500' : 'shrink-0 text-row-title font-semibold text-clay-500'}
         style={{ fontVariant: ['tabular-nums'] }}
       >
         {amount}
