@@ -1,3 +1,4 @@
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import * as React from 'react';
 import { BackHandler, Platform, Text as RNText, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -66,6 +67,44 @@ describe('bottomSheet rendering and styles', () => {
     finally {
       Platform.OS = originalPlatform;
     }
+  });
+
+  it('raises the sheet body, not its background, so content draws above the background on Android', () => {
+    render(
+      <BottomSheet testID="order-sheet">
+        <RNText>Content</RNText>
+      </BottomSheet>,
+    );
+
+    const modal = screen.UNSAFE_getByType(BottomSheetModal);
+    const body = Object.assign({}, ...[modal.props.style].flat(Infinity).filter(Boolean));
+    const background = Object.assign({}, ...[modal.props.backgroundStyle].flat(Infinity).filter(Boolean));
+    expect(body.elevation).toBe(12);
+    expect(body.borderTopLeftRadius).toBe(28);
+    expect(background.elevation).toBeUndefined();
+  });
+
+  it('sizes to content with an 85% cap unless snap points are given', () => {
+    const { rerender } = render(
+      <BottomSheet testID="dynamic-sheet">
+        <RNText>Content</RNText>
+      </BottomSheet>,
+    );
+
+    let modal = screen.UNSAFE_getByType(BottomSheetModal);
+    expect(modal.props.enableDynamicSizing).toBe(true);
+    expect(modal.props.snapPoints).toBeUndefined();
+    expect(modal.props.maxDynamicContentSize).toBeCloseTo(1334 * 0.85);
+
+    rerender(
+      <BottomSheet snapPoints={['50%']} testID="dynamic-sheet">
+        <RNText>Content</RNText>
+      </BottomSheet>,
+    );
+
+    modal = screen.UNSAFE_getByType(BottomSheetModal);
+    expect(modal.props.enableDynamicSizing).toBe(false);
+    expect(modal.props.snapPoints).toEqual(['50%']);
   });
 
   it('supports custom snap points and safe area top inset at full screen', () => {

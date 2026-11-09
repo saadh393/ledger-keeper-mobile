@@ -2,7 +2,7 @@ import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { Book } from '@/features/books/schemas/book-schema';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BottomSheet,
   BottomSheetFlatList,
@@ -36,7 +36,7 @@ export function BookSwitcherSheet({
 }: BookSwitcherSheetProps) {
   const { t } = useTranslation();
   const sortedBooks = React.useMemo(() => sortBooks(books), [books]);
-  const snapPoints = React.useMemo(() => ['60%'], []);
+  const insets = useSafeAreaInsets();
 
   const renderItem = React.useCallback(
     ({ item }: { item: Book }) => (
@@ -54,32 +54,30 @@ export function BookSwitcherSheet({
   return (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={snapPoints}
       title={t('books.switcherTitle')}
       dismissible
       showCloseButton
       onDismiss={onDismiss}
       testID={testID}
     >
-      <View testID={testID} className="flex-1 px-4 pb-4">
-        <BottomSheetFlatList
-          testID={`${testID}-list`}
-          data={sortedBooks}
-          keyExtractor={(item: Book) => item.id}
-          renderItem={renderItem}
-          initialNumToRender={15}
-          maxToRenderPerBatch={20}
-          ListFooterComponent={(
-            <Button
-              testID={`${testID}-new-book`}
-              variant="secondary"
-              label={t('books.newBook')}
-              onPress={onCreateBook}
-              className="mt-3"
-            />
-          )}
-        />
-      </View>
+      <BottomSheetFlatList
+        testID={`${testID}-list`}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 16 }}
+        data={sortedBooks}
+        keyExtractor={(item: Book) => item.id}
+        renderItem={renderItem}
+        initialNumToRender={15}
+        maxToRenderPerBatch={20}
+        ListFooterComponent={(
+          <Button
+            testID={`${testID}-new-book`}
+            variant="secondary"
+            label={t('books.newBook')}
+            onPress={onCreateBook}
+            className="mt-3"
+          />
+        )}
+      />
     </BottomSheet>
   );
 }

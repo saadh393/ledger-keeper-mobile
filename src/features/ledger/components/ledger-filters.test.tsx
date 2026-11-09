@@ -200,7 +200,7 @@ describe('ledger search, filter and sort', () => {
     await renderLedger();
     fireEvent.press(screen.getByTestId('ledger-sort-button'));
 
-    expect(await screen.findByText('Sort by')).toBeOnTheScreen();
+    expect(await screen.findByTestId('ledger-sort-sheet-title')).toHaveTextContent('Sort');
     const options = screen.getAllByRole('radio');
     expect(options.map(option => option.props.accessibilityLabel)).toEqual(['Newest first', 'Oldest first', 'Highest amount', 'Lowest amount']);
     expect(options.map(option => option.props.accessibilityState.checked)).toEqual([true, false, false, false]);

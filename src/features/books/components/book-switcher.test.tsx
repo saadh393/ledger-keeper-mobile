@@ -137,13 +137,13 @@ describe('bookSwitcher', () => {
       });
 
       // Sheet is not open initially
-      expect(screen.queryByTestId('book-switcher-sheet')).toBeNull();
+      expect(screen.queryByTestId('book-switcher-sheet-list')).toBeNull();
 
       // Tap slot to open
       fireEvent.press(screen.getByTestId('book-switcher-trigger'));
 
       // Sheet opens
-      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-switcher-sheet-list')).toBeOnTheScreen();
       expect(screen.getByTestId('book-switcher-sheet-title')).toHaveTextContent('Switch book');
 
       // Check default mark
@@ -222,7 +222,7 @@ describe('bookSwitcher', () => {
 
       // Open sheet
       fireEvent.press(screen.getByTestId('book-switcher-trigger'));
-      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-switcher-sheet-list')).toBeOnTheScreen();
 
       // Tap business book
       fireEvent.press(screen.getByTestId('book-item-b-business'));
@@ -231,7 +231,7 @@ describe('bookSwitcher', () => {
       expect(useActiveBookStore.getState().activeBookId).toBe(bookBusiness.id);
 
       // Sheet closed
-      expect(screen.queryByTestId('book-switcher-sheet')).toBeNull();
+      expect(screen.queryByTestId('book-switcher-sheet-list')).toBeNull();
 
       // Drawer closed
       expect(navigation.closeDrawer).toHaveBeenCalledTimes(1);
@@ -332,13 +332,13 @@ describe('bookSwitcher', () => {
 
       // Open sheet
       fireEvent.press(screen.getByTestId('book-switcher-trigger'));
-      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-switcher-sheet-list')).toBeOnTheScreen();
 
       // Tap active book (Personal)
       fireEvent.press(screen.getByTestId('book-item-b-personal'));
 
       // Sheet closes
-      expect(screen.queryByTestId('book-switcher-sheet')).toBeNull();
+      expect(screen.queryByTestId('book-switcher-sheet-list')).toBeNull();
 
       // Drawer is NOT closed
       expect(navigation.closeDrawer).not.toHaveBeenCalled();
@@ -404,7 +404,7 @@ describe('bookSwitcher', () => {
 
       // Tapping it opens the sheet
       fireEvent.press(screen.getByTestId('book-switcher-trigger'));
-      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-switcher-sheet-list')).toBeOnTheScreen();
 
       // The single book is shown
       expect(screen.getByTestId('book-item-b-personal')).toBeOnTheScreen();

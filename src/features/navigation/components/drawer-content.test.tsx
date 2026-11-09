@@ -129,7 +129,7 @@ describe('appDrawerContent', () => {
       expect(screen.getByTestId('book-switcher-active-currency')).toHaveTextContent('BDT');
 
       fireEvent.press(screen.getByTestId('book-switcher-trigger'));
-      expect(screen.getByTestId('book-switcher-sheet')).toBeOnTheScreen();
+      expect(screen.getByTestId('book-switcher-sheet-list')).toBeOnTheScreen();
       expect(screen.getByTestId('book-item-b-default')).toBeOnTheScreen();
     });
   });

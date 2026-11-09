@@ -21,8 +21,8 @@ import * as React from 'react';
 import {
   AccessibilityInfo,
   BackHandler,
-  Platform,
   Pressable,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import Animated, {
@@ -369,9 +369,37 @@ function useSheetBackdropRenderer({
   );
 }
 
+function useSheetStyles(
+  customBackgroundStyle: BottomSheetModalProps['backgroundStyle'],
+  style: BottomSheetModalProps['style'],
+) {
+  const themeColors = useThemeColors();
+
+  const combinedBackgroundStyle = React.useMemo(() => {
+    const defaultBackground: ViewStyle = {
+      backgroundColor: themeColors.surface,
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+    };
+    return [defaultBackground, customBackgroundStyle] as StyleProp<ViewStyle>;
+  }, [themeColors.surface, customBackgroundStyle]);
+
+  const combinedStyle = React.useMemo(() => {
+    const raised: ViewStyle = {
+      backgroundColor: themeColors.surface,
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+      elevation: 12,
+    };
+    return [raised, style] as StyleProp<ViewStyle>;
+  }, [themeColors.surface, style]);
+
+  return { combinedBackgroundStyle, combinedStyle };
+}
+
 export function BottomSheet({
   ref,
-  snapPoints: _snapPoints = ['60%'],
+  snapPoints,
   title,
   dismissible = true,
   showCloseButton = true,
@@ -381,7 +409,9 @@ export function BottomSheet({
   handleComponent,
   animationConfigs: customAnimationConfigs,
   index = 0,
-  enableDynamicSizing = false,
+  enableDynamicSizing = !snapPoints,
+  maxDynamicContentSize,
+  style,
   onChange,
   onDismiss,
   keyboardBehavior = 'interactive',
@@ -391,7 +421,7 @@ export function BottomSheet({
   ...restProps
 }: BottomSheetProps) {
   const internalRef = React.useRef<BottomSheetModal>(null);
-  const themeColors = useThemeColors();
+  const { height: windowHeight } = useWindowDimensions();
   const insets = React.use(SafeAreaInsetsContext);
   const [isOpen, setIsOpen] = React.useState(index >= 0);
 
@@ -404,8 +434,6 @@ export function BottomSheet({
     duration: shouldReduceMotion ? 0 : 240,
     easing: Easing.bezier(0.2, 0, 0, 1),
   });
-
-  const snapPoints = React.useMemo(() => _snapPoints, [_snapPoints]);
 
   const handleClose = React.useCallback(() => {
     if (!dismissible)
@@ -434,17 +462,10 @@ export function BottomSheet({
     testID,
   });
 
-  const combinedBackgroundStyle = React.useMemo(() => {
-    const defaultBackground: ViewStyle = {
-      backgroundColor: themeColors.surface,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      ...Platform.select({
-        android: { elevation: 12 },
-      }),
-    };
-    return [defaultBackground, customBackgroundStyle] as StyleProp<ViewStyle>;
-  }, [themeColors.surface, customBackgroundStyle]);
+  const { combinedBackgroundStyle, combinedStyle } = useSheetStyles(
+    customBackgroundStyle,
+    style,
+  );
 
   return (
     <BottomSheetModal
@@ -454,6 +475,8 @@ export function BottomSheet({
       snapPoints={snapPoints}
       topInset={customTopInset ?? insets?.top ?? 0}
       enableDynamicSizing={enableDynamicSizing}
+      maxDynamicContentSize={maxDynamicContentSize ?? windowHeight * 0.85}
+      style={combinedStyle}
       enablePanDownToClose={dismissible}
       enableOverDrag={dismissible}
       enableHandlePanningGesture={dismissible}

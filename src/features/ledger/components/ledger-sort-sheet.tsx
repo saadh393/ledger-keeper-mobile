@@ -1,6 +1,7 @@
 import type { LedgerSort } from '@/features/ledger/utils/filter-rows';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheet, BottomSheetView, useBottomSheetModalRef } from '@/components/ui';
 import { LedgerSortOption } from '@/features/ledger/components/ledger-sort-option';
 import { useLedgerFiltersStore } from '@/features/ledger/store/use-ledger-filters-store';
@@ -15,7 +16,7 @@ export function LedgerSortSheet({ onDismiss }: LedgerSortSheetProps) {
   const modal = useBottomSheetModalRef();
   const sort = useLedgerFiltersStore(state => state.sort);
   const setSort = useLedgerFiltersStore(state => state.setSort);
-  const snapPoints = React.useMemo(() => ['45%'], []);
+  const insets = useSafeAreaInsets();
 
   React.useEffect(() => {
     modal.present();
@@ -29,12 +30,16 @@ export function LedgerSortSheet({ onDismiss }: LedgerSortSheetProps) {
   return (
     <BottomSheet
       ref={modal.ref}
-      snapPoints={snapPoints}
       title={t('ledger.sort.title')}
       onDismiss={onDismiss}
       testID="ledger-sort-sheet"
     >
-      <BottomSheetView testID="ledger-sort-sheet" accessibilityRole="radiogroup" className="px-4 pb-4">
+      <BottomSheetView
+        testID="ledger-sort-sheet-options"
+        accessibilityRole="radiogroup"
+        className="px-4 pb-4"
+        style={{ paddingBottom: insets.bottom + 16 }}
+      >
         {sortOptions.map(option => (
           <LedgerSortOption
             key={option.value}

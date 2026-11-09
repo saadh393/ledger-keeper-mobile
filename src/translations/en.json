@@ -124,7 +124,7 @@
       "lowest": "Lowest amount",
       "newest": "Newest first",
       "oldest": "Oldest first",
-      "title": "Sort by"
+      "title": "Sort"
     },
     "stats": {
       "averagePerTransaction": "Avg / tx",
