@@ -10,6 +10,7 @@ export type StatTileTone = 'income' | 'expense' | 'info' | 'warning' | 'neutral'
 export type StatTileProps = {
   label: string;
   value?: string | number;
+  valueClassName?: string;
   tone?: StatTileTone;
   dotColor?: string;
   loading?: boolean;
@@ -31,6 +32,7 @@ const dotToneStyles: Record<StatTileTone, string> = {
 export function StatTile({
   label,
   value,
+  valueClassName,
   tone = 'neutral',
   dotColor,
   loading = false,
@@ -84,7 +86,7 @@ export function StatTile({
         : (
             <Text
               testID="stat-tile-value"
-              className="text-hero text-ink-900"
+              className={twMerge('text-hero text-ink-900', valueClassName)}
               style={{ fontVariant: ['tabular-nums'] }}
               adjustsFontSizeToFit
               numberOfLines={2}

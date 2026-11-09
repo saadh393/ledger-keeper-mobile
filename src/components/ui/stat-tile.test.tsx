@@ -31,6 +31,13 @@ describe('statTile rendering and variants', () => {
     );
   });
 
+  it('applies valueClassName to the value', () => {
+    render(<StatTile label="Net position" value="+ ৳1" valueClassName="text-forest-500" />);
+    const value = screen.getByTestId('stat-tile-value');
+    expect(value.props.className).toContain('text-forest-500');
+    expect(value.props.className).not.toContain('text-ink-900');
+  });
+
   it('renders income dot tone with bg-forest-500', () => {
     render(<StatTile label="Income" value="৳1" tone="income" />);
     expect(screen.getByTestId('stat-tile-dot', { includeHiddenElements: true }).props.className).toContain('bg-forest-500');

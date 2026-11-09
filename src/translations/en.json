@@ -97,6 +97,14 @@
   "ledger": {
     "nextMonth": "Next month",
     "previousMonth": "Previous month",
+    "stats": {
+      "averagePerTransaction": "Avg / tx",
+      "error": "Could not load this month's totals",
+      "expense": "Expense",
+      "income": "Income",
+      "netPosition": "Net position",
+      "retry": "Retry"
+    },
     "thisMonth": "This month"
   },
   "navigation": {

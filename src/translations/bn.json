@@ -97,6 +97,14 @@
   "ledger": {
     "nextMonth": "পরের মাস",
     "previousMonth": "আগের মাস",
+    "stats": {
+      "averagePerTransaction": "গড় / লেনদেন",
+      "error": "এই মাসের হিসাব লোড করা যায়নি",
+      "expense": "খরচ",
+      "income": "আয়",
+      "netPosition": "নিট অবস্থান",
+      "retry": "আবার চেষ্টা করুন"
+    },
     "thisMonth": "এই মাস"
   },
   "navigation": {
