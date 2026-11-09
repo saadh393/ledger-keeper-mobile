@@ -7,7 +7,7 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { KeyboardAvoidingView, KeyboardProvider } from 'react-native-keyboard-controller';
 import { OfflineBanner } from '@/components/ui/offline-banner';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
@@ -99,7 +99,9 @@ function Providers({ children }: { children: React.ReactNode }) {
         <ThemeProvider value={theme}>
           <APIProvider>
             <BottomSheetModalProvider>
-              {children}
+              <KeyboardAvoidingView behavior="padding" style={styles.container}>
+                {children}
+              </KeyboardAvoidingView>
               <FlashMessage position="top" />
             </BottomSheetModalProvider>
           </APIProvider>

@@ -21,6 +21,7 @@ import * as React from 'react';
 import {
   AccessibilityInfo,
   BackHandler,
+  Keyboard,
   Pressable,
   useWindowDimensions,
   View,
@@ -369,6 +370,17 @@ function useSheetBackdropRenderer({
   );
 }
 
+function useDismissKeyboardOnClose(onAnimate: BottomSheetModalProps['onAnimate']) {
+  return React.useCallback<NonNullable<BottomSheetModalProps['onAnimate']>>(
+    (...args) => {
+      if (args[1] === -1)
+        Keyboard.dismiss();
+      onAnimate?.(...args);
+    },
+    [onAnimate],
+  );
+}
+
 function useSheetStyles(
   customBackgroundStyle: BottomSheetModalProps['backgroundStyle'],
   style: BottomSheetModalProps['style'],
@@ -414,9 +426,10 @@ export function BottomSheet({
   style,
   onChange,
   onDismiss,
+  onAnimate,
   keyboardBehavior = 'interactive',
-  keyboardBlurBehavior = 'none',
-  android_keyboardInputMode = 'adjustResize',
+  keyboardBlurBehavior = 'restore',
+  android_keyboardInputMode = 'adjustPan',
   topInset: customTopInset,
   ...restProps
 }: BottomSheetProps) {
@@ -487,6 +500,7 @@ export function BottomSheet({
       backgroundStyle={combinedBackgroundStyle}
       backdropComponent={renderBackdrop}
       handleComponent={renderHandle}
+      onAnimate={useDismissKeyboardOnClose(onAnimate)}
       onChange={React.useCallback(
         (sheetIndex: number, position: number, type: any) => {
           setIsOpen(sheetIndex >= 0);

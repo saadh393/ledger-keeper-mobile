@@ -1,11 +1,23 @@
 import * as React from 'react';
+import { TextInput } from 'react-native';
 
 import { cleanup, fireEvent, render, screen, setup } from '@/lib/test-utils';
 import { colors } from '@/lib/theme/colors';
 
 import { Input } from './input';
+import { SheetTextInput } from './sheet-text-input';
 
-afterEach(cleanup);
+let mockInSheet = false;
+
+jest.mock('@gorhom/bottom-sheet', () => ({
+  ...jest.requireActual('../../../__mocks__/@gorhom/bottom-sheet'),
+  useBottomSheetInternal: () => (mockInSheet ? {} : null),
+}));
+
+afterEach(() => {
+  cleanup();
+  mockInSheet = false;
+});
 
 describe('input rendering and typography', () => {
   it('renders correctly', () => {
@@ -166,5 +178,23 @@ describe('input states, borders, and events', () => {
     expect(input.props.style).toEqual(
       expect.arrayContaining([expect.objectContaining({ textAlignVertical: 'top' })]),
     );
+  });
+});
+
+describe('input keyboard handling', () => {
+  it('uses a plain TextInput outside a bottom sheet', () => {
+    render(<Input testID="input" />);
+
+    expect(screen.UNSAFE_queryByType(SheetTextInput)).toBeNull();
+    expect(screen.UNSAFE_getByType(TextInput)).toBeTruthy();
+  });
+
+  it('uses the sheet-aware text input inside a bottom sheet so the sheet follows the keyboard', () => {
+    mockInSheet = true;
+
+    render(<Input testID="input" error="Name is required" />);
+
+    expect(screen.UNSAFE_getByType(SheetTextInput)).toBeTruthy();
+    expect(screen.getByTestId('input-error')).toHaveTextContent('Name is required');
   });
 });

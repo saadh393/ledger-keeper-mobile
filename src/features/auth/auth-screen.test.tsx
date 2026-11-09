@@ -30,6 +30,14 @@ describe('authScreen and EmailPasswordForm', () => {
   });
 
   describe('screen rendering & elements', () => {
+    it('scrolls the focused field and its error above the keyboard', () => {
+      render(<AuthScreen />);
+
+      const scrollView = screen.getByTestId('auth-scroll-view');
+      expect(scrollView.props.bottomOffset).toBe(32);
+      expect(scrollView.props.keyboardShouldPersistTaps).toBe('handled');
+    });
+
     it('shows logo, headline, Google button, divider, email field, password field, and primary button', () => {
       render(<AuthScreen />);
 

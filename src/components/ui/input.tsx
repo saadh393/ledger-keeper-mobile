@@ -3,8 +3,10 @@ import type {
   TargetedEvent,
   TextInputProps,
 } from 'react-native';
+import { useBottomSheetInternal } from '@gorhom/bottom-sheet';
 import * as React from 'react';
 import { TextInput as NTextInput, View } from 'react-native';
+import { SheetTextInput } from '@/components/ui/sheet-text-input';
 import { Text } from '@/components/ui/text';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
 import { tv } from '@/lib/tv';
@@ -80,6 +82,7 @@ export function Input({
   } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
   const themeColors = useThemeColors();
+  const TextInput = (useBottomSheetInternal(true) ? SheetTextInput : NTextInput) as typeof NTextInput;
 
   const onBlur = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
@@ -116,7 +119,7 @@ export function Input({
         </Text>
       )}
       <View className="relative justify-center">
-        <NTextInput
+        <TextInput
           testID={testID}
           ref={ref}
           placeholderTextColor={themeColors['ink-500']}

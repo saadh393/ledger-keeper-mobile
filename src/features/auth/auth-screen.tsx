@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { BackHandler, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { FocusAwareStatusBar, SafeAreaView, Text } from '@/components/ui';
 import { EmailPasswordForm } from '@/features/auth/components/email-password-form';
@@ -32,68 +33,64 @@ export function AuthScreen() {
       className="flex-1 bg-paper-100"
     >
       <FocusAwareStatusBar />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      <KeyboardAwareScrollView
+        testID="auth-scroll-view"
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          paddingHorizontal: 24,
+          paddingVertical: 32,
+        }}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={32}
       >
-        <ScrollView
-          testID="auth-scroll-view"
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: 'center',
-            paddingHorizontal: 24,
-            paddingVertical: 32,
-          }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View className="w-full max-w-sm self-center">
-            <View className="mb-6 items-center">
-              <Logo size={48} testID="auth-logo" />
-            </View>
-
-            <Text
-              testID="auth-headline"
-              className="mb-8 text-center text-headline text-ink-900"
-            >
-              {t('auth.headline')}
-            </Text>
-
-            {sessionNotice
-              ? (
-                  <View
-                    testID="auth-session-notice"
-                    className="mb-6 rounded-xl border border-clay-500/20 bg-clay-100 p-3"
-                  >
-                    <Text
-                      testID="auth-session-notice-text"
-                      className="text-center text-body font-medium text-clay-500"
-                    >
-                      {sessionNotice}
-                    </Text>
-                  </View>
-                )
-              : null}
-
-            <GoogleSignInButton
-              disabled={isEmailSubmitting}
-              onPendingChange={setIsGooglePending}
-            />
-
-            <View testID="auth-divider" className="my-6 flex-row items-center">
-              <View className="h-px flex-1 bg-border" />
-              <Text testID="auth-divider-text" className="mx-4 text-meta text-ink-500">
-                {t('auth.or')}
-              </Text>
-              <View className="h-px flex-1 bg-border" />
-            </View>
-
-            <EmailPasswordForm
-              disabled={isGooglePending}
-              onSubmittingChange={setIsEmailSubmitting}
-            />
+        <View className="w-full max-w-sm self-center">
+          <View className="mb-6 items-center">
+            <Logo size={48} testID="auth-logo" />
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+
+          <Text
+            testID="auth-headline"
+            className="mb-8 text-center text-headline text-ink-900"
+          >
+            {t('auth.headline')}
+          </Text>
+
+          {sessionNotice
+            ? (
+                <View
+                  testID="auth-session-notice"
+                  className="mb-6 rounded-xl border border-clay-500/20 bg-clay-100 p-3"
+                >
+                  <Text
+                    testID="auth-session-notice-text"
+                    className="text-center text-body font-medium text-clay-500"
+                  >
+                    {sessionNotice}
+                  </Text>
+                </View>
+              )
+            : null}
+
+          <GoogleSignInButton
+            disabled={isEmailSubmitting}
+            onPendingChange={setIsGooglePending}
+          />
+
+          <View testID="auth-divider" className="my-6 flex-row items-center">
+            <View className="h-px flex-1 bg-border" />
+            <Text testID="auth-divider-text" className="mx-4 text-meta text-ink-500">
+              {t('auth.or')}
+            </Text>
+            <View className="h-px flex-1 bg-border" />
+          </View>
+
+          <EmailPasswordForm
+            disabled={isGooglePending}
+            onSubmittingChange={setIsEmailSubmitting}
+          />
+        </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

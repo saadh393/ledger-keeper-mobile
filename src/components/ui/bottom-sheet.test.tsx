@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import * as React from 'react';
-import { BackHandler, Platform, Text as RNText, View } from 'react-native';
+import { BackHandler, Keyboard, Platform, Text as RNText, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
@@ -235,5 +235,38 @@ describe('bottomSheet animations and exports', () => {
     expect(BottomSheetScrollView).toBeDefined();
     expect(BottomSheetTextInput).toBeDefined();
     expect(useBottomSheet).toBeDefined();
+  });
+});
+
+describe('bottomSheet keyboard', () => {
+  it('follows the keyboard and returns to its snap point when the keyboard hides', () => {
+    render(
+      <BottomSheet testID="keyboard-sheet">
+        <RNText>Content</RNText>
+      </BottomSheet>,
+    );
+
+    const modal = screen.UNSAFE_getByType(BottomSheetModal);
+    expect(modal.props.keyboardBehavior).toBe('interactive');
+    expect(modal.props.keyboardBlurBehavior).toBe('restore');
+    expect(modal.props.android_keyboardInputMode).toBe('adjustPan');
+  });
+
+  it('dismisses the keyboard as soon as the sheet starts closing', () => {
+    const dismissSpy = jest.spyOn(Keyboard, 'dismiss');
+    const onAnimate = jest.fn();
+    render(
+      <BottomSheet testID="closing-sheet" onAnimate={onAnimate}>
+        <RNText>Content</RNText>
+      </BottomSheet>,
+    );
+
+    const modal = screen.UNSAFE_getByType(BottomSheetModal);
+    act(() => modal.props.onAnimate(0, 0, 100, 100));
+    expect(dismissSpy).not.toHaveBeenCalled();
+
+    act(() => modal.props.onAnimate(0, -1, 100, 800));
+    expect(dismissSpy).toHaveBeenCalledTimes(1);
+    expect(onAnimate).toHaveBeenLastCalledWith(0, -1, 100, 800);
   });
 });

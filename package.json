@@ -46,7 +46,7 @@
     "@expo-google-fonts/manrope": "^0.4.3",
     "@expo-google-fonts/noto-sans-bengali": "^0.4.4",
     "@expo/metro-runtime": "^6.1.2",
-    "@gorhom/bottom-sheet": "^5.2.8",
+    "@gorhom/bottom-sheet": "^5.2.14",
     "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/drawer": "^7.14.4",
     "@react-navigation/native": "^7.5.1",

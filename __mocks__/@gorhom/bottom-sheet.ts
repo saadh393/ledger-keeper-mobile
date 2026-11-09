@@ -35,4 +35,5 @@ class EnhancedBottomSheetModal extends actualMock.BottomSheetModal {
 module.exports = {
   ...actualMock,
   BottomSheetModal: EnhancedBottomSheetModal,
+  useBottomSheetInternal: (unsafe?: boolean) => (unsafe ? null : actualMock.useBottomSheetInternal()),
 };
