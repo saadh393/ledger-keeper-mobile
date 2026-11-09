@@ -75,6 +75,12 @@ describe('monthSwitcher navigation', () => {
     expect(label()).toHaveTextContent('নভেম্বর ২০২৬');
     expect(screen.getByLabelText('আগের মাস')).toBeOnTheScreen();
     expect(screen.getByLabelText('পরের মাস')).toBeOnTheScreen();
+    press(screen.getByLabelText('আগের মাস'));
+    expect(label()).toHaveTextContent('অক্টোবর ২০২৬');
+    expect(screen.getByText('এই মাস')).toBeOnTheScreen();
+    press(screen.getByText('এই মাস'));
+    expect(label()).toHaveTextContent('নভেম্বর ২০২৬');
+    expect(screen.queryByText('এই মাস')).not.toBeOnTheScreen();
   });
 
   it('disables next and hides This month on the current month', () => {
@@ -136,6 +142,24 @@ describe('monthSwitcher lifecycle', () => {
     expect(screen.getByLabelText('Next month')).toBeDisabled();
   });
 
+  it('keeps a past month and updates the controls when the app returns after month end', () => {
+    jest.setSystemTime(lastMinuteOfNovember);
+    render(<HomeScreen />);
+    pressPrevious();
+    expect(label()).toHaveTextContent('October 2026');
+    jest.setSystemTime(firstMinuteOfDecember);
+    emitAppState('active');
+    expect(label()).toHaveTextContent('October 2026');
+    expect(screen.getByText('This month')).toBeOnTheScreen();
+    pressNext();
+    expect(label()).toHaveTextContent('November 2026');
+    expect(screen.getByLabelText('Next month')).toBeEnabled();
+    pressNext();
+    expect(label()).toHaveTextContent('December 2026');
+    expect(screen.getByLabelText('Next month')).toBeDisabled();
+    expect(screen.queryByText('This month')).not.toBeOnTheScreen();
+  });
+
   it('jumps to the new current month after month end', () => {
     jest.setSystemTime(lastMinuteOfNovember);
     render(<HomeScreen />);
@@ -175,6 +199,9 @@ describe('monthSwitcher lifecycle', () => {
       expect(button.props.className).toContain('min-h-[44px]');
       expect(button.props.className).toContain('min-w-[44px]');
     });
-    expect(screen.getByTestId('month-switcher-this-month').props.className).toContain('min-h-[44px]');
+    const thisMonth = screen.getByTestId('month-switcher-this-month');
+    expect(thisMonth.props.className).toContain('min-h-[44px]');
+    expect(thisMonth.props.accessibilityRole).toBe('button');
+    expect(thisMonth).toHaveAccessibleName('This month');
   });
 });

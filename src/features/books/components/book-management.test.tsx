@@ -126,7 +126,7 @@ describe('book management', () => {
       mockApi.onGet('/books').reply(200, { items: [personal, trip, created] });
       await act(async () => response.resolve([201, created]));
 
-      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).toBeNull());
+      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).not.toBeOnTheScreen());
       expect(useActiveBookStore.getState().activeBookId).toBe(created.id);
       await waitFor(() => expect(getBooksRequests()).toBeGreaterThan(before));
       await waitFor(() => expect(screen.getByTestId('book-switcher-active-name')).toHaveTextContent('Work'));
@@ -155,7 +155,7 @@ describe('book management', () => {
       mockApi.onPost('/books').reply(201, created);
       fireEvent.press(screen.getByTestId('book-form-sheet-error-retry'));
       await waitFor(() => expect(mockApi.history.post).toHaveLength(2));
-      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).toBeNull());
+      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).not.toBeOnTheScreen());
     });
 
     it('keeps the sheet open with a Retry on server errors', async () => {
@@ -197,7 +197,7 @@ describe('book management', () => {
       await waitFor(() => expect(screen.getByTestId('book-form-sheet-submit')).toBeEnabled());
       fireEvent.press(screen.getByTestId('book-form-sheet-submit'));
 
-      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).toBeNull());
+      await waitFor(() => expect(screen.queryByTestId('book-form-sheet')).not.toBeOnTheScreen());
       expect(JSON.parse(mockApi.history.patch[0].data)).toEqual({ name: 'Holiday' });
       await waitFor(() => expect(getBooksRequests()).toBeGreaterThan(before));
     });
@@ -266,7 +266,7 @@ describe('book management', () => {
       mockApi.onGet('/books').reply(200, { items: [personal] });
       await act(async () => response.resolve([204]));
 
-      await waitFor(() => expect(screen.queryByTestId('book-delete-sheet')).toBeNull());
+      await waitFor(() => expect(screen.queryByTestId('book-delete-sheet')).not.toBeOnTheScreen());
       expect(useActiveBookStore.getState().activeBookId).toBe(personal.id);
       expect(screen.queryByTestId('book-item-b-trip')).toBeNull();
       await waitFor(() => expect(getBooksRequests()).toBeGreaterThan(before));
@@ -293,7 +293,7 @@ describe('book management', () => {
       fireEvent.press(screen.getByTestId('book-delete-sheet-error-retry'));
       await waitFor(() => expect(mockApi.history.delete).toHaveLength(2));
 
-      await waitFor(() => expect(screen.queryByTestId('book-delete-sheet')).toBeNull());
+      await waitFor(() => expect(screen.queryByTestId('book-delete-sheet')).not.toBeOnTheScreen());
     });
   });
 });

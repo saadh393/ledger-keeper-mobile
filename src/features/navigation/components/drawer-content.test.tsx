@@ -294,7 +294,7 @@ describe('appDrawerContent', () => {
       renderDrawer(navigation);
 
       await waitFor(() => {
-        expect(screen.queryByTestId('drawer-profile-loading')).toBeNull();
+        expect(screen.queryByTestId('drawer-profile-loading')).not.toBeOnTheScreen();
       });
 
       expect(screen.queryByTestId('drawer-profile-footer')).toBeNull();

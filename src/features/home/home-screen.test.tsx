@@ -96,7 +96,7 @@ describe('homeScreen', () => {
     expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
 
     await waitFor(() => {
-      expect(screen.queryByTestId('currency-picker-sheet')).toBeNull();
+      expect(screen.queryByTestId('currency-picker-sheet')).not.toBeOnTheScreen();
     });
 
     expect(screen.queryByText('Choose your currency')).toBeNull();

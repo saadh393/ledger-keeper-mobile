@@ -267,7 +267,7 @@ describe('currencyPickerSheet', () => {
       await user.press(retryBtn);
 
       await waitFor(() => {
-        expect(screen.queryByTestId('currency-picker-sheet')).toBeNull();
+        expect(screen.queryByTestId('currency-picker-sheet')).not.toBeOnTheScreen();
       });
 
       expect(mock.history.patch).toHaveLength(1);
