@@ -67,7 +67,7 @@ Rules for engineers are in [teams/software-engineer.md](./teams/software-enginee
 - The active book is remembered on the device.
 
 ### 3.3 Ledger (manual mode, free)
-- Month view: income, expense, net, and average stat tiles, plus the transaction list. Previous month is always allowed; next month is disabled on the current month.
+- Month view: income, expense, net, and average summary strip, plus the transaction list. Previous month is always allowed; next month is disabled on the current month.
 - Search, filter (all, income, expense), and sort.
 - Add, edit, and delete transactions manually. Itemised receipt transactions show their items.
 - Manage categories.

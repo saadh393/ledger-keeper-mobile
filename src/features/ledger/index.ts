@@ -6,6 +6,7 @@ export * from '@/features/ledger/components/month-switcher';
 export * from '@/features/ledger/components/transaction-list';
 export * from '@/features/ledger/hooks/use-ledger-month';
 export * from '@/features/ledger/schemas/book-table-schema';
+export * from '@/features/ledger/utils/format-compact-stat';
 export * from '@/features/ledger/utils/format-stat';
 export * from '@/features/ledger/utils/month';
 export * from '@/features/ledger/utils/stat-labels';

@@ -4,6 +4,7 @@ import type { BookTable } from '@/features/ledger/schemas/book-table-schema';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
+import * as ReactNative from 'react-native';
 import { useAuthStore } from '@/features/auth';
 import { useActiveBookStore } from '@/features/books/store/use-active-book-store';
 import { LedgerStats } from '@/features/ledger/components/ledger-stats';
@@ -60,6 +61,10 @@ describe('ledgerStats', () => {
   afterEach(async () => {
     mock.restore();
     act(() => {
+      ReactNative.Dimensions.set({
+        window: { width: 360, height: 740, scale: 3, fontScale: 1 },
+        screen: { width: 360, height: 740, scale: 3, fontScale: 1 },
+      });
       useAuthStore.setState({ status: 'idle' });
       useActiveBookStore.setState({ activeBookId: null });
     });
@@ -70,7 +75,7 @@ describe('ledgerStats', () => {
     mock.onGet('/books/book-1/table').reply(200, table([25000, 18000, 7000, 1500]));
     render(<LedgerStats {...november} />);
 
-    await waitFor(() => expect(values()).toEqual(['৳25,000', '৳18,000', '+ ৳7,000', '৳1,500']));
+    await waitFor(() => expect(values()).toEqual(['৳25,000', '৳18,000', '+৳7,000', '৳1,500']));
     expect(cells().map(cell => cell.props.accessibilityLabel)).toEqual([
       'Income, ৳25,000',
       'Expense, ৳18,000',
@@ -94,7 +99,7 @@ describe('ledgerStats', () => {
     await act(() => i18n.changeLanguage('bn'));
     render(<LedgerStats {...november} />);
 
-    await waitFor(() => expect(values()[0]).toBe('৳১,২৩,৪৫,৬৭৮'));
+    await waitFor(() => expect(values()[0]).toBe('৳১.২৩ কোটি'));
     valueNodes().forEach((value) => {
       expect(value.props.style).toEqual(expect.objectContaining({ fontVariant: ['tabular-nums'] }));
       expect(value.props.adjustsFontSizeToFit).toBe(true);
@@ -104,11 +109,81 @@ describe('ledgerStats', () => {
     expect(cells()[0]?.props.accessibilityLabel).toBe('আয়, ৳১,২৩,৪৫,৬৭৮');
   });
 
+  it('shows short English labels and keeps the full label in the accessibility label', async () => {
+    mock.onGet('/books/book-1/table').reply(200, table([1, 1, 0, 1]));
+    render(<LedgerStats {...november} />);
+
+    expect(await screen.findByText('Net')).toBeOnTheScreen();
+    expect(screen.getByText('Income')).toBeOnTheScreen();
+    expect(screen.getByText('Expense')).toBeOnTheScreen();
+    expect(screen.getByText('Avg')).toBeOnTheScreen();
+    expect(screen.queryByText('Net position')).not.toBeOnTheScreen();
+    expect(screen.queryByText('Avg / tx')).not.toBeOnTheScreen();
+  });
+
+  it.each([
+    { language: 'en', expected: ['৳12.3 Cr', '৳999 Cr', '+৳12.3 Cr', '৳46'], netLabel: 'Net position, + ৳123,456,789' },
+    { language: 'bn', expected: ['৳১২.৩ কোটি', '৳৯৯৯ কোটি', '+৳১২.৩ কোটি', '৳৪৬'], netLabel: 'নিট অবস্থান, + ৳১২,৩৪,৫৬,৭৮৯' },
+  ])('shows a large month compactly in $language with the exact value in the accessibility label', async ({ language, expected, netLabel }) => {
+    mock.onGet('/books/book-1/table').reply(200, table([123456789, 9990000000, 123456789, 45.5]));
+    await act(() => i18n.changeLanguage(language));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()).toEqual(expected));
+    expect(valueNodes()[2]?.props.className).toContain('text-forest-500');
+    expect(cells()[2]?.props.accessibilityLabel).toBe(netLabel);
+  });
+
+  it('shows the medium, rounding-edge and negative net values compactly', async () => {
+    mock.onGet('/books/book-1/table').reply(200, table([123456, 9995000, -250000, 0.4]));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()).toEqual(['৳1.23 L', '৳1 Cr', '−৳2.5 L', '৳0']));
+    expect(valueNodes()[2]?.props.className).toContain('text-clay-500');
+    expect(cells()[3]?.props.accessibilityLabel).toBe('Avg / tx, ৳0.4');
+  });
+
+  it('shows a USD book in K / M / B', async () => {
+    useActiveBookStore.setState({ activeBookId: business.id });
+    mock.onGet('/books/book-2/table').reply(200, table([1234567.89, 123456, 0, 50]));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()).toEqual(['$1.23M', '$123K', '$0', '$50']));
+    expect(cells()[0]?.props.accessibilityLabel).toBe('Income, $1,234,567.89');
+  });
+
+  it('keeps four equal cells in one row at the default font size', async () => {
+    mock.onGet('/books/book-1/table').reply(200, table([1, 1, 0, 1]));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()).toHaveLength(4));
+    expect(screen.getByTestId('ledger-stats').props.className).not.toContain('flex-wrap');
+    cells().forEach(cell => expect(cell.props.className).toContain('flex-1 basis-0'));
+  });
+
+  it('switches to two rows of two cells at a larger font size', async () => {
+    act(() => {
+      ReactNative.Dimensions.set({
+        window: { width: 360, height: 740, scale: 3, fontScale: 1.3 },
+        screen: { width: 360, height: 740, scale: 3, fontScale: 1.3 },
+      });
+    });
+    mock.onGet('/books/book-1/table').reply(200, table([1, 1, 0, 1]));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()).toHaveLength(4));
+    expect(screen.getByTestId('ledger-stats').props.className).toContain('flex-wrap');
+    cells().forEach((cell) => {
+      expect(cell.props.className).toContain('basis-1/2');
+      expect(cell.props.className).not.toContain('flex-1');
+    });
+  });
+
   it('shows a negative net position with − in clay-500', async () => {
     mock.onGet('/books/book-1/table').reply(200, table([1000, 3500, -2500, 875]));
     render(<LedgerStats {...november} />);
 
-    await waitFor(() => expect(values()[2]).toBe('− ৳2,500'));
+    await waitFor(() => expect(values()[2]).toBe('−৳2,500'));
     expect(valueNodes()[2]?.props.className).toContain('text-clay-500');
   });
 
@@ -130,6 +205,7 @@ describe('ledgerStats', () => {
     expectPlaceholders();
     await waitFor(() => expect(mock.history.get.some(request => request.url === '/books/book-1/table')).toBe(true));
     expectPlaceholders();
+    expect(cells()[2]?.props.accessibilityLabel).toBe('Net position, Loading');
     expect(screen.queryByText('৳0')).not.toBeOnTheScreen();
   });
 
@@ -144,8 +220,16 @@ describe('ledgerStats', () => {
     expect(await screen.findByText('Savings rate')).toBeOnTheScreen();
     expect(screen.getByText('আয়')).toBeOnTheScreen();
     expect(screen.getByText('খরচ')).toBeOnTheScreen();
-    expect(screen.getByText('নিট অবস্থান')).toBeOnTheScreen();
-    expect(screen.getByText('গড় / লেনদেন')).toBeOnTheScreen();
+    expect(screen.getByText('নিট')).toBeOnTheScreen();
+    expect(screen.getByText('গড়')).toBeOnTheScreen();
+    expect(screen.queryByText('নিট অবস্থান')).not.toBeOnTheScreen();
+    expect(cells().map(cell => cell.props.accessibilityLabel)).toEqual([
+      'আয়, ৳১',
+      'খরচ, ৳১',
+      'নিট অবস্থান, ৳০',
+      'গড় / লেনদেন, ৳১',
+      'Savings rate, ৳৫',
+    ]);
   });
 
   it('shows the error state with Retry, and Retry refetches', async () => {
@@ -157,7 +241,7 @@ describe('ledgerStats', () => {
 
     fireEvent.press(screen.getByText('Retry'));
 
-    await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']));
+    await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+৳300', '৳100']));
     expect(screen.queryByTestId('ledger-stats-error')).not.toBeOnTheScreen();
   });
 
@@ -169,11 +253,11 @@ describe('ledgerStats', () => {
         <LedgerStats {...november} />
       </QueryClientProvider>,
     );
-    await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']));
+    await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+৳300', '৳100']));
 
     await act(() => client.refetchQueries({ queryKey: ['books', 'book-1', 'table'] }));
 
-    expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']);
+    expect(values()).toEqual(['৳500', '৳200', '+৳300', '৳100']);
     expect(screen.queryByTestId('ledger-stats-error')).not.toBeOnTheScreen();
   });
 
@@ -195,7 +279,7 @@ describe('ledgerStats', () => {
 
     await waitFor(() => expect(mock.history.get.some(request => request.params?.fromDate === '2026-10-01')).toBe(true));
     await act(async () => resolveOctober([200, table([100, 50, 50, 10])]));
-    await waitFor(() => expect(values()).toEqual(['৳100', '৳50', '+ ৳50', '৳10']));
+    await waitFor(() => expect(values()).toEqual(['৳100', '৳50', '+৳50', '৳10']));
   });
 
   it('shows placeholders, then the new book values in its currency, when the book changes', async () => {
@@ -214,6 +298,6 @@ describe('ledgerStats', () => {
     expectPlaceholders();
     await waitFor(() => expect(mock.history.get.some(request => request.url === '/books/book-2/table')).toBe(true));
     await act(async () => resolveBusiness([200, table([70, 20, -5, 3])]));
-    await waitFor(() => expect(values()).toEqual(['$70', '$20', '− $5', '$3']));
+    await waitFor(() => expect(values()).toEqual(['$70', '$20', '−$5', '$3']));
   });
 });

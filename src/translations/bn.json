@@ -161,7 +161,13 @@
       "expense": "খরচ",
       "income": "আয়",
       "netPosition": "নিট অবস্থান",
-      "retry": "আবার চেষ্টা করুন"
+      "retry": "আবার চেষ্টা করুন",
+      "short": {
+        "average": "গড়",
+        "expense": "খরচ",
+        "income": "আয়",
+        "net": "নিট"
+      }
     },
     "thisMonth": "এই মাস"
   },

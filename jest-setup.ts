@@ -137,3 +137,12 @@ global.window = {};
 
 // @ts-expect-error
 global.window = global;
+
+const { Dimensions } = require('react-native');
+
+const windowMetrics = Dimensions.get('window');
+const screenMetrics = Dimensions.get('screen');
+Dimensions.set({
+  window: { ...windowMetrics, fontScale: 1 },
+  screen: { ...screenMetrics, fontScale: 1 },
+});

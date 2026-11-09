@@ -161,7 +161,13 @@
       "expense": "Expense",
       "income": "Income",
       "netPosition": "Net position",
-      "retry": "Retry"
+      "retry": "Retry",
+      "short": {
+        "average": "Avg",
+        "expense": "Expense",
+        "income": "Income",
+        "net": "Net"
+      }
     },
     "thisMonth": "This month"
   },

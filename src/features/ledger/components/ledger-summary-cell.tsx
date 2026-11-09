@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { twMerge } from '@/lib/tw-merge';
@@ -9,18 +8,25 @@ export type LedgerSummaryCellProps = {
   value: string;
   valueClassName?: string;
   loading: boolean;
+  accessibilityLabel: string;
+  className?: string;
 };
 
-export function LedgerSummaryCell({ label, value, valueClassName, loading }: LedgerSummaryCellProps) {
-  const { t } = useTranslation();
-
+export function LedgerSummaryCell({
+  label,
+  value,
+  valueClassName,
+  loading,
+  accessibilityLabel,
+  className,
+}: LedgerSummaryCellProps) {
   return (
     <View
       testID="ledger-summary-cell"
       accessible
-      accessibilityLabel={`${label}, ${loading ? t('common.loading') : value}`}
+      accessibilityLabel={accessibilityLabel}
       aria-busy={loading}
-      className="min-w-0 flex-1 basis-0 px-1.5 py-0.5"
+      className={twMerge('min-w-0 px-1.5 py-0.5', className)}
     >
       <Text className="text-label text-ink-500" numberOfLines={1}>
         {label}
