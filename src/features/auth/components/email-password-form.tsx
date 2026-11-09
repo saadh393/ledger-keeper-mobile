@@ -1,3 +1,4 @@
+import type { TextInput, TextInputProps } from 'react-native';
 import { useForm } from '@tanstack/react-form';
 import { useRouter } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react-native';
@@ -200,23 +201,30 @@ function useEmailPasswordForm({
 
 type FormInstance = ReturnType<typeof useEmailPasswordForm>['form'];
 
+type FieldKeyboardProps = Pick<TextInputProps, 'returnKeyType' | 'onSubmitEditing' | 'submitBehavior'> & {
+  ref?: React.Ref<TextInput | null>;
+};
+
 function NameFormField({
   form,
   validator,
   label,
   placeholder,
   disabled,
+  keyboard,
 }: {
   form: FormInstance;
   validator: ReturnType<typeof createNameSchema>;
   label: string;
   placeholder: string;
   disabled: boolean;
+  keyboard: FieldKeyboardProps;
 }) {
   return (
     <form.Field name="name" validators={{ onChange: validator, onSubmit: validator }}>
       {field => (
         <Input
+          {...keyboard}
           testID="name-input"
           label={label}
           placeholder={placeholder}
@@ -238,17 +246,20 @@ function EmailFormField({
   label,
   placeholder,
   disabled,
+  keyboard,
 }: {
   form: FormInstance;
   validator: ReturnType<typeof createEmailSchema>;
   label: string;
   placeholder: string;
   disabled: boolean;
+  keyboard: FieldKeyboardProps;
 }) {
   return (
     <form.Field name="email" validators={{ onChange: validator, onSubmit: validator }}>
       {field => (
         <Input
+          {...keyboard}
           testID="email-input"
           label={label}
           placeholder={placeholder}
@@ -280,6 +291,7 @@ function PasswordFormField({
   showLabel,
   hideLabel,
   iconColor,
+  keyboard,
 }: {
   form: FormInstance;
   validator: ReturnType<typeof createSignUpPasswordSchema> | ReturnType<typeof createSignInPasswordSchema>;
@@ -292,6 +304,7 @@ function PasswordFormField({
   showLabel: string;
   hideLabel: string;
   iconColor: string;
+  keyboard: FieldKeyboardProps;
 }) {
   return (
     <form.Field
@@ -303,6 +316,7 @@ function PasswordFormField({
     >
       {field => (
         <Input
+          {...keyboard}
           testID="password-input"
           label={label}
           placeholder={placeholder}
@@ -342,7 +356,6 @@ export function EmailPasswordForm({
   const themeColors = useThemeColors();
   const [mode, setMode] = React.useState<AuthMode>(initialMode);
   const [showPassword, setShowPassword] = React.useState(false);
-
   const isSignUp = mode === 'signup';
   const {
     nameValidator,
@@ -364,6 +377,8 @@ export function EmailPasswordForm({
   }, [isSubmitting, onSubmittingChange]);
 
   const isFormDisabled = isSubmitting || disabled;
+  const emailRef = React.useRef<TextInput>(null);
+  const passwordRef = React.useRef<TextInput>(null);
 
   const handleToggleMode = React.useCallback(() => {
     if (isFormDisabled) {
@@ -392,6 +407,7 @@ export function EmailPasswordForm({
           label={t('auth.name')}
           placeholder={t('auth.namePlaceholder')}
           disabled={isFormDisabled}
+          keyboard={{ returnKeyType: 'next', submitBehavior: 'submit', onSubmitEditing: () => emailRef.current?.focus() }}
         />
       )}
 
@@ -401,6 +417,7 @@ export function EmailPasswordForm({
         label={t('auth.email')}
         placeholder={t('auth.emailPlaceholder')}
         disabled={isFormDisabled}
+        keyboard={{ ref: emailRef, returnKeyType: 'next', submitBehavior: 'submit', onSubmitEditing: () => passwordRef.current?.focus() }}
       />
 
       <PasswordFormField
@@ -415,6 +432,7 @@ export function EmailPasswordForm({
         showLabel={t('auth.showPassword')}
         hideLabel={t('auth.hidePassword')}
         iconColor={themeColors['ink-500']}
+        keyboard={{ ref: passwordRef, returnKeyType: 'done', onSubmitEditing: () => form.handleSubmit() }}
       />
 
       {formError && <FormErrorMessage message={formError} />}
