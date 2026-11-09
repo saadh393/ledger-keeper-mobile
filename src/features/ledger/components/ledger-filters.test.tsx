@@ -70,7 +70,7 @@ function rowTitles() {
 }
 
 function statValues() {
-  return screen.getAllByTestId('stat-tile-value').map(node => node.props.children);
+  return screen.getAllByTestId('ledger-summary-value').map(node => node.props.children);
 }
 
 function tableRequests(mock: MockAdapter) {
@@ -91,7 +91,7 @@ async function renderLedger(rows = novemberRows) {
   mockRef.current.onGet('/books/book-1/table').reply(200, table(rows));
   const view = render(<Ledger {...november} />);
   await screen.findByText(rows[0]?.name ?? '');
-  await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(4));
+  await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
   return view;
 }
 
@@ -298,7 +298,7 @@ describe('ledger search, filter and sort', () => {
     render(<Ledger {...november} />);
 
     expect(await screen.findByText('No transactions in November 2026')).toBeOnTheScreen();
-    await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(4));
+    await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
     expect(screen.queryByText('No matching transactions')).not.toBeOnTheScreen();
   });
 
@@ -334,7 +334,7 @@ describe('ledger search, filter and sort', () => {
     act(() => useActiveBookStore.setState({ activeBookId: business.id }));
 
     expect(await screen.findByText('Client lunch')).toBeOnTheScreen();
-    await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(4));
+    await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
     expect(rowTitles()).toEqual(['Client lunch']);
     expect(screen.getByTestId('ledger-search').props.value).toBe('lunch');
   });

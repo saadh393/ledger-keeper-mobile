@@ -29,18 +29,22 @@ function table([income, expense, net, average]: [number, number, number, number]
   };
 }
 
-function tiles() {
-  return screen.getAllByTestId('ledger-stat-tile');
+function cells() {
+  return screen.getAllByTestId('ledger-summary-cell');
+}
+
+function valueNodes() {
+  return screen.getAllByTestId('ledger-summary-value');
 }
 
 function values() {
-  return screen.getAllByTestId('stat-tile-value').map(value => value.props.children);
+  return valueNodes().map(value => value.props.children);
 }
 
 function expectPlaceholders() {
-  expect(tiles()).toHaveLength(4);
-  expect(screen.getAllByTestId('stat-tile-placeholder')).toHaveLength(4);
-  expect(screen.queryAllByTestId('stat-tile-value')).toHaveLength(0);
+  expect(cells()).toHaveLength(4);
+  expect(screen.getAllByTestId('ledger-summary-placeholder')).toHaveLength(4);
+  expect(screen.queryAllByTestId('ledger-summary-value')).toHaveLength(0);
 }
 
 describe('ledgerStats', () => {
@@ -62,37 +66,42 @@ describe('ledgerStats', () => {
     await act(() => i18n.changeLanguage('en'));
   });
 
-  it('renders the four tiles from the server stats for the active book and month', async () => {
+  it('renders the four values in one strip from the server stats for the active book and month', async () => {
     mock.onGet('/books/book-1/table').reply(200, table([25000, 18000, 7000, 1500]));
     render(<LedgerStats {...november} />);
 
     await waitFor(() => expect(values()).toEqual(['৳25,000', '৳18,000', '+ ৳7,000', '৳1,500']));
-    expect(tiles().map(tile => tile.props.accessibilityLabel)).toEqual([
-      'Income: ৳25,000',
-      'Expense: ৳18,000',
-      'Net position: + ৳7,000',
-      'Avg / tx: ৳1,500',
+    expect(cells().map(cell => cell.props.accessibilityLabel)).toEqual([
+      'Income, ৳25,000',
+      'Expense, ৳18,000',
+      'Net position, + ৳7,000',
+      'Avg / tx, ৳1,500',
     ]);
+    cells().forEach(cell => expect(cell.props.accessible).toBe(true));
+    expect(screen.getByTestId('ledger-stats').props.className).toContain('bg-surface-container');
+    expect(screen.getByTestId('ledger-stats').props.className).toContain('flex-row');
     expect(mock.history.get.find(request => request.url === '/books/book-1/table')?.params).toEqual({ fromDate: '2026-11-01', toDate: '2026-11-30' });
 
-    const dots = screen.getAllByTestId('stat-tile-dot', { includeHiddenElements: true });
-    expect(dots[0]?.props.className).toContain('bg-forest-500');
-    expect(dots[1]?.props.className).toContain('bg-clay-500');
-    expect(screen.getAllByTestId('stat-tile-value')[2]?.props.className).toContain('text-forest-500');
+    expect(valueNodes()[0]?.props.className).toContain('text-forest-500');
+    expect(valueNodes()[1]?.props.className).toContain('text-clay-500');
+    expect(valueNodes()[2]?.props.className).toContain('text-forest-500');
+    expect(valueNodes()[3]?.props.className).not.toMatch(/text-(forest|clay)-500/);
+    valueNodes().forEach(value => expect(value.props.className).toContain('text-row-title'));
   });
 
-  it('uses tabular figures and lets large values wrap or shrink', async () => {
+  it('uses tabular figures and lets large values shrink on one line', async () => {
     mock.onGet('/books/book-1/table').reply(200, table([12345678, 12345678, 0, 12345678]));
     await act(() => i18n.changeLanguage('bn'));
     render(<LedgerStats {...november} />);
 
     await waitFor(() => expect(values()[0]).toBe('৳১,২৩,৪৫,৬৭৮'));
-    screen.getAllByTestId('stat-tile-value').forEach((value) => {
+    valueNodes().forEach((value) => {
       expect(value.props.style).toEqual(expect.objectContaining({ fontVariant: ['tabular-nums'] }));
       expect(value.props.adjustsFontSizeToFit).toBe(true);
-      expect(value.props.numberOfLines).toBe(2);
+      expect(value.props.numberOfLines).toBe(1);
+      expect(value.props.minimumFontScale).toBe(0.8);
     });
-    tiles().forEach(tile => expect(tile.props.className).toContain('min-w-[40%]'));
+    expect(cells()[0]?.props.accessibilityLabel).toBe('আয়, ৳১,২৩,৪৫,৬৭৮');
   });
 
   it('shows a negative net position with − in clay-500', async () => {
@@ -100,15 +109,15 @@ describe('ledgerStats', () => {
     render(<LedgerStats {...november} />);
 
     await waitFor(() => expect(values()[2]).toBe('− ৳2,500'));
-    expect(screen.getAllByTestId('stat-tile-value')[2]?.props.className).toContain('text-clay-500');
+    expect(valueNodes()[2]?.props.className).toContain('text-clay-500');
   });
 
-  it('shows 0 in every tile for a month with no transactions', async () => {
+  it('shows 0 in every cell for a month with no transactions', async () => {
     mock.onGet('/books/book-1/table').reply(200, table([0, 0, 0, 0]));
     render(<LedgerStats {...november} />);
 
     await waitFor(() => expect(values()).toEqual(['৳0', '৳0', '৳0', '৳0']));
-    const net = screen.getAllByTestId('stat-tile-value')[2];
+    const net = valueNodes()[2];
     expect(net?.props.className).not.toContain('text-forest-500');
     expect(net?.props.className).not.toContain('text-clay-500');
     expect(screen.queryByText(/NaN/)).not.toBeOnTheScreen();
@@ -152,7 +161,7 @@ describe('ledgerStats', () => {
     expect(screen.queryByTestId('ledger-stats-error')).not.toBeOnTheScreen();
   });
 
-  it('keeps the tiles when a later refetch fails', async () => {
+  it('keeps the strip when a later refetch fails', async () => {
     mock.onGet('/books/book-1/table').replyOnce(200, table([500, 200, 300, 100])).onGet('/books/book-1/table').reply(500);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(

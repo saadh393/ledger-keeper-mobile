@@ -72,7 +72,7 @@ Brand hues (logo, gradient text, category colors): blue `#4285f4`, green `#34a85
 | --- | --- | --- | --- |
 | Headline | 28–32 | 500 | Auth title, summary net |
 | Title | 18–20 | 500 | Screen and sheet titles |
-| Hero amount | 20–22 | 600 | Single-transaction amount, stat values |
+| Hero amount | 20–22 | 600 | Single-transaction amount |
 | Body L | 16 | 400 | AI bar input (16 stops iOS zoom) |
 | Body | 15 | 400 | Chat text, card body |
 | Row title | 14–15 | 500 | List titles, buttons, menu items |
@@ -84,7 +84,7 @@ Brand hues (logo, gradient text, category colors): blue `#4285f4`, green `#34a85
 ## 5. Spacing, shape, elevation, motion
 
 - **Spacing:** base 4; screen gutter 16; card padding 16 × 12–16; related items 8–12, groups 16–24.
-- **Radius:** fields 12 · rows and tiles 16 · stat tiles 20 · cards and menus 24 · sheets 28 · AI bar 32 · buttons, chips and avatars full.
+- **Radius:** fields 12 · rows, tiles and the summary strip 16 · cards and menus 24 · sheets 28 · AI bar 32 · buttons, chips and avatars full.
 - **Elevation:** mostly flat. Android elevation 1 (raised segment), 4 (menus), 12 (sheets). Sheet scrim `rgba(0,0,0,0.5)`, drawer scrim `0.4`.
 - **Motion** (Reanimated, on the UI thread): standard easing `cubic-bezier(0.2, 0, 0, 1)`; press 80 ms (scale 0.98, buttons only); state 120 ms; menus 150 ms; messages 200 ms; sheets and drawer 240 ms; cards fade-rise 6 px. Reduce-motion disables loops and decorative motion.
 - **Touch targets** at least 44 × 44. Respect safe areas and keep the AI bar above the keyboard.
@@ -101,7 +101,7 @@ Brand hues (logo, gradient text, category colors): blue `#4285f4`, green `#34a85
 | **AI bar** | Radius 32, `surface-container`, min height 56. Left: camera. Middle: multiline input (grows to 160). Right: mic, send (`accent`). While recording: discard, timer + credit estimate, waveform, send recording. Hint line below: "≈N credits per message · AI can make mistakes" |
 | **Artifact card** | Radius 24, `surface-container`, tone-tinted gradient border and corner glow (tones: info, income, expense, warning). Optional header (tone tile + label + meta) and footer |
 | **Ledger row** | Tone tile (income green / expense red) · title + meta (date, category) · signed amount right-aligned. Tap expands details (category, note, items). Long-press: Copy, Edit, Delete |
-| Stat tile | Radius 20, colored dot + label (13) + value (hero amount) |
+| Summary strip | One `surface-container` row, radius 16, 16 gutter, at most 64 tall at default font size. Equal cells, each a label (Label 13, `ink-500`) above a value (Row title 15, tabular, one line, shrinks to 12 before wrapping). Values: income `forest-500`, expense `clay-500`, signed net green / red / neutral at zero, others `ink-900`. Each cell is one accessibility item ("Income, ৳12,500.00"). Loading shows same-height placeholders; error shows the message with Retry in place of the strip. At large font sizes the cells wrap to two rows |
 | Tone tile | 40 (r12) or 48 (r16) square with the tone tint and icon |
 | Chip | Pill, `paper-200`, 12–13 label |
 | Bottom sheet | Top radius 28, grabber, title row with close |
@@ -119,9 +119,9 @@ Logo, "Your money, in plain words." headline, Google button, divider, email + pa
 ### 7.2 Ledger (home)
 - Top bar: menu (opens drawer) · "Ledger" · **Assistant** pill button · ⋯ (Manage categories).
 - Month switcher: ‹ November 2026 › with "This month" link; › disabled on the current month.
-- Stat tiles in a 2 × 2 grid: Income, Expense, Net position, Avg / tx.
+- Summary strip (secondary): Income, Expense, Net position, Avg / tx in one row, always for the whole month.
 - Search field + All / Income / Expense segmented filter + sort.
-- FlashList of ledger rows grouped by day; footer with count and totals. Pull to refresh.
+- FlashList of ledger rows grouped by day (primary, takes the rest of the screen); footer with count and totals. Pull to refresh.
 - **Add transaction** floating pill above the AI bar (manual mode).
 - **AI bar** pinned at the bottom.
 

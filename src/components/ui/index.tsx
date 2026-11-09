@@ -17,7 +17,6 @@ export * from './logo';
 export * from './progress-bar';
 export * from './segmented-control';
 export * from './select';
-export * from './stat-tile';
 export * from './text';
 export * from './tone-tile';
 export * from './utils';
