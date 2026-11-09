@@ -26,14 +26,22 @@ describe('groupRowsByDay', () => {
     expect(groupRowsByDay([])).toEqual([]);
   });
 
-  it('groups rows under their day, newest day first and newest row first within a day', () => {
+  it('puts a header before each run of rows on the same day, keeping the given order', () => {
+    expect(shape([
+      row('d', '2026-11-03T09:00:00.000Z'),
+      row('b', '2026-11-03T03:00:00.000Z'),
+      row('e', '2026-11-02T08:00:00.000Z'),
+      row('c', '2026-11-01T10:00:00.000Z'),
+      row('a', '2026-11-01T04:00:00.000Z'),
+    ])).toEqual(['2026-11-03', 'd', 'b', '2026-11-02', 'e', '2026-11-01', 'c', 'a']);
+  });
+
+  it('groups oldest first when given rows oldest first', () => {
     expect(shape([
       row('a', '2026-11-01T04:00:00.000Z'),
-      row('b', '2026-11-03T03:00:00.000Z'),
       row('c', '2026-11-01T10:00:00.000Z'),
-      row('d', '2026-11-03T09:00:00.000Z'),
-      row('e', '2026-11-02T08:00:00.000Z'),
-    ])).toEqual(['2026-11-03', 'd', 'b', '2026-11-02', 'e', '2026-11-01', 'c', 'a']);
+      row('b', '2026-11-03T03:00:00.000Z'),
+    ])).toEqual(['2026-11-01', 'a', 'c', '2026-11-03', 'b']);
   });
 
   it('puts a transaction at 23:30 UTC on the next Asia/Dhaka day', () => {
@@ -45,22 +53,16 @@ describe('groupRowsByDay', () => {
 
   it('splits rows either side of Dhaka midnight (18:00 UTC)', () => {
     expect(shape([
-      row('before', '2026-11-02T17:59:59.000Z'),
       row('after', '2026-11-02T18:00:00.000Z'),
+      row('before', '2026-11-02T17:59:59.000Z'),
     ])).toEqual(['2026-11-03', 'after', '2026-11-02', 'before']);
   });
 
-  it('keeps server order for rows at the same instant and gives each item a unique key', () => {
+  it('gives each item a unique key', () => {
     const items = groupRowsByDay([
       row('first', '2026-11-02T08:00:00.000Z'),
       row('second', '2026-11-02T08:00:00.000Z'),
     ]);
     expect(items.map(item => item.key)).toEqual(['day-2026-11-02', 'first', 'second']);
-  });
-
-  it('does not mutate the input', () => {
-    const rows = [row('a', '2026-11-01T04:00:00.000Z'), row('b', '2026-11-03T04:00:00.000Z')];
-    groupRowsByDay(rows);
-    expect(rows.map(item => item.id)).toEqual(['a', 'b']);
   });
 });

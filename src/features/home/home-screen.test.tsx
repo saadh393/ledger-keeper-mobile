@@ -31,10 +31,11 @@ describe('homeScreen', () => {
     await act(() => i18n.changeLanguage('en'));
   });
 
-  it('shows the month switcher, stat tiles and the transaction list placeholders', () => {
+  it('shows the month switcher, stat tiles, search toolbar and the transaction list placeholders', () => {
     render(<HomeScreen />);
     expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
     expect(screen.getByTestId('ledger-stats')).toBeOnTheScreen();
+    expect(screen.getByTestId('ledger-toolbar')).toBeOnTheScreen();
     expect(screen.getAllByTestId('ledger-row-placeholder')).toHaveLength(6);
   });
 

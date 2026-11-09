@@ -1,4 +1,5 @@
 import type { ListRenderItem } from '@shopify/flash-list';
+import type { TransactionRow } from '@/features/ledger/schemas/book-table-schema';
 import type { LedgerListItem } from '@/features/ledger/utils/group-rows-by-day';
 import type { Month, MonthRange } from '@/features/ledger/utils/month';
 import { FlashList } from '@shopify/flash-list';
@@ -13,10 +14,13 @@ import { LedgerDayHeader } from '@/features/ledger/components/ledger-day-header'
 import { LedgerListFooter } from '@/features/ledger/components/ledger-list-footer';
 import { LedgerRow } from '@/features/ledger/components/ledger-row';
 import { LedgerRowPlaceholder } from '@/features/ledger/components/ledger-row-placeholder';
+import { useLedgerFiltersStore } from '@/features/ledger/store/use-ledger-filters-store';
+import { filterRows, isAmountSort } from '@/features/ledger/utils/filter-rows';
 import { groupRowsByDay } from '@/features/ledger/utils/group-rows-by-day';
 import { formatMonthLabel } from '@/features/ledger/utils/month';
 import { formatDayHeader } from '@/lib/format/day-header';
 import { toDayKey } from '@/lib/format/day-key';
+import { useDebouncedValue } from '@/lib/hooks/use-debounced-value';
 import { resolveLanguage } from '@/lib/i18n/resolve-language';
 
 export type TransactionListProps = MonthRange & {
@@ -24,6 +28,12 @@ export type TransactionListProps = MonthRange & {
 };
 
 const placeholderKeys = Array.from({ length: 6 }, (_, index) => `placeholder-${index}`);
+
+const searchDelayMs = 250;
+
+function toFlatItems(rows: TransactionRow[]): LedgerListItem[] {
+  return rows.map(row => ({ type: 'row', key: row.id, row }));
+}
 
 export function TransactionList({ month, firstDay, lastDay }: TransactionListProps) {
   const { t, i18n } = useTranslation();
@@ -35,13 +45,21 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
   const currency = activeBook.activeBook?.currency ?? 'BDT';
   const today = toDayKey(new Date());
   const rows = table.data?.rows;
-  const items = React.useMemo(() => groupRowsByDay(rows ?? []), [rows]);
+  const typedQuery = useLedgerFiltersStore(state => state.query);
+  const debouncedQuery = useDebouncedValue(typedQuery, searchDelayMs);
+  const query = typedQuery ? debouncedQuery : '';
+  const kind = useLedgerFiltersStore(state => state.kind);
+  const sort = useLedgerFiltersStore(state => state.sort);
+  const clearFilters = useLedgerFiltersStore(state => state.clearFilters);
+  const showDate = isAmountSort(sort);
+  const shownRows = React.useMemo(() => filterRows(rows ?? [], { query, kind, sort }), [rows, query, kind, sort]);
+  const items = React.useMemo(() => (showDate ? toFlatItems(shownRows) : groupRowsByDay(shownRows)), [showDate, shownRows]);
 
   const renderItem = React.useCallback<ListRenderItem<LedgerListItem>>(
     ({ item }) => (item.type === 'day'
       ? <LedgerDayHeader label={formatDayHeader(item.day, locale, today)} />
-      : <LedgerRow row={item.row} locale={locale} currency={currency} />),
-    [locale, currency, today],
+      : <LedgerRow row={item.row} locale={locale} currency={currency} showDate={showDate} />),
+    [locale, currency, today, showDate],
   );
 
   const refresh = async () => {
@@ -83,14 +101,23 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
       refreshing={refreshing}
       onRefresh={refresh}
       contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
-      ListEmptyComponent={(
-        <EmptyState
-          testID="ledger-list-empty"
-          title={t('ledger.list.empty', { month: formatMonthLabel(month, locale) })}
-        />
-      )}
+      ListEmptyComponent={table.data.rows.length
+        ? (
+            <EmptyState
+              testID="ledger-list-no-matches"
+              title={t('ledger.list.noMatches')}
+              actionLabel={t('ledger.list.clearFilters')}
+              onAction={clearFilters}
+            />
+          )
+        : (
+            <EmptyState
+              testID="ledger-list-empty"
+              title={t('ledger.list.empty', { month: formatMonthLabel(month, locale) })}
+            />
+          )}
       ListFooterComponent={items.length
-        ? <LedgerListFooter count={table.data.rows.length} stats={table.data.stats} locale={locale} currency={currency} />
+        ? <LedgerListFooter count={table.data.rows.length} shown={shownRows.length} stats={table.data.stats} locale={locale} currency={currency} />
         : null}
     />
   );

@@ -98,14 +98,34 @@
     "title": "লেজার কিপার"
   },
   "ledger": {
+    "filter": {
+      "all": "সব",
+      "expense": "খরচ",
+      "income": "আয়"
+    },
     "list": {
+      "clearFilters": "ফিল্টার মুছুন",
       "empty": "{{month}}-এ কোনো লেনদেন নেই",
       "error": "লেনদেন লোড করা যায়নি",
+      "noMatches": "মিলে যাওয়া কোনো লেনদেন নেই",
       "refreshError": "রিফ্রেশ করা যায়নি",
+      "shownOfTotal": "{{total}}টির মধ্যে {{shown}}টি লেনদেন",
       "transactions": "লেনদেন"
     },
     "nextMonth": "পরের মাস",
     "previousMonth": "আগের মাস",
+    "search": {
+      "clear": "খোঁজা মুছুন",
+      "placeholder": "লেনদেন খুঁজুন"
+    },
+    "sort": {
+      "button": "সাজান",
+      "highest": "সর্বোচ্চ পরিমাণ",
+      "lowest": "সর্বনিম্ন পরিমাণ",
+      "newest": "নতুন আগে",
+      "oldest": "পুরনো আগে",
+      "title": "সাজানোর ক্রম"
+    },
     "stats": {
       "averagePerTransaction": "গড় / লেনদেন",
       "error": "এই মাসের হিসাব লোড করা যায়নি",

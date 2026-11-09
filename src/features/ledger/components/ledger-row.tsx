@@ -11,10 +11,11 @@ export type LedgerRowProps = {
   row: TransactionRow;
   locale: Language;
   currency: string;
+  showDate?: boolean;
 };
 
-export const LedgerRow = React.memo(({ row, locale, currency }: LedgerRowProps) => {
-  const meta = formatRowMeta(row, locale);
+export const LedgerRow = React.memo(({ row, locale, currency, showDate = false }: LedgerRowProps) => {
+  const meta = formatRowMeta(row, locale, showDate);
   const amount = formatRowAmount(row, locale, currency);
 
   return (

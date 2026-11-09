@@ -98,14 +98,34 @@
     "title": "Ledger Keeper"
   },
   "ledger": {
+    "filter": {
+      "all": "All",
+      "expense": "Expense",
+      "income": "Income"
+    },
     "list": {
+      "clearFilters": "Clear filters",
       "empty": "No transactions in {{month}}",
       "error": "Could not load transactions",
+      "noMatches": "No matching transactions",
       "refreshError": "Could not refresh",
+      "shownOfTotal": "{{shown}} of {{total}} transactions",
       "transactions": "Transactions"
     },
     "nextMonth": "Next month",
     "previousMonth": "Previous month",
+    "search": {
+      "clear": "Clear search",
+      "placeholder": "Search transactions"
+    },
+    "sort": {
+      "button": "Sort",
+      "highest": "Highest amount",
+      "lowest": "Lowest amount",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "title": "Sort by"
+    },
     "stats": {
       "averagePerTransaction": "Avg / tx",
       "error": "Could not load this month's totals",

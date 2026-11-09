@@ -6,10 +6,9 @@ export type LedgerListItem
     | { type: 'row'; key: string; row: TransactionRow };
 
 export function groupRowsByDay(rows: TransactionRow[]): LedgerListItem[] {
-  const sorted = [...rows].sort((a, b) => Date.parse(b.dateIso) - Date.parse(a.dateIso));
   const items: LedgerListItem[] = [];
   let currentDay = '';
-  for (const row of sorted) {
+  for (const row of rows) {
     const day = toDayKey(row.dateIso);
     if (day !== currentDay) {
       currentDay = day;

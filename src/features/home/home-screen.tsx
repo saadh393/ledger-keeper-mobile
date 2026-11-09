@@ -3,7 +3,7 @@ import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { View } from '@/components/ui';
 import { CurrencyPickerSheet } from '@/features/currency';
-import { LedgerStats, MonthSwitcher, TransactionList, useLedgerMonth } from '@/features/ledger';
+import { LedgerStats, LedgerToolbar, MonthSwitcher, TransactionList, useLedgerMonth } from '@/features/ledger';
 
 export function HomeScreen() {
   const ledgerMonth = useLedgerMonth();
@@ -31,6 +31,7 @@ export function HomeScreen() {
         onCurrent={ledgerMonth.goToCurrentMonth}
       />
       <LedgerStats firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
+      <LedgerToolbar />
       <View className="mt-2 flex-1">
         <TransactionList month={ledgerMonth.month} firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
       </View>
