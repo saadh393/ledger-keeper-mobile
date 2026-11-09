@@ -2,6 +2,7 @@ export * from '@/features/ledger/api/fetch-book-table';
 export * from '@/features/ledger/api/use-book-table';
 export * from '@/features/ledger/components/ledger-stats';
 export * from '@/features/ledger/components/month-switcher';
+export * from '@/features/ledger/components/transaction-list';
 export * from '@/features/ledger/hooks/use-ledger-month';
 export * from '@/features/ledger/schemas/book-table-schema';
 export * from '@/features/ledger/utils/format-stat';

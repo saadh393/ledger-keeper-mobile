@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import type { Book } from '@/features/books/schemas/book-schema';
 import type { BookTable } from '@/features/ledger/schemas/book-table-schema';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
 import { useAuthStore } from '@/features/auth';
@@ -148,6 +149,22 @@ describe('ledgerStats', () => {
     fireEvent.press(screen.getByText('Retry'));
 
     await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']));
+    expect(screen.queryByTestId('ledger-stats-error')).not.toBeOnTheScreen();
+  });
+
+  it('keeps the tiles when a later refetch fails', async () => {
+    mock.onGet('/books/book-1/table').replyOnce(200, table([500, 200, 300, 100])).onGet('/books/book-1/table').reply(500);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <LedgerStats {...november} />
+      </QueryClientProvider>,
+    );
+    await waitFor(() => expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']));
+
+    await act(() => client.refetchQueries({ queryKey: ['books', 'book-1', 'table'] }));
+
+    expect(values()).toEqual(['৳500', '৳200', '+ ৳300', '৳100']);
     expect(screen.queryByTestId('ledger-stats-error')).not.toBeOnTheScreen();
   });
 

@@ -7,7 +7,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, userEvent } from '@testing-library/react-native';
 import * as React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '@shopify/flash-list/jestSetup';
+
+const initialMetrics = {
+  frame: { x: 0, y: 0, width: 320, height: 640 },
+  insets: { top: 0, left: 0, right: 0, bottom: 0 },
+};
 
 function createAppWrapper() {
   const queryClient = new QueryClient({
@@ -22,11 +28,13 @@ function createAppWrapper() {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      <BottomSheetModalProvider>
-        <NavigationContainer>{children}</NavigationContainer>
-      </BottomSheetModalProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider initialMetrics={initialMetrics}>
+      <QueryClientProvider client={queryClient}>
+        <BottomSheetModalProvider>
+          <NavigationContainer>{children}</NavigationContainer>
+        </BottomSheetModalProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
 

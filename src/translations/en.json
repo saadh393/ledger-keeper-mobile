@@ -95,6 +95,12 @@
     "title": "Ledger Keeper"
   },
   "ledger": {
+    "list": {
+      "empty": "No transactions in {{month}}",
+      "error": "Could not load transactions",
+      "refreshError": "Could not refresh",
+      "transactions": "Transactions"
+    },
     "nextMonth": "Next month",
     "previousMonth": "Previous month",
     "stats": {

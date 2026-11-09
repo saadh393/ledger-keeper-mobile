@@ -14,7 +14,7 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
   const activeBook = useActiveBook();
   const table = useBookTable(activeBook.activeBookId, firstDay, lastDay);
 
-  if (activeBook.isError || table.isError) {
+  if (activeBook.isError || (table.isError && !table.data)) {
     return (
       <EmptyState
         testID="ledger-stats-error"

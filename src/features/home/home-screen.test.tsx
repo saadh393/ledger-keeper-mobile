@@ -31,15 +31,11 @@ describe('homeScreen', () => {
     await act(() => i18n.changeLanguage('en'));
   });
 
-  it('shows the app name', () => {
+  it('shows the month switcher, stat tiles and the transaction list placeholders', () => {
     render(<HomeScreen />);
-    expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
-  });
-
-  it('shows the app name in Bangla', async () => {
-    await act(() => i18n.changeLanguage('bn'));
-    render(<HomeScreen />);
-    expect(screen.getByText('লেজার কিপার')).toBeOnTheScreen();
+    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
+    expect(screen.getByTestId('ledger-stats')).toBeOnTheScreen();
+    expect(screen.getAllByTestId('ledger-row-placeholder')).toHaveLength(6);
   });
 
   it('opens currency picker sheet when currencyConfirmed is false', async () => {
@@ -63,7 +59,7 @@ describe('homeScreen', () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
+    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
 
     await waitFor(() => {
       expect(screen.getByTestId('currency-picker-sheet')).toBeOnTheScreen();
@@ -93,7 +89,7 @@ describe('homeScreen', () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText('Ledger Keeper')).toBeOnTheScreen();
+    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
 
     await waitFor(() => {
       expect(screen.queryByTestId('currency-picker-sheet')).not.toBeOnTheScreen();

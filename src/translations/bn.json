@@ -95,6 +95,12 @@
     "title": "লেজার কিপার"
   },
   "ledger": {
+    "list": {
+      "empty": "{{month}}-এ কোনো লেনদেন নেই",
+      "error": "লেনদেন লোড করা যায়নি",
+      "refreshError": "রিফ্রেশ করা যায়নি",
+      "transactions": "লেনদেন"
+    },
     "nextMonth": "পরের মাস",
     "previousMonth": "আগের মাস",
     "stats": {
