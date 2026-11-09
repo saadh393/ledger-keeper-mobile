@@ -259,3 +259,30 @@ describe('segmentedControl animation and reduced motion', () => {
     );
   });
 });
+
+describe('segmentedControl drawing order', () => {
+  it('keeps the raised pill in an unelevated layer drawn before the labels', () => {
+    render(
+      <SegmentedControl
+        options={['All', 'Income', 'Expense']}
+        value="Expense"
+        onChange={jest.fn()}
+        testID="order"
+      />,
+    );
+
+    fireEvent(screen.getByTestId('order-track'), 'layout', {
+      nativeEvent: { layout: { width: 300, height: 48, x: 0, y: 0 } },
+    });
+
+    const layer = screen.getByTestId('order-indicator-layer');
+    const pill = screen.getByTestId('order-active-indicator');
+
+    expect(layer.props.style?.elevation).toBeUndefined();
+    expect(layer).toContainElement(pill);
+    expect(layer).not.toContainElement(screen.getByText('Expense'));
+
+    const pillStyle = Object.assign({}, ...[pill.props.style].flat(Infinity).filter(Boolean));
+    expect(pillStyle.elevation).toBe(1);
+  });
+});

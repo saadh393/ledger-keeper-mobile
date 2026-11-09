@@ -4,6 +4,7 @@ import {
   AccessibilityInfo,
   Platform,
   Pressable,
+  StyleSheet,
   View,
 } from 'react-native';
 import Animated, {
@@ -212,21 +213,26 @@ export function SegmentedControl<T extends string = string>({
       accessibilityRole="tablist"
     >
       {containerWidth > 0 && segmentWidth > 0 && (
-        <Animated.View
+        <View
           pointerEvents="none"
-          testID={testID ? `${testID}-active-indicator` : 'segmented-control-active-indicator'}
-          style={[
-            {
-              position: 'absolute',
-              top: padding,
-              bottom: padding,
-              left: padding,
-            },
-            animatedIndicatorStyle,
-            elevationStyle,
-          ]}
-          className="rounded-full bg-surface"
-        />
+          testID={testID ? `${testID}-indicator-layer` : 'segmented-control-indicator-layer'}
+          style={StyleSheet.absoluteFill}
+        >
+          <Animated.View
+            testID={testID ? `${testID}-active-indicator` : 'segmented-control-active-indicator'}
+            style={[
+              {
+                position: 'absolute',
+                top: padding,
+                bottom: padding,
+                left: padding,
+              },
+              animatedIndicatorStyle,
+              elevationStyle,
+            ]}
+            className="rounded-full bg-surface"
+          />
+        </View>
       )}
 
       {normalizedOptions.map(option => (
