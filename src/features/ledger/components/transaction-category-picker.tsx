@@ -1,10 +1,10 @@
-import type { CategoryItem } from '@/features/ledger/schemas/category-schema';
+import type { CategoryItem } from '@/features/categories/schemas/category-schema';
 import { Check } from 'lucide-react-native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { Button, Input, Text } from '@/components/ui';
-import { useCategories } from '@/features/ledger/api/use-categories';
+import { useCategories } from '@/features/categories/api/use-categories';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type TransactionCategoryPickerProps = {

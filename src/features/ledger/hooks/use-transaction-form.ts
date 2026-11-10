@@ -5,7 +5,7 @@ import type { Month } from '@/features/ledger/utils/month';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
-import { useCategories } from '@/features/ledger/api/use-categories';
+import { useCategories } from '@/features/categories/api/use-categories';
 import { useTransactionFormSchema } from '@/features/ledger/hooks/use-transaction-form-schema';
 import { useTransactionSubmit } from '@/features/ledger/hooks/use-transaction-submit';
 import { parseAmount } from '@/features/ledger/schemas/transaction-form-schema';

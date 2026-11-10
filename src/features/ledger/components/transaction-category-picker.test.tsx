@@ -1,4 +1,4 @@
-import type { CategoryItem } from '@/features/ledger/schemas/category-schema';
+import type { CategoryItem } from '@/features/categories/schemas/category-schema';
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
 import { TransactionCategoryPicker } from '@/features/ledger/components/transaction-category-picker';

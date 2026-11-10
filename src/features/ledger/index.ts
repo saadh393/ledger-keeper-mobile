@@ -1,6 +1,7 @@
 export * from '@/features/ledger/api/fetch-book-table';
 export * from '@/features/ledger/api/use-book-table';
 export * from '@/features/ledger/components/add-transaction-button';
+export * from '@/features/ledger/components/ledger-more-button';
 export * from '@/features/ledger/components/ledger-stats';
 export * from '@/features/ledger/components/ledger-toolbar';
 export * from '@/features/ledger/components/month-switcher';

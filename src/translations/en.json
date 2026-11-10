@@ -76,6 +76,37 @@
     "retry": "Retry",
     "switcherTitle": "Switch book"
   },
+  "categories": {
+    "add": "Add category",
+    "builtIn": "Built-in",
+    "delete": "Delete {{name}}",
+    "deleteSheet": {
+      "body": "Existing transactions keep this category name.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "title": "Delete “{{name}}”?"
+    },
+    "empty": "No categories yet",
+    "error": "Could not load categories",
+    "errors": {
+      "nameRequired": "Name is required",
+      "nameTaken": "You already have this category",
+      "nameTooLong": "Name must be at most 40 characters",
+      "offline": "You’re offline. Check your connection and try again.",
+      "server": "Something went wrong. Try again."
+    },
+    "form": {
+      "adding": "Adding…",
+      "name": "Name",
+      "namePlaceholder": "e.g. Groceries",
+      "save": "Add",
+      "title": "Add category",
+      "type": "Type"
+    },
+    "retry": "Retry",
+    "title": "Categories"
+  },
   "common": {
     "loading": "Loading"
   },
@@ -186,6 +217,10 @@
       "refreshError": "Could not refresh",
       "shownOfTotal": "{{shown}} of {{total}} transactions",
       "transactions": "Transactions"
+    },
+    "more": {
+      "label": "More options",
+      "manageCategories": "Manage categories"
     },
     "nextMonth": "Next month",
     "previousMonth": "Previous month",

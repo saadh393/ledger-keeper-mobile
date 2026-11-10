@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCategories } from '@/features/ledger/api/fetch-categories';
+import { fetchCategories } from '@/features/categories/api/fetch-categories';
 
 export const categoriesQueryKey = ['categories'] as const;
 

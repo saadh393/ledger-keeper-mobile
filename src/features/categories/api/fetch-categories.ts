@@ -1,5 +1,5 @@
-import type { CategoryItem } from '@/features/ledger/schemas/category-schema';
-import { categoriesListSchema } from '@/features/ledger/schemas/category-schema';
+import type { CategoryItem } from '@/features/categories/schemas/category-schema';
+import { categoriesListSchema } from '@/features/categories/schemas/category-schema';
 import { apiClient } from '@/lib/api';
 import { parse } from '@/lib/api/errors';
 

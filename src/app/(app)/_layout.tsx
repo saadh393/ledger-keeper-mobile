@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useWindowDimensions } from 'react-native';
 
 import { getRouteDecision, useAuthStatus } from '@/features/auth';
+import { LedgerMoreButton } from '@/features/ledger';
 import {
   AppDrawerContent,
   DRAWER_SCRIM_COLOR,
@@ -61,6 +62,7 @@ export default function AppLayout() {
         name="index"
         options={{
           title: t('navigation.ledger'),
+          headerRight: () => <LedgerMoreButton />,
         }}
       />
       <Drawer.Screen
@@ -79,6 +81,12 @@ export default function AppLayout() {
         name="credits"
         options={{
           title: t('navigation.credits'),
+        }}
+      />
+      <Drawer.Screen
+        name="categories"
+        options={{
+          title: t('categories.title'),
         }}
       />
       <Drawer.Screen
