@@ -176,4 +176,78 @@ describe('categoriesScreen', () => {
     expect(await screen.findByTestId('category-delete-sheet-error')).toHaveTextContent('Something went wrong. Try again.');
     expect(screen.getByTestId('category-row-c-rent')).toBeOnTheScreen();
   });
+
+  describe('rename', () => {
+    async function openRename() {
+      await screen.findByText('Salary');
+      fireEvent.press(screen.getByTestId('category-row-c-gifts-rename'));
+      return screen.findByTestId('category-form-name');
+    }
+
+    it('shows Rename only for user categories', async () => {
+      renderScreen();
+      expect(await screen.findByTestId('category-row-c-gifts-rename')).toBeOnTheScreen();
+      expect(screen.queryByTestId('category-row-c-salary-rename')).toBeNull();
+    });
+
+    it('prefills the name and disables Save until it changes', async () => {
+      renderScreen();
+      expect(await openRename()).toHaveDisplayValue('Gifts');
+      expect(screen.getByTestId('category-form-sheet-title')).toHaveTextContent('Rename category');
+      expect(screen.queryByTestId('category-form-kind-track')).toBeNull();
+      expect(screen.getByTestId('category-form-sheet-submit')).toBeDisabled();
+      fireEvent.changeText(screen.getByTestId('category-form-name'), ' Gifts ');
+      expect(screen.getByTestId('category-form-sheet-submit')).toBeDisabled();
+      fireEvent.changeText(screen.getByTestId('category-form-name'), 'Presents');
+      expect(screen.getByTestId('category-form-sheet-submit')).toBeEnabled();
+    });
+
+    it('rejects a name another category of the kind uses and sends nothing', async () => {
+      renderScreen();
+      fireEvent.changeText(await openRename(), 'salary');
+      fireEvent.press(screen.getByTestId('category-form-sheet-submit'));
+      expect(await screen.findByText('You already have this category')).toBeOnTheScreen();
+      expect(mockApi.history.patch).toHaveLength(0);
+    });
+
+    it('saves once and refreshes the list, the picker and the ledger tables', async () => {
+      const renamed: CategoryItem = { ...gifts, name: 'Presents' };
+      let resolve!: () => void;
+      mockApi.onPatch('/categories/c-gifts').reply(() => new Promise((r) => {
+        resolve = () => r([200, renamed]);
+      }));
+      queryClient.setQueryData(['books', 'book-1', 'table'], { rows: [], stats: [] });
+      renderScreen();
+      fireEvent.changeText(await openRename(), ' Presents ');
+      fireEvent.press(screen.getByTestId('category-form-sheet-submit'));
+      fireEvent.press(screen.getByTestId('category-form-sheet-submit'));
+
+      expect(await screen.findByText('Saving…')).toBeOnTheScreen();
+      expect(mockApi.history.patch).toHaveLength(1);
+      expect(JSON.parse(mockApi.history.patch[0].data)).toEqual({ name: 'Presents' });
+
+      mockApi.onGet('/categories').reply(200, [food, rent, salary, renamed]);
+      resolve();
+      expect(await screen.findByText('Presents')).toBeOnTheScreen();
+      expect(screen.queryByText('Gifts')).toBeNull();
+      expect(queryClient.getQueryState(['books', 'book-1', 'table'])?.isInvalidated).toBe(true);
+    });
+
+    it('keeps the sheet open with the entered name when offline', async () => {
+      mockApi.onPatch('/categories/c-gifts').networkError();
+      renderScreen();
+      fireEvent.changeText(await openRename(), 'Presents');
+      fireEvent.press(screen.getByTestId('category-form-sheet-submit'));
+      expect(await screen.findByTestId('category-form-sheet-error')).toHaveTextContent('You’re offline. Check your connection and try again.');
+      expect(screen.getByTestId('category-form-name')).toHaveDisplayValue('Presents');
+    });
+
+    it('explains when the server refuses a built-in category', async () => {
+      mockApi.onPatch('/categories/c-gifts').reply(403, { code: 'category_builtin' });
+      renderScreen();
+      fireEvent.changeText(await openRename(), 'Presents');
+      fireEvent.press(screen.getByTestId('category-form-sheet-submit'));
+      expect(await screen.findByTestId('category-form-sheet-error')).toHaveTextContent('Built-in categories can’t be renamed');
+    });
+  });
 });

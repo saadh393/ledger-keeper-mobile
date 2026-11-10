@@ -90,6 +90,7 @@
     "empty": "No categories yet",
     "error": "Could not load categories",
     "errors": {
+      "builtIn": "Built-in categories can’t be renamed",
       "nameRequired": "Name is required",
       "nameTaken": "You already have this category",
       "nameTooLong": "Name must be at most 40 characters",
@@ -100,10 +101,14 @@
       "adding": "Adding…",
       "name": "Name",
       "namePlaceholder": "e.g. Groceries",
+      "renameTitle": "Rename category",
       "save": "Add",
+      "saveRename": "Save",
+      "saving": "Saving…",
       "title": "Add category",
       "type": "Type"
     },
+    "rename": "Rename {{name}}",
     "retry": "Retry",
     "title": "Categories"
   },

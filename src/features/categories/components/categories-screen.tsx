@@ -14,6 +14,7 @@ export function CategoriesScreen() {
   const insets = useSafeAreaInsets();
   const [kind, setKind] = React.useState<CategoryKind>('income');
   const [isAdding, setIsAdding] = React.useState(false);
+  const [renaming, setRenaming] = React.useState<CategoryItem | null>(null);
   const [deleting, setDeleting] = React.useState<CategoryItem | null>(null);
   const options = React.useMemo(() => [
     { value: 'income' as const, label: t('ledger.types.income') },
@@ -25,12 +26,13 @@ export function CategoriesScreen() {
     <View testID="categories-screen" className="flex-1 bg-paper-100" style={{ paddingBottom: insets.bottom + 16 }}>
       <SegmentedControl<CategoryKind> testID="categories-kind" className="mx-4 my-2" options={options} value={kind} onChange={setKind} />
       <View className="flex-1">
-        <CategoryList kind={kind} onAdd={openAdd} onDelete={setDeleting} />
+        <CategoryList kind={kind} onAdd={openAdd} onRename={setRenaming} onDelete={setDeleting} />
       </View>
       <View className="px-4 pt-2">
         <Button testID="categories-add" label={t('categories.add')} onPress={openAdd} />
       </View>
       {isAdding ? <CategoryFormSheet kind={kind} onDismiss={() => setIsAdding(false)} /> : null}
+      {renaming ? <CategoryFormSheet kind={renaming.kind} category={renaming} onDismiss={() => setRenaming(null)} /> : null}
       {deleting ? <CategoryDeleteSheet category={deleting} onDismiss={() => setDeleting(null)} /> : null}
     </View>
   );

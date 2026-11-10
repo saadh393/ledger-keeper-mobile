@@ -10,12 +10,13 @@ import { CategoryRowPlaceholder } from '@/features/categories/components/categor
 export type CategoryListProps = {
   kind: CategoryKind;
   onAdd: () => void;
+  onRename: (category: CategoryItem) => void;
   onDelete: (category: CategoryItem) => void;
 };
 
 const placeholderKeys = Array.from({ length: 6 }, (_, index) => `placeholder-${index}`);
 
-export function CategoryList({ kind, onAdd, onDelete }: CategoryListProps) {
+export function CategoryList({ kind, onAdd, onRename, onDelete }: CategoryListProps) {
   const { t } = useTranslation();
   const query = useCategories();
   const categories = React.useMemo(() => query.data?.filter(category => category.kind === kind) ?? [], [query.data, kind]);
@@ -47,7 +48,7 @@ export function CategoryList({ kind, onAdd, onDelete }: CategoryListProps) {
 
   return (
     <ScrollView testID="category-list" className="flex-1">
-      {categories.map(category => <CategoryRow key={category.id} category={category} onDelete={onDelete} />)}
+      {categories.map(category => <CategoryRow key={category.id} category={category} onRename={onRename} onDelete={onDelete} />)}
     </ScrollView>
   );
 }
