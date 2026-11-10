@@ -5,12 +5,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
 import * as ReactNative from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import { useAuthStore } from '@/features/auth';
 import { useActiveBookStore } from '@/features/books/store/use-active-book-store';
 import { LedgerStats } from '@/features/ledger/components/ledger-stats';
 import { apiClient } from '@/lib/api/client';
 import i18n from '@/lib/i18n';
 import { act, fireEvent, render, screen, waitFor } from '@/lib/test-utils';
+
+jest.mock('react-native-flash-message', () => ({
+  showMessage: jest.fn(),
+}));
 
 const personal: Book = { id: 'book-1', name: 'Personal', currency: 'BDT', isDefault: true, createdAt: '2026-01-01T00:00:00.000Z' };
 const business: Book = { id: 'book-2', name: 'Business', currency: 'USD', isDefault: false, createdAt: '2026-01-02T00:00:00.000Z' };
@@ -92,6 +97,17 @@ describe('ledgerStats', () => {
     expect(valueNodes()[2]?.props.className).toContain('text-forest-500');
     expect(valueNodes()[3]?.props.className).not.toMatch(/text-(forest|clay)-500/);
     valueNodes().forEach(value => expect(value.props.className).toContain('text-row-title'));
+  });
+
+  it('shows the exact value on long-press without changing the accessibility label', async () => {
+    mock.onGet('/books/book-1/table').reply(200, table([123456789, 18000, 7000, 1500]));
+    render(<LedgerStats {...november} />);
+
+    await waitFor(() => expect(values()[0]).toBe('৳12.3 Cr'));
+    fireEvent(cells()[0]!, 'longPress');
+    expect(showMessage).toHaveBeenCalledWith({ message: 'Income ৳123,456,789', type: 'info' });
+    expect(cells()[0]?.props.accessibilityLabel).toBe('Income, ৳123,456,789');
+    expect(cells()[0]?.props.accessibilityRole).toBeUndefined();
   });
 
   it('uses tabular figures and lets large values shrink on one line', async () => {

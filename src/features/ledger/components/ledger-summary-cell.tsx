@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { twMerge } from '@/lib/tw-merge';
 
@@ -10,6 +10,7 @@ export type LedgerSummaryCellProps = {
   loading: boolean;
   accessibilityLabel: string;
   className?: string;
+  onLongPress?: () => void;
 };
 
 export function LedgerSummaryCell({
@@ -19,12 +20,15 @@ export function LedgerSummaryCell({
   loading,
   accessibilityLabel,
   className,
+  onLongPress,
 }: LedgerSummaryCellProps) {
   return (
-    <View
+    <Pressable
       testID="ledger-summary-cell"
       accessible
       accessibilityLabel={accessibilityLabel}
+      onLongPress={onLongPress}
+      delayLongPress={450}
       aria-busy={loading}
       className={twMerge('min-w-0 px-1.5 py-0.5', className)}
     >
@@ -45,6 +49,6 @@ export function LedgerSummaryCell({
               {value}
             </Text>
           )}
-    </View>
+    </Pressable>
   );
 }

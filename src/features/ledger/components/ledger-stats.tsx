@@ -2,6 +2,7 @@ import type { MonthRange } from '@/features/ledger/utils/month';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowDimensions, View } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { useBookTable } from '@/features/ledger/api/use-book-table';
 import { LedgerSummaryCell } from '@/features/ledger/components/ledger-summary-cell';
@@ -49,6 +50,7 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
         const shortKey = getStatShortLabelKey(stat.label);
         const compact = formatCompactStat(stat, locale, currency);
         const exact = loading ? t('common.loading') : formatStat(stat, locale, currency).value;
+        const fullLabel = fullKey ? t(fullKey) : stat.label;
         return (
           <LedgerSummaryCell
             key={stat.label}
@@ -56,8 +58,9 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
             value={compact.value}
             valueClassName={compact.valueClassName ?? (stat.kind && kindValueClassName[stat.kind])}
             loading={loading}
-            accessibilityLabel={`${fullKey ? t(fullKey) : stat.label}, ${exact}`}
+            accessibilityLabel={`${fullLabel}, ${exact}`}
             className={stacked ? 'basis-1/2' : 'flex-1 basis-0'}
+            onLongPress={loading ? undefined : () => showMessage({ message: `${fullLabel} ${exact}`, type: 'info' })}
           />
         );
       })}
