@@ -165,12 +165,12 @@ describe('transactionList', () => {
     expect(screen.getByTestId('ledger-list-footer-expense')).toHaveTextContent('Expense৳18,000');
   });
 
-  it('keeps the last row and footer clear of the bottom safe area', async () => {
+  it('keeps the last row and footer clear of the bottom safe area and floating add button', async () => {
     mock.onGet('/books/book-1/table').reply(200, table([row({ id: 'Lunch', dateIso: today })]));
     render(<TransactionList {...november} />);
 
     await screen.findByText('Lunch');
-    expect(screen.getByTestId('ledger-list').props.contentContainerStyle).toEqual(expect.objectContaining({ paddingBottom: 50 }));
+    expect(screen.getByTestId('ledger-list').props.contentContainerStyle).toEqual(expect.objectContaining({ paddingBottom: 106 }));
   });
 
   it('shows 6 placeholder rows while loading the first time', async () => {

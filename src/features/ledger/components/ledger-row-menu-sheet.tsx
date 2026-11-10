@@ -7,12 +7,13 @@ import { LedgerRowMenuOption } from '@/features/ledger/components/ledger-row-men
 
 export type LedgerRowMenuSheetProps = {
   row: TransactionRow;
+  onEdit?: (row: TransactionRow) => void;
   onCopy: (row: TransactionRow) => void;
   onDelete: (row: TransactionRow) => void;
   onDismiss: () => void;
 };
 
-export function LedgerRowMenuSheet({ row, onCopy, onDelete, onDismiss }: LedgerRowMenuSheetProps) {
+export function LedgerRowMenuSheet({ row, onEdit, onCopy, onDelete, onDismiss }: LedgerRowMenuSheetProps) {
   const { t } = useTranslation();
   const modal = useBottomSheetModalRef();
   const insets = useSafeAreaInsets();
@@ -29,6 +30,9 @@ export function LedgerRowMenuSheet({ row, onCopy, onDelete, onDismiss }: LedgerR
   return (
     <BottomSheet ref={modal.ref} title={row.name} onDismiss={onDismiss} testID="ledger-row-menu">
       <BottomSheetView className="px-4" style={{ paddingBottom: insets.bottom + 16 }}>
+        {onEdit && (
+          <LedgerRowMenuOption testID="ledger-row-menu-edit" label={t('ledger.actions.edit')} onPress={choose(onEdit)} />
+        )}
         <LedgerRowMenuOption testID="ledger-row-menu-copy" label={t('ledger.actions.copy')} onPress={choose(onCopy)} />
         <LedgerRowMenuOption testID="ledger-row-menu-delete" label={t('ledger.actions.delete')} destructive onPress={choose(onDelete)} />
       </BottomSheetView>

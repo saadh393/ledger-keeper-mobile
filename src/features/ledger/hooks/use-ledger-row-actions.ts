@@ -6,6 +6,7 @@ export function useLedgerRowActions() {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const [menuRow, setMenuRow] = React.useState<TransactionRow | null>(null);
   const [deleteRow, setDeleteRow] = React.useState<TransactionRow | null>(null);
+  const [editRow, setEditRow] = React.useState<TransactionRow | null>(null);
 
   const toggle = React.useCallback((row: TransactionRow) => {
     setExpandedId(id => (id === row.id ? null : row.id));
@@ -16,8 +17,25 @@ export function useLedgerRowActions() {
     setMenuRow(row);
   }, []);
 
+  const openEdit = React.useCallback((row: TransactionRow) => {
+    setEditRow(row);
+  }, []);
+
   const closeMenu = React.useCallback(() => setMenuRow(null), []);
   const closeDelete = React.useCallback(() => setDeleteRow(null), []);
+  const closeEdit = React.useCallback(() => setEditRow(null), []);
 
-  return { expandedId, menuRow, deleteRow, toggle, openMenu, closeMenu, askDelete: setDeleteRow, closeDelete };
+  return {
+    expandedId,
+    menuRow,
+    deleteRow,
+    editRow,
+    toggle,
+    openMenu,
+    closeMenu,
+    openEdit,
+    closeEdit,
+    askDelete: setDeleteRow,
+    closeDelete,
+  };
 }

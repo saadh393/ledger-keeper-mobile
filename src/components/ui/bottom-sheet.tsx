@@ -46,6 +46,7 @@ export type BottomSheetProps = Omit<BottomSheetModalProps, 'snapPoints'> & {
   snapPoints?: (string | number)[];
   testID?: string;
   ref?: React.Ref<BottomSheetModal>;
+  onRequestClose?: () => void;
 };
 
 function useIsReduceMotionEnabled(): boolean {
@@ -416,6 +417,7 @@ export function BottomSheet({
   dismissible = true,
   showCloseButton = true,
   testID,
+  onRequestClose,
   backgroundStyle: customBackgroundStyle,
   backdropComponent,
   handleComponent,
@@ -440,8 +442,7 @@ export function BottomSheet({
 
   const systemReducedMotion = useIsReduceMotionEnabled();
   const reanimatedReducedMotion = useReducedMotion();
-  const shouldReduceMotion
-    = systemReducedMotion || Boolean(reanimatedReducedMotion);
+  const shouldReduceMotion = systemReducedMotion || Boolean(reanimatedReducedMotion);
 
   const defaultAnimationConfigs = useBottomSheetTimingConfigs({
     duration: shouldReduceMotion ? 0 : 240,
@@ -451,9 +452,11 @@ export function BottomSheet({
   const handleClose = React.useCallback(() => {
     if (!dismissible)
       return;
+    if (onRequestClose)
+      return onRequestClose();
     setIsOpen(false);
     internalRef.current?.dismiss();
-  }, [dismissible]);
+  }, [dismissible, onRequestClose]);
 
   useSheetImperativeRef(ref, internalRef, setIsOpen);
   useSheetBackHandler(isOpen, dismissible, handleClose);

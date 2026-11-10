@@ -16,6 +16,7 @@ import { LedgerListFooter } from '@/features/ledger/components/ledger-list-foote
 import { LedgerRow } from '@/features/ledger/components/ledger-row';
 import { LedgerRowMenuSheet } from '@/features/ledger/components/ledger-row-menu-sheet';
 import { LedgerRowPlaceholder } from '@/features/ledger/components/ledger-row-placeholder';
+import { TransactionFormSheet } from '@/features/ledger/components/transaction-form-sheet';
 import { useCopyTransaction } from '@/features/ledger/hooks/use-copy-transaction';
 import { useLedgerRowActions } from '@/features/ledger/hooks/use-ledger-row-actions';
 import { useLedgerFiltersStore } from '@/features/ledger/store/use-ledger-filters-store';
@@ -37,6 +38,14 @@ const searchDelayMs = 250;
 
 function toFlatItems(rows: TransactionRow[]): LedgerListItem[] {
   return rows.map(row => ({ type: 'row', key: row.id, row }));
+}
+
+function LedgerListLoading() {
+  return (
+    <View testID="ledger-list-loading" aria-busy>
+      {placeholderKeys.map(key => <LedgerRowPlaceholder key={key} />)}
+    </View>
+  );
 }
 
 export function TransactionList({ month, firstDay, lastDay }: TransactionListProps) {
@@ -102,13 +111,8 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
     );
   }
 
-  if (!table.data) {
-    return (
-      <View testID="ledger-list-loading" aria-busy>
-        {placeholderKeys.map(key => <LedgerRowPlaceholder key={key} />)}
-      </View>
-    );
-  }
+  if (!table.data)
+    return <LedgerListLoading />;
 
   return (
     <>
@@ -120,7 +124,7 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
         getItemType={item => item.type}
         refreshing={refreshing}
         onRefresh={refresh}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 16 + 56 }}
         ListEmptyComponent={table.data.rows.length
           ? (
               <EmptyState
@@ -141,7 +145,10 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
           : null}
       />
       {actions.menuRow
-        ? <LedgerRowMenuSheet row={actions.menuRow} onCopy={copy} onDelete={askDelete} onDismiss={actions.closeMenu} />
+        ? <LedgerRowMenuSheet row={actions.menuRow} onEdit={actions.openEdit} onCopy={copy} onDelete={askDelete} onDismiss={actions.closeMenu} />
+        : null}
+      {actions.editRow && activeBook.activeBookId
+        ? <TransactionFormSheet bookId={activeBook.activeBookId} currency={currency} row={actions.editRow} viewedMonth={month} onDismiss={actions.closeEdit} />
         : null}
       {actions.deleteRow && activeBook.activeBookId
         ? <LedgerDeleteSheet bookId={activeBook.activeBookId} row={actions.deleteRow} locale={locale} currency={currency} onDismiss={actions.closeDelete} />

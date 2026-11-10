@@ -200,9 +200,27 @@ describe('ledger row actions', () => {
     fireEvent(rowNamed('Lunch'), 'longPress');
 
     expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Light);
+    expect(screen.getByTestId('ledger-row-menu-edit')).toHaveTextContent('Edit');
     expect(screen.getByTestId('ledger-row-menu-copy')).toHaveTextContent('Copy');
     expect(screen.getByTestId('ledger-row-menu-delete-label').props.className).toContain('text-clay-500');
-    expect(screen.queryByText('Edit')).not.toBeOnTheScreen();
+  });
+
+  it('opens edit form sheet prefilled when Edit is tapped from menu', async () => {
+    api.mock.onGet(tableUrl).reply(200, table([row({ id: 'Lunch', amount: 350 })]));
+    api.mock.onGet('/categories').reply(200, []);
+    render(<TransactionList {...november} />);
+
+    await screen.findByText('Lunch');
+    fireEvent(rowNamed('Lunch'), 'longPress');
+
+    expect(screen.getByTestId('ledger-row-menu-edit')).toHaveTextContent('Edit');
+    fireEvent.press(screen.getByTestId('ledger-row-menu-edit'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('transaction-form-sheet-title')).toHaveTextContent('Edit transaction');
+    });
+    expect(screen.getByTestId('transaction-form-title')).toHaveProp('value', 'Lunch');
+    expect(screen.getByTestId('transaction-form-amount')).toHaveProp('value', '350');
   });
 
   it('exposes Copy and Delete as screen reader actions on the row', async () => {

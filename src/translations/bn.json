@@ -99,10 +99,12 @@
   },
   "ledger": {
     "actions": {
+      "addTransaction": "লেনদেন যোগ করুন",
       "collapse": "বিস্তারিত লুকান",
       "copied": "কপি হয়েছে",
       "copy": "কপি",
       "delete": "মুছুন",
+      "edit": "সম্পাদনা",
       "expand": "বিস্তারিত দেখুন",
       "menu": "লেনদেনের অপশন"
     },
@@ -127,10 +129,54 @@
       "quantity": "× {{quantity}}",
       "total": "মোট"
     },
+    "errors": {
+      "amountDecimals": "সর্বোচ্চ ২ দশমিক স্থান",
+      "amountInvalid": "সঠিক পরিমাণ লিখুন",
+      "amountPositive": "পরিমাণ ০-এর বেশি হতে হবে",
+      "amountRequired": "পরিমাণ আবশ্যক",
+      "amountTooLarge": "পরিমাণ সর্বোচ্চ ৯৯৯,৯৯৯,৯৯৯,৯৯৯.৯৯ হতে পারবে",
+      "categoryRequired": "বিভাগ আবশ্যক",
+      "dateFuture": "তারিখ ভবিষ্যতের হতে পারবে না",
+      "noteTooLong": "নোট সর্বোচ্চ ৫০০ অক্ষরের হতে হবে",
+      "offline": "আপনি অফলাইনে আছেন। আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+      "server": "লেনদেন সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।",
+      "titleRequired": "শিরোনাম আবশ্যক",
+      "titleTooLong": "শিরোনাম সর্বোচ্চ ২০০ অক্ষরের হতে হবে"
+    },
     "filter": {
       "all": "সব",
       "expense": "খরচ",
       "income": "আয়"
+    },
+    "form": {
+      "amount": "পরিমাণ",
+      "back": "পেছনে",
+      "category": "বিভাগ",
+      "createTitle": "লেনদেন যোগ করুন",
+      "date": "তারিখ",
+      "discard": "বাতিল করুন",
+      "discardMessage": "আপনার অসংরক্ষিত পরিবর্তন রয়েছে। আপনি কি নিশ্চিত যে এগুলো বাতিল করতে চান?",
+      "discardTitle": "পরিবর্তনগুলো বাতিল করবেন?",
+      "editTitle": "লেনদেন সম্পাদনা করুন",
+      "foreignAmountWarning": "আসল বিদেশি পরিমাণ সরিয়ে দেওয়া হবে",
+      "keepEditing": "সম্পাদনা চালিয়ে যান",
+      "noCategories": "কোনো বিভাগ পাওয়া যায়নি",
+      "notFound": "এই লেনদেনটির আর অস্তিত্ব নেই",
+      "note": "নোট",
+      "noteOptional": "নোট (ঐচ্ছিক)",
+      "notePlaceholder": "বিস্তারিত লিখুন (ঐচ্ছিক)",
+      "receiptTotalHint": "মোট পরিমাণ রসিদের আইটেম থেকে আসে",
+      "save": "সংরক্ষণ করুন",
+      "savedToMonth": "{{month}}-এ সংরক্ষিত",
+      "saving": "সংরক্ষণ করা হচ্ছে…",
+      "searchCategory": "বিভাগ অনুসন্ধান করুন",
+      "selectCategory": "বিভাগ নির্বাচন করুন",
+      "selectDate": "তারিখ নির্বাচন করুন",
+      "title": "শিরোনাম",
+      "titlePlaceholder": "এটি কিসের জন্য ছিল?",
+      "today": "আজ",
+      "type": "ধরন",
+      "yesterday": "গতকাল"
     },
     "list": {
       "clearFilters": "ফিল্টার মুছুন",
@@ -169,7 +215,11 @@
         "net": "নিট"
       }
     },
-    "thisMonth": "এই মাস"
+    "thisMonth": "এই মাস",
+    "types": {
+      "expense": "খরচ",
+      "income": "আয়"
+    }
   },
   "navigation": {
     "bookSwitcherSlot": "বই পরিবর্তনকারী",

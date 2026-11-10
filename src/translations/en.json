@@ -99,10 +99,12 @@
   },
   "ledger": {
     "actions": {
+      "addTransaction": "Add transaction",
       "collapse": "Hide details",
       "copied": "Copied",
       "copy": "Copy",
       "delete": "Delete",
+      "edit": "Edit",
       "expand": "Show details",
       "menu": "Transaction actions"
     },
@@ -127,10 +129,54 @@
       "quantity": "× {{quantity}}",
       "total": "Total"
     },
+    "errors": {
+      "amountDecimals": "At most 2 decimal places",
+      "amountInvalid": "Enter a valid amount",
+      "amountPositive": "Amount must be greater than 0",
+      "amountRequired": "Amount is required",
+      "amountTooLarge": "Amount must be 999,999,999,999.99 or less",
+      "categoryRequired": "Category is required",
+      "dateFuture": "Date cannot be in the future",
+      "noteTooLong": "Note must be 500 characters or less",
+      "offline": "You’re offline. Check your connection and try again.",
+      "server": "Could not save transaction. Try again.",
+      "titleRequired": "Title is required",
+      "titleTooLong": "Title must be 200 characters or less"
+    },
     "filter": {
       "all": "All",
       "expense": "Expense",
       "income": "Income"
+    },
+    "form": {
+      "amount": "Amount",
+      "back": "Back",
+      "category": "Category",
+      "createTitle": "Add transaction",
+      "date": "Date",
+      "discard": "Discard",
+      "discardMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "discardTitle": "Discard changes?",
+      "editTitle": "Edit transaction",
+      "foreignAmountWarning": "The original foreign amount will be removed",
+      "keepEditing": "Keep editing",
+      "noCategories": "No categories available",
+      "notFound": "This transaction no longer exists",
+      "note": "Note",
+      "noteOptional": "Note (optional)",
+      "notePlaceholder": "Add details (optional)",
+      "receiptTotalHint": "Total comes from the receipt items",
+      "save": "Save",
+      "savedToMonth": "Saved to {{month}}",
+      "saving": "Saving…",
+      "searchCategory": "Search categories",
+      "selectCategory": "Select category",
+      "selectDate": "Select date",
+      "title": "Title",
+      "titlePlaceholder": "What was this for?",
+      "today": "Today",
+      "type": "Type",
+      "yesterday": "Yesterday"
     },
     "list": {
       "clearFilters": "Clear filters",
@@ -169,7 +215,11 @@
         "net": "Net"
       }
     },
-    "thisMonth": "This month"
+    "thisMonth": "This month",
+    "types": {
+      "expense": "Expense",
+      "income": "Income"
+    }
   },
   "navigation": {
     "bookSwitcherSlot": "Book switcher",
