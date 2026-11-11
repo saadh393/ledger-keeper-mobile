@@ -2,7 +2,11 @@ import type { z } from 'zod';
 import * as React from 'react';
 import { CategoryArtifact } from '@/features/assistant/components/artifacts/category-artifact';
 import { ClarificationArtifact } from '@/features/assistant/components/artifacts/clarification-artifact';
+import { DebtArtifact } from '@/features/assistant/components/artifacts/debt-artifact';
+import { DebtListArtifact } from '@/features/assistant/components/artifacts/debt-list-artifact';
 import { InsightArtifact } from '@/features/assistant/components/artifacts/insight-artifact';
+import { InstallmentArtifact } from '@/features/assistant/components/artifacts/installment-artifact';
+import { InstallmentListArtifact } from '@/features/assistant/components/artifacts/installment-list-artifact';
 import { StatusArtifact } from '@/features/assistant/components/artifacts/status-artifact';
 import { SummaryArtifact } from '@/features/assistant/components/artifacts/summary-artifact';
 import { TransactionArtifact } from '@/features/assistant/components/artifacts/transaction-artifact';
@@ -12,6 +16,7 @@ import { TransactionListArtifact } from '@/features/assistant/components/artifac
 import { TrendArtifact } from '@/features/assistant/components/artifacts/trend-artifact';
 import { categoryArtifactSchema, trendArtifactSchema } from '@/features/assistant/schemas/chart-artifact-schemas';
 import { clarificationArtifactSchema, transactionDraftArtifactSchema } from '@/features/assistant/schemas/draft-artifact-schemas';
+import { debtListArtifactSchema, installmentListArtifactSchema } from '@/features/assistant/schemas/loan-artifact-schemas';
 import {
   artifactTransactionSchema,
   insightArtifactSchema,
@@ -20,6 +25,8 @@ import {
   transactionBatchArtifactSchema,
   transactionListArtifactSchema,
 } from '@/features/assistant/schemas/transaction-artifact-schemas';
+import { installmentSchema } from '@/features/installments/schemas/installment-schema';
+import { debtSchema } from '@/features/loans/schemas/debt-schema';
 
 export type ArtifactComponentProps<T> = {
   data: T;
@@ -47,4 +54,8 @@ export const artifactRegistry: Partial<Record<string, ArtifactEntry>> = {
   'trend': entry(trendArtifactSchema, TrendArtifact),
   'insight': entry(insightArtifactSchema, InsightArtifact),
   'status': entry(statusArtifactSchema, StatusArtifact),
+  'debt': entry(debtSchema, DebtArtifact),
+  'debt-list': entry(debtListArtifactSchema, DebtListArtifact),
+  'installment': entry(installmentSchema, InstallmentArtifact),
+  'installment-list': entry(installmentListArtifactSchema, InstallmentListArtifact),
 };
