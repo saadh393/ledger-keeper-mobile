@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { View } from '@/components/ui';
+import { useSendMessage } from '@/features/assistant/api/use-send-message';
 import { AiBar } from '@/features/assistant/components/ai-bar';
 import { AssistantSheet } from '@/features/assistant/components/assistant-sheet';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
@@ -25,6 +26,7 @@ export function HomeScreen() {
   const activeBook = useActiveBook();
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const isAssistantOpen = useAssistantStore(state => state.isOpen);
+  const { send } = useSendMessage();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -50,7 +52,7 @@ export function HomeScreen() {
         </View>
         {isAssistantOpen ? <AssistantSheet /> : null}
       </View>
-      <AiBar onSend={ignore} onCamera={ignore} onMic={ignore} />
+      <AiBar onSend={send} onCamera={ignore} onMic={ignore} />
       {isAddOpen
         ? (
             <TransactionFormSheet

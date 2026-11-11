@@ -6,11 +6,13 @@ import { EmptyState } from '@/components/ui';
 import { AssistantEmptyState } from '@/features/assistant/components/assistant-empty-state';
 import { AssistantThread } from '@/features/assistant/components/assistant-thread';
 import { AssistantThreadLoading } from '@/features/assistant/components/assistant-thread-loading';
+import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 
 export function AssistantSheetBody({ conversation }: { conversation: UseQueryResult<Conversation | null> }) {
   const { t } = useTranslation();
+  const hasPending = useAssistantStore(state => Boolean(state.pending));
 
-  if (conversation.isError) {
+  if (conversation.isError && !hasPending) {
     return (
       <EmptyState
         testID="assistant-error"
@@ -24,11 +26,11 @@ export function AssistantSheetBody({ conversation }: { conversation: UseQueryRes
     );
   }
 
-  if (conversation.data === undefined)
+  if (conversation.data === undefined && !hasPending)
     return <AssistantThreadLoading />;
 
-  if (!conversation.data?.messages.length)
+  if (!conversation.data?.messages.length && !hasPending)
     return <AssistantEmptyState />;
 
-  return <AssistantThread messages={conversation.data.messages} />;
+  return <AssistantThread messages={conversation.data?.messages ?? []} />;
 }

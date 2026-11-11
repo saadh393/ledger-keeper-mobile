@@ -33,6 +33,20 @@ export const bookChatPageSchema = z.object({
   nextCursor: z.string().nullable(),
 });
 
+export const createdConversationSchema = z.object({
+  id: z.string(),
+  bookId: z.string(),
+  suffix: z.string(),
+  currency: z.string(),
+});
+
+export const sendMessageResponseSchema = z.object({
+  userMessage: chatMessageSchema,
+  aiMessage: chatMessageSchema,
+  credits: z.object({ charged: z.number(), balance: z.number() }),
+});
+
 export type MessageArtifact = z.infer<typeof messageArtifactSchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
 export type Conversation = z.infer<typeof conversationSchema>;
+export type SendMessageResponse = z.infer<typeof sendMessageResponseSchema>;

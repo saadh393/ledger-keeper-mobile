@@ -6,6 +6,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssistantDayDivider } from '@/features/assistant/components/assistant-day-divider';
 import { AssistantMessage } from '@/features/assistant/components/assistant-message';
+import { AssistantPendingMessage } from '@/features/assistant/components/assistant-pending-message';
 import { groupMessagesByDay } from '@/features/assistant/utils/group-messages-by-day';
 import { formatDayHeader } from '@/lib/format/day-header';
 import { toDayKey } from '@/lib/format/day-key';
@@ -32,6 +33,7 @@ export function AssistantThread({ messages }: { messages: ChatMessage[] }) {
       data={items}
       renderItem={renderItem}
       keyExtractor={item => item.key}
+      ListFooterComponent={AssistantPendingMessage}
       contentContainerStyle={{ paddingBottom: 16 }}
       onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
     />

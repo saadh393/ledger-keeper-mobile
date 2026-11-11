@@ -16,6 +16,22 @@
       "send": "Send message",
       "unavailable": "AI chat is unavailable right now"
     },
+    "failure": {
+      "buyCredits": "Buy credits",
+      "credits": "This needs {{required}} credits; you have {{available}}.",
+      "dismiss": "Dismiss",
+      "failed": "Your message couldn't be sent. Try again.",
+      "provider": "The assistant couldn't finish this reply. Try again.",
+      "rate_limited": "Too many requests, try again in a moment.",
+      "retry": "Retry",
+      "title": "Not sent",
+      "too_long": "Message is too long — max {{limit}} characters",
+      "uncertain": "Couldn't reach the assistant. Retrying won't charge you twice."
+    },
+    "send": {
+      "sending": "Sending…",
+      "typing": "Assistant is typing"
+    },
     "sheet": {
       "close": "Close Assistant",
       "emptyTitle": "Type, speak, or snap a receipt below.",

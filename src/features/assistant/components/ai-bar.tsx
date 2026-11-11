@@ -25,12 +25,13 @@ export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
   const rateCard = useRateCard();
   const text = useAssistantStore(state => state.draft);
   const setText = useAssistantStore(state => state.setDraft);
+  const isSending = useAssistantStore(state => state.pending?.failure === null);
   const trimmed = text.trim();
   const maxChars = rateCard.data?.limits.maxMessageChars;
   const chatCredits = rateCard.data ? getChatCredits(rateCard.data) : undefined;
   const isChatOff = chatCredits === null;
   const limit = getMessageLimit(trimmed.length, maxChars);
-  const canSend = Boolean(trimmed) && !limit.isOverLimit && !isChatOff;
+  const canSend = Boolean(trimmed) && !limit.isOverLimit && !isChatOff && !isSending;
 
   const send = () => {
     onSend(trimmed);
