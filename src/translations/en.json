@@ -24,6 +24,17 @@
       "send": "Send message",
       "unavailable": "AI chat is unavailable right now"
     },
+    "charts": {
+      "activeDays": "Active days",
+      "average": "Avg / day",
+      "category": "Spending by category",
+      "noData": "No data for this period",
+      "noSpending": "No spending in this period",
+      "peak": "Peak day",
+      "peakOn": "Peak {{amount}} on {{label}}",
+      "total": "Total",
+      "trend": "Spending over time"
+    },
     "clarification": {
       "amountPlaceholder": "Enter amount…",
       "selectPlaceholder": "Choose an option",

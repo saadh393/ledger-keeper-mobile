@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import * as React from 'react';
+import { CategoryArtifact } from '@/features/assistant/components/artifacts/category-artifact';
 import { ClarificationArtifact } from '@/features/assistant/components/artifacts/clarification-artifact';
 import { InsightArtifact } from '@/features/assistant/components/artifacts/insight-artifact';
 import { StatusArtifact } from '@/features/assistant/components/artifacts/status-artifact';
@@ -8,6 +9,8 @@ import { TransactionArtifact } from '@/features/assistant/components/artifacts/t
 import { TransactionBatchArtifact } from '@/features/assistant/components/artifacts/transaction-batch-artifact';
 import { TransactionDraftArtifact } from '@/features/assistant/components/artifacts/transaction-draft-artifact';
 import { TransactionListArtifact } from '@/features/assistant/components/artifacts/transaction-list-artifact';
+import { TrendArtifact } from '@/features/assistant/components/artifacts/trend-artifact';
+import { categoryArtifactSchema, trendArtifactSchema } from '@/features/assistant/schemas/chart-artifact-schemas';
 import { clarificationArtifactSchema, transactionDraftArtifactSchema } from '@/features/assistant/schemas/draft-artifact-schemas';
 import {
   artifactTransactionSchema,
@@ -40,6 +43,8 @@ export const artifactRegistry: Partial<Record<string, ArtifactEntry>> = {
   'clarification': entry(clarificationArtifactSchema, ClarificationArtifact),
   'transaction-list': entry(transactionListArtifactSchema, TransactionListArtifact),
   'summary': entry(summaryArtifactSchema, SummaryArtifact),
+  'category': entry(categoryArtifactSchema, CategoryArtifact),
+  'trend': entry(trendArtifactSchema, TrendArtifact),
   'insight': entry(insightArtifactSchema, InsightArtifact),
   'status': entry(statusArtifactSchema, StatusArtifact),
 };

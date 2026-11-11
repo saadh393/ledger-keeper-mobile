@@ -24,6 +24,17 @@
       "send": "বার্তা পাঠান",
       "unavailable": "AI চ্যাট এখন পাওয়া যাচ্ছে না"
     },
+    "charts": {
+      "activeDays": "সক্রিয় দিন",
+      "average": "গড় / দিন",
+      "category": "ক্যাটাগরি অনুযায়ী খরচ",
+      "noData": "এই সময়ের কোনো তথ্য নেই",
+      "noSpending": "এই সময়ে কোনো খরচ নেই",
+      "peak": "সর্বোচ্চ দিন",
+      "peakOn": "{{label}} তারিখে সর্বোচ্চ {{amount}}",
+      "total": "মোট",
+      "trend": "সময়ের সাথে খরচ"
+    },
     "clarification": {
       "amountPlaceholder": "পরিমাণ লিখুন…",
       "selectPlaceholder": "একটি বেছে নিন",

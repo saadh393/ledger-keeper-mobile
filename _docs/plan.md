@@ -41,7 +41,7 @@ This plan is the source of truth for scope. Every GitHub issue must trace back t
 | Storage | MMKV (encrypted) for app data; `expo-secure-store` for the auth token |
 | Lists | FlashList |
 | Animation | Reanimated |
-| Charts | react-native-skia or Victory Native (decided in the Ledger issue) |
+| Charts | `react-native-svg`, drawn without a chart library like the web app (PM decision, #40) |
 | Auth | Better Auth via `@better-auth/expo` and the backend's bearer-token plugin |
 | Voice | `expo-audio`, recording AAC/M4A |
 | Receipts | `expo-image-picker`, `expo-image-manipulator` (crop, rotate, resize to ~1600 px) |
