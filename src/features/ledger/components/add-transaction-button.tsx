@@ -8,6 +8,8 @@ import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type AddTransactionButtonProps = {
   onPress: () => void;
+  label?: string;
+  bottomInset?: number;
   testID?: string;
 };
 
@@ -15,21 +17,24 @@ const ADD_TRANSACTION_BUTTON_BOTTOM_OFFSET = 16;
 
 export function AddTransactionButton({
   onPress,
+  label,
+  bottomInset,
   testID = 'ledger-add-transaction-button',
 }: AddTransactionButtonProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const themeColors = useThemeColors();
+  const text = label ?? t('ledger.actions.addTransaction');
 
   return (
     <Pressable
       testID={testID}
       accessibilityRole="button"
-      accessibilityLabel={t('ledger.actions.addTransaction')}
+      accessibilityLabel={text}
       onPress={onPress}
       style={{
         position: 'absolute',
-        bottom: insets.bottom + ADD_TRANSACTION_BUTTON_BOTTOM_OFFSET,
+        bottom: (bottomInset ?? insets.bottom) + ADD_TRANSACTION_BUTTON_BOTTOM_OFFSET,
         alignSelf: 'center',
         elevation: 6,
         shadowColor: '#000',
@@ -41,7 +46,7 @@ export function AddTransactionButton({
     >
       <Plus size={18} strokeWidth={2.5} color={themeColors['on-accent']} />
       <Text className="ml-2 text-row-title font-medium text-on-accent">
-        {t('ledger.actions.addTransaction')}
+        {text}
       </Text>
     </Pressable>
   );

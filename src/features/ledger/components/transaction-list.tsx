@@ -6,7 +6,6 @@ import { FlashList } from '@shopify/flash-list';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, showErrorMessage } from '@/components/ui';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { useBookTable } from '@/features/ledger/api/use-book-table';
@@ -50,7 +49,6 @@ function LedgerListLoading() {
 
 export function TransactionList({ month, firstDay, lastDay }: TransactionListProps) {
   const { t, i18n } = useTranslation();
-  const insets = useSafeAreaInsets();
   const activeBook = useActiveBook();
   const table = useBookTable(activeBook.activeBookId, firstDay, lastDay);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -124,7 +122,7 @@ export function TransactionList({ month, firstDay, lastDay }: TransactionListPro
         getItemType={item => item.type}
         refreshing={refreshing}
         onRefresh={refresh}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 16 + 56 }}
+        contentContainerStyle={{ paddingBottom: 16 + 56 }}
         ListEmptyComponent={table.data.rows.length
           ? (
               <EmptyState

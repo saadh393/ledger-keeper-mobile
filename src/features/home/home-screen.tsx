@@ -2,19 +2,23 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { View } from '@/components/ui';
+import { AiBar } from '@/features/assistant/components/ai-bar';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { CurrencyPickerSheet } from '@/features/currency';
 import {
   AddTransactionButton,
   LedgerStats,
   LedgerToolbar,
-  MonthSwitcher,
   TransactionFormSheet,
   TransactionList,
   useLedgerMonth,
+  useLedgerMonthSync,
 } from '@/features/ledger';
 
+function ignore() {}
+
 export function HomeScreen() {
+  useLedgerMonthSync();
   const ledgerMonth = useLedgerMonth();
   const activeBook = useActiveBook();
   const [isAddOpen, setIsAddOpen] = React.useState(false);
@@ -33,20 +37,14 @@ export function HomeScreen() {
   );
 
   return (
-    <View className="flex-1 bg-paper-100">
-      <MonthSwitcher
-        month={ledgerMonth.month}
-        isCurrentMonth={ledgerMonth.isCurrentMonth}
-        onPrevious={ledgerMonth.goToPreviousMonth}
-        onNext={ledgerMonth.goToNextMonth}
-        onCurrent={ledgerMonth.goToCurrentMonth}
-      />
+    <View className="flex-1 bg-paper-100 pt-1">
       <LedgerStats firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
       <LedgerToolbar />
       <View className="mt-2 flex-1">
         <TransactionList month={ledgerMonth.month} firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
+        <AddTransactionButton bottomInset={0} onPress={() => setIsAddOpen(true)} />
       </View>
-      <AddTransactionButton onPress={() => setIsAddOpen(true)} />
+      <AiBar onSend={ignore} onCamera={ignore} onMic={ignore} />
       {isAddOpen
         ? (
             <TransactionFormSheet

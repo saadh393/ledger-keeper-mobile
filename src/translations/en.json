@@ -1,4 +1,22 @@
 {
+  "assistant": {
+    "artifacts": {
+      "showAll": "Show all {{total}}",
+      "unavailable": "This card can't be shown",
+      "unavailableBody": "The reply had details this version of the app can't display."
+    },
+    "bar": {
+      "camera": "Scan a receipt",
+      "counter": "{{length}} / {{max}}",
+      "disclaimer": "AI can make mistakes",
+      "hint": "≈{{credits}} credits per message · AI can make mistakes",
+      "inputLabel": "Message the assistant",
+      "mic": "Record a voice note",
+      "placeholder": "Type, speak, or snap a receipt",
+      "send": "Send message",
+      "unavailable": "AI chat is unavailable right now"
+    }
+  },
   "auth": {
     "alreadyHaveAccount": "Already have an account?",
     "continueWithGoogle": "Continue with Google",
@@ -133,6 +151,18 @@
   "home": {
     "title": "Ledger Keeper"
   },
+  "installments": {
+    "card": {
+      "completed": "Completed",
+      "each": "{{amount}} each",
+      "empty": "No active installment plans",
+      "listTitle": "Installment plans",
+      "progress": "{{paid}} of {{total}} paid",
+      "remaining": "{{amount}} remaining",
+      "title": "Installment plan",
+      "viewInInstallments": "View in Installments"
+    }
+  },
   "ledger": {
     "actions": {
       "addTransaction": "Add transaction",
@@ -231,6 +261,7 @@
     "previousMonth": "Previous month",
     "search": {
       "clear": "Clear search",
+      "close": "Close search",
       "placeholder": "Search transactions"
     },
     "sort": {
@@ -255,10 +286,116 @@
         "net": "Net"
       }
     },
+    "summary": {
+      "hide": "Hide summary",
+      "show": "Show summary"
+    },
     "thisMonth": "This month",
     "types": {
       "expense": "Expense",
       "income": "Income"
+    }
+  },
+  "loans": {
+    "a11y": {
+      "original": "original {{amount}}",
+      "outstanding": "{{amount}} outstanding"
+    },
+    "actions": {
+      "add": "Add loan",
+      "delete": "Delete",
+      "edit": "Edit",
+      "repay": "Record repayment"
+    },
+    "cancel": "Cancel",
+    "card": {
+      "borrowedFrom": "Borrowed from {{name}}",
+      "lentTo": "Lent to {{name}}",
+      "noOpenLoans": "No open loans",
+      "original": "Original",
+      "outstanding": "Outstanding",
+      "repaid": "Repaid",
+      "title": "Loans",
+      "viewInLoans": "View in Loans"
+    },
+    "delete": {
+      "body": "Delete this loan and its repayment history?",
+      "confirm": "Delete",
+      "pending": "Deleting…",
+      "title": "Delete loan with {{name}}?"
+    },
+    "details": {
+      "error": "Couldn't load repayments",
+      "noRepayments": "No repayments yet",
+      "repayments": "Repayments",
+      "undoLabel": "Undo repayment of {{amount}} on {{date}}"
+    },
+    "direction": {
+      "borrowed": "Borrowed",
+      "lent": "Lent"
+    },
+    "empty": {
+      "all": "No loans yet",
+      "open": "No open loans",
+      "settled": "No settled loans"
+    },
+    "error": "Couldn't load loans",
+    "errors": {
+      "amountBelowRepaid": "Amount can't be less than the {{amount}} already repaid",
+      "dateFuture": "Date can't be in the future",
+      "dueBeforeDate": "Due date can't be before the date",
+      "notFound": "This loan no longer exists",
+      "noteTooLong": "Use 500 characters or fewer",
+      "offline": "You're offline. Try again.",
+      "personRequired": "Enter a name",
+      "personTooLong": "Use 100 characters or fewer",
+      "repaymentExceeds": "Only {{amount}} is outstanding",
+      "server": "Something went wrong. Try again.",
+      "settled": "This loan is already settled"
+    },
+    "form": {
+      "addTitle": "Add loan",
+      "amount": "Amount",
+      "borrowedFrom": "Borrowed from",
+      "clearDueDate": "Clear due date",
+      "date": "Date",
+      "dueDate": "Due date (optional)",
+      "editTitle": "Edit loan",
+      "lentTo": "Lent to",
+      "noDueDate": "No due date",
+      "note": "Note (optional)",
+      "personPlaceholder": "Person's name",
+      "save": "Save",
+      "saving": "Saving…"
+    },
+    "refreshError": "Couldn't refresh loans",
+    "repay": {
+      "outstanding": "{{name}} · {{amount}} outstanding",
+      "save": "Record repayment",
+      "saving": "Recording…",
+      "title": "Record repayment"
+    },
+    "retry": "Retry",
+    "row": {
+      "due": "Due {{date}}",
+      "of": "of {{amount}}",
+      "overdue": "Overdue",
+      "settled": "Settled"
+    },
+    "status": {
+      "all": "All",
+      "open": "Open",
+      "settled": "Settled"
+    },
+    "totals": {
+      "borrowed": "You owe",
+      "lent": "Owed to you"
+    },
+    "undo": {
+      "body": "Remove the repayment of {{amount}} on {{date}}?",
+      "confirm": "Undo",
+      "pending": "Undoing…",
+      "title": "Undo repayment?"
     }
   },
   "navigation": {
@@ -274,5 +411,10 @@
   },
   "offline": {
     "banner": "You're offline"
+  },
+  "settings": {
+    "sections": {
+      "ledger": "Ledger"
+    }
   }
 }

@@ -1,4 +1,22 @@
 {
+  "assistant": {
+    "artifacts": {
+      "showAll": "সব {{total}}টি দেখুন",
+      "unavailable": "এই কার্ডটি দেখানো যাচ্ছে না",
+      "unavailableBody": "উত্তরে এমন তথ্য আছে যা অ্যাপের এই সংস্করণ দেখাতে পারে না।"
+    },
+    "bar": {
+      "camera": "রসিদ স্ক্যান করুন",
+      "counter": "{{length}} / {{max}}",
+      "disclaimer": "AI ভুল করতে পারে",
+      "hint": "প্রতি বার্তায় ≈{{credits}} ক্রেডিট · AI ভুল করতে পারে",
+      "inputLabel": "সহকারীকে বার্তা লিখুন",
+      "mic": "ভয়েস নোট রেকর্ড করুন",
+      "placeholder": "লিখুন, বলুন, বা রসিদের ছবি তুলুন",
+      "send": "বার্তা পাঠান",
+      "unavailable": "AI চ্যাট এখন পাওয়া যাচ্ছে না"
+    }
+  },
   "auth": {
     "alreadyHaveAccount": "ইতিমধ্যে একটি অ্যাকাউন্ট আছে?",
     "continueWithGoogle": "গুগল দিয়ে চালিয়ে যান",
@@ -133,6 +151,18 @@
   "home": {
     "title": "লেজার কিপার"
   },
+  "installments": {
+    "card": {
+      "completed": "সম্পন্ন",
+      "each": "প্রতি কিস্তি {{amount}}",
+      "empty": "কোনো চলমান কিস্তির পরিকল্পনা নেই",
+      "listTitle": "কিস্তির পরিকল্পনাসমূহ",
+      "progress": "{{total}}টির মধ্যে {{paid}}টি পরিশোধিত",
+      "remaining": "{{amount}} বাকি",
+      "title": "কিস্তির পরিকল্পনা",
+      "viewInInstallments": "কিস্তিতে দেখুন"
+    }
+  },
   "ledger": {
     "actions": {
       "addTransaction": "লেনদেন যোগ করুন",
@@ -231,6 +261,7 @@
     "previousMonth": "আগের মাস",
     "search": {
       "clear": "খোঁজা মুছুন",
+      "close": "সার্চ বন্ধ করুন",
       "placeholder": "লেনদেন খুঁজুন"
     },
     "sort": {
@@ -255,10 +286,116 @@
         "net": "নিট"
       }
     },
+    "summary": {
+      "hide": "সারাংশ লুকান",
+      "show": "সারাংশ দেখান"
+    },
     "thisMonth": "এই মাস",
     "types": {
       "expense": "খরচ",
       "income": "আয়"
+    }
+  },
+  "loans": {
+    "a11y": {
+      "original": "মূল {{amount}}",
+      "outstanding": "{{amount}} বাকি"
+    },
+    "actions": {
+      "add": "ধার যোগ করুন",
+      "delete": "মুছুন",
+      "edit": "সম্পাদনা",
+      "repay": "পরিশোধ লিখুন"
+    },
+    "cancel": "বাতিল",
+    "card": {
+      "borrowedFrom": "{{name}} এর কাছ থেকে ধার নিয়েছেন",
+      "lentTo": "{{name}} কে ধার দিয়েছেন",
+      "noOpenLoans": "কোনো চলমান ধার নেই",
+      "original": "মূল",
+      "outstanding": "বাকি",
+      "repaid": "পরিশোধিত",
+      "title": "ধার",
+      "viewInLoans": "ধারে দেখুন"
+    },
+    "delete": {
+      "body": "এই ধার ও এর পরিশোধের ইতিহাস মুছে ফেলবেন?",
+      "confirm": "মুছুন",
+      "pending": "মোছা হচ্ছে…",
+      "title": "{{name}} এর সাথে ধার মুছবেন?"
+    },
+    "details": {
+      "error": "পরিশোধের তালিকা লোড করা যায়নি",
+      "noRepayments": "এখনো কোনো পরিশোধ নেই",
+      "repayments": "পরিশোধ",
+      "undoLabel": "{{date}} তারিখের {{amount}} পরিশোধ বাতিল করুন"
+    },
+    "direction": {
+      "borrowed": "ধার নেওয়া",
+      "lent": "ধার দেওয়া"
+    },
+    "empty": {
+      "all": "এখনো কোনো ধার নেই",
+      "open": "কোনো চলমান ধার নেই",
+      "settled": "কোনো পরিশোধিত ধার নেই"
+    },
+    "error": "ধারের তালিকা লোড করা যায়নি",
+    "errors": {
+      "amountBelowRepaid": "পরিমাণ ইতিমধ্যে পরিশোধিত {{amount}} এর কম হতে পারে না",
+      "dateFuture": "তারিখ ভবিষ্যতের হতে পারে না",
+      "dueBeforeDate": "শেষ তারিখ মূল তারিখের আগে হতে পারে না",
+      "notFound": "এই ধার আর নেই",
+      "noteTooLong": "৫০০ অক্ষরের মধ্যে লিখুন",
+      "offline": "আপনি অফলাইনে আছেন। আবার চেষ্টা করুন।",
+      "personRequired": "একটি নাম লিখুন",
+      "personTooLong": "১০০ অক্ষরের মধ্যে লিখুন",
+      "repaymentExceeds": "মাত্র {{amount}} বাকি আছে",
+      "server": "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+      "settled": "এই ধার ইতিমধ্যে পরিশোধিত"
+    },
+    "form": {
+      "addTitle": "ধার যোগ করুন",
+      "amount": "পরিমাণ",
+      "borrowedFrom": "যার কাছ থেকে নিয়েছেন",
+      "clearDueDate": "শেষ তারিখ মুছুন",
+      "date": "তারিখ",
+      "dueDate": "শেষ তারিখ (ঐচ্ছিক)",
+      "editTitle": "ধার সম্পাদনা",
+      "lentTo": "যাকে দিয়েছেন",
+      "noDueDate": "শেষ তারিখ নেই",
+      "note": "নোট (ঐচ্ছিক)",
+      "personPlaceholder": "ব্যক্তির নাম",
+      "save": "সংরক্ষণ",
+      "saving": "সংরক্ষণ হচ্ছে…"
+    },
+    "refreshError": "ধারের তালিকা রিফ্রেশ করা যায়নি",
+    "repay": {
+      "outstanding": "{{name}} · {{amount}} বাকি",
+      "save": "পরিশোধ লিখুন",
+      "saving": "লেখা হচ্ছে…",
+      "title": "পরিশোধ লিখুন"
+    },
+    "retry": "আবার চেষ্টা করুন",
+    "row": {
+      "due": "শেষ তারিখ {{date}}",
+      "of": "{{amount}} এর মধ্যে",
+      "overdue": "মেয়াদোত্তীর্ণ",
+      "settled": "পরিশোধিত"
+    },
+    "status": {
+      "all": "সব",
+      "open": "চলমান",
+      "settled": "পরিশোধিত"
+    },
+    "totals": {
+      "borrowed": "আপনার দেনা",
+      "lent": "আপনার পাওনা"
+    },
+    "undo": {
+      "body": "{{date}} তারিখের {{amount}} পরিশোধ সরিয়ে ফেলবেন?",
+      "confirm": "বাতিল করুন",
+      "pending": "বাতিল হচ্ছে…",
+      "title": "পরিশোধ বাতিল করবেন?"
     }
   },
   "navigation": {
@@ -274,5 +411,10 @@
   },
   "offline": {
     "banner": "আপনি অফলাইনে আছেন"
+  },
+  "settings": {
+    "sections": {
+      "ledger": "খাতা"
+    }
   }
 }
