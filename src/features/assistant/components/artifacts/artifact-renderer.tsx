@@ -24,7 +24,7 @@ export function ArtifactRenderer({ artifact, currency }: ArtifactRendererProps) 
 
   return (
     <Animated.View entering={reducedMotion ? undefined : riseIn}>
-      {artifactRegistry[artifact.type]?.(artifact.data, currency) ?? <ArtifactUnavailableCard />}
+      {artifactRegistry[artifact.type]?.(artifact.data, currency, artifact.id) ?? <ArtifactUnavailableCard />}
     </Animated.View>
   );
 }

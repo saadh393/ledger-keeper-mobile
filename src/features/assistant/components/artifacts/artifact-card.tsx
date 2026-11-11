@@ -9,7 +9,7 @@ export type ArtifactCardProps = {
   icon?: LucideIcon;
   meta?: React.ReactNode;
   tone?: Tone;
-  summary: string;
+  summary?: string;
   footer?: React.ReactNode;
   children: React.ReactNode;
   testID: string;
@@ -33,7 +33,7 @@ export function ArtifactCard({ label, icon, meta, tone = 'info', summary, footer
   return (
     <View testID={testID} className={`overflow-hidden rounded-3xl border bg-surface-container ${toneBorders[tone]}`}>
       <View pointerEvents="none" className={`absolute -top-12 -right-12 size-32 rounded-full opacity-60 ${toneGlows[tone]}`} />
-      <View accessible accessibilityLabel={summary} className="px-4 pt-3 pb-1">
+      <View accessible={Boolean(summary)} accessibilityLabel={summary} className="px-4 pt-3 pb-1">
         {label
           ? (
               <View className="flex-row items-center gap-2">

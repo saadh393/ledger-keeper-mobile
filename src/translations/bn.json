@@ -24,6 +24,40 @@
       "send": "বার্তা পাঠান",
       "unavailable": "AI চ্যাট এখন পাওয়া যাচ্ছে না"
     },
+    "clarification": {
+      "amountPlaceholder": "পরিমাণ লিখুন…",
+      "selectPlaceholder": "একটি বেছে নিন",
+      "send": "উত্তর পাঠান",
+      "textPlaceholder": "আপনার উত্তর লিখুন…",
+      "title": "আরও একটি তথ্য দরকার",
+      "unavailable": "AI উত্তর সাময়িকভাবে বন্ধ আছে"
+    },
+    "draft": {
+      "addAmount": "সেভ করতে পরিমাণ যোগ করুন",
+      "amount": "পরিমাণ",
+      "category": "ক্যাটাগরি",
+      "categoryPlaceholder": "একটি ক্যাটাগরি বেছে নিন",
+      "date": "তারিখ",
+      "discard": "বাদ দিন",
+      "discarded": "বাদ দেওয়া হয়েছে। কিছুই সেভ হয়নি।",
+      "discarding": "বাদ দেওয়া হচ্ছে…",
+      "errors": {
+        "confirm": "লেনদেনটি সেভ করা যায়নি।",
+        "dismiss": "খসড়াটি বাদ দেওয়া যায়নি।",
+        "restore": "খসড়াটি ফেরানো যায়নি।"
+      },
+      "original": "{{original}} থেকে রূপান্তরিত",
+      "restoring": "ফেরানো হচ্ছে…",
+      "retry": "আবার চেষ্টা করুন",
+      "review": "দেখে নিশ্চিত করুন",
+      "save": "সেভ করুন",
+      "saved": "সেভ হয়েছে",
+      "saving": "সেভ হচ্ছে…",
+      "title": "শিরোনাম",
+      "titlePlaceholder": "কী ছিল?",
+      "undo": "ফিরিয়ে আনুন",
+      "untitled": "লেনদেন"
+    },
     "failure": {
       "buyCredits": "ক্রেডিট কিনুন",
       "credits": "এর জন্য {{required}} ক্রেডিট লাগবে; আপনার আছে {{available}}।",

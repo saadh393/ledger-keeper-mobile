@@ -24,6 +24,40 @@
       "send": "Send message",
       "unavailable": "AI chat is unavailable right now"
     },
+    "clarification": {
+      "amountPlaceholder": "Enter amount…",
+      "selectPlaceholder": "Choose an option",
+      "send": "Send answer",
+      "textPlaceholder": "Type your answer…",
+      "title": "Needs one more detail",
+      "unavailable": "AI replies are temporarily unavailable"
+    },
+    "draft": {
+      "addAmount": "Add the amount to save this",
+      "amount": "Amount",
+      "category": "Category",
+      "categoryPlaceholder": "Choose a category",
+      "date": "Date",
+      "discard": "Discard",
+      "discarded": "Discarded. Nothing was saved.",
+      "discarding": "Discarding…",
+      "errors": {
+        "confirm": "Couldn't save this transaction.",
+        "dismiss": "Couldn't discard this draft.",
+        "restore": "Couldn't restore this draft."
+      },
+      "original": "Converted from {{original}}",
+      "restoring": "Restoring…",
+      "retry": "Retry",
+      "review": "Review and confirm",
+      "save": "Save",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "title": "Title",
+      "titlePlaceholder": "What was it?",
+      "undo": "Undo",
+      "untitled": "Transaction"
+    },
     "failure": {
       "buyCredits": "Buy credits",
       "credits": "This needs {{required}} credits; you have {{available}}.",
