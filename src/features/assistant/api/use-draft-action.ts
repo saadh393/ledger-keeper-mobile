@@ -4,7 +4,7 @@ import type { TransactionDraftArtifactData } from '@/features/assistant/schemas/
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { runDraftAction } from '@/features/assistant/api/run-draft-action';
-import { latestConversationQueryKey } from '@/features/assistant/api/use-latest-conversation';
+import { openConversationQueryKey } from '@/features/assistant/api/use-open-conversation';
 import { replaceArtifactData } from '@/features/assistant/utils/replace-artifact-data';
 import { resolveDraftConflict } from '@/features/assistant/utils/resolve-draft-conflict';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
@@ -14,7 +14,7 @@ import { toApiError } from '@/lib/api';
 export function useDraftAction(artifactId: string, data: TransactionDraftArtifactData) {
   const queryClient = useQueryClient();
   const bookId = useActiveBook().activeBookId ?? '';
-  const queryKey = latestConversationQueryKey(bookId);
+  const queryKey = openConversationQueryKey(bookId);
   const busy = React.useRef(false);
 
   const mutation = useMutation({

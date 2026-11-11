@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Text } from '@/components/ui';
-import { useLatestConversation } from '@/features/assistant/api/use-latest-conversation';
+import { useOpenConversation } from '@/features/assistant/api/use-open-conversation';
 import { useSendMessage } from '@/features/assistant/api/use-send-message';
 import { ArtifactCard } from '@/features/assistant/components/artifacts/artifact-card';
 import { ClarificationAnswered } from '@/features/assistant/components/artifacts/clarification-answered';
@@ -24,7 +24,7 @@ export type ClarificationArtifactProps = {
 
 export function ClarificationArtifact({ data, currency, artifactId }: ClarificationArtifactProps) {
   const { t, i18n } = useTranslation();
-  const conversation = useLatestConversation(useActiveBook().activeBookId);
+  const conversation = useOpenConversation(useActiveBook().activeBookId);
   const rateCard = useRateCard();
   const { send } = useSendMessage();
   const isSending = useAssistantStore(state => state.pending?.failure === null);

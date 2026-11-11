@@ -3,9 +3,9 @@ import type { ApiError } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { randomUUID } from 'expo-crypto';
 import { createConversation } from '@/features/assistant/api/create-conversation';
-import { fetchLatestConversation } from '@/features/assistant/api/fetch-latest-conversation';
+import { fetchConversation } from '@/features/assistant/api/fetch-conversation';
 import { AI_TIMEOUT_MS, sendMessage } from '@/features/assistant/api/send-message';
-import { latestConversationQueryKey } from '@/features/assistant/api/use-latest-conversation';
+import { openConversationQuery, openConversationQueryKey } from '@/features/assistant/api/use-open-conversation';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 import { classifySendError, getRetryKey, hasServerReply, isOperationInProgress, isProviderFailure } from '@/features/assistant/utils/send-retry';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
@@ -21,8 +21,13 @@ type Attempt = {
   key: string;
 };
 
+type Anchor = {
+  conversationId: string;
+  sinceId: string | null;
+};
+
 type Recovery = Attempt & {
-  sinceId?: string | null;
+  anchor?: Anchor;
   error: ApiError;
 };
 
@@ -36,12 +41,13 @@ export function useSendMessage() {
   const setPending = useAssistantStore(state => state.setPending);
   const setDraft = useAssistantStore(state => state.setDraft);
   const open = useAssistantStore(state => state.open);
+  const select = useAssistantStore(state => state.select);
 
   const refreshBook = (id: string) => queryClient.invalidateQueries({ queryKey: booksKeys.book(id) });
 
-  const reloadHasReply = async ({ bookId: id, sinceId, text }: { bookId: string; sinceId: string | null; text: string }) => {
+  const reloadHasReply = async ({ bookId: id, anchor: { conversationId, sinceId }, text }: { bookId: string; anchor: Anchor; text: string }) => {
     try {
-      const fresh = await queryClient.fetchQuery({ queryKey: latestConversationQueryKey(id), queryFn: () => fetchLatestConversation(id), staleTime: 0 });
+      const fresh = await queryClient.fetchQuery({ queryKey: openConversationQueryKey(id), queryFn: () => fetchConversation(conversationId), staleTime: 0 });
       return Boolean(fresh && hasServerReply(fresh.messages, sinceId, text));
     }
     catch {
@@ -49,7 +55,7 @@ export function useSendMessage() {
     }
   };
 
-  const settleFromServer = async (recovery: Recovery & { sinceId: string | null }) => {
+  const settleFromServer = async (recovery: Recovery & { anchor: Anchor }) => {
     if (!isOperationInProgress(recovery.error))
       return reloadHasReply(recovery);
     const deadline = Date.now() + AI_TIMEOUT_MS;
@@ -62,9 +68,9 @@ export function useSendMessage() {
   };
 
   const recover = async (recovery: Recovery) => {
-    const { text, key, error, sinceId } = recovery;
+    const { text, key, error, anchor } = recovery;
     const failure = classifySendError(error);
-    if (failure.reason === 'uncertain' && sinceId !== undefined && await settleFromServer({ ...recovery, sinceId })) {
+    if (failure.reason === 'uncertain' && anchor && await settleFromServer({ ...recovery, anchor })) {
       setPending(null);
       void queryClient.invalidateQueries({ queryKey: creditBalanceQueryKey });
       void refreshBook(recovery.bookId);
@@ -77,12 +83,16 @@ export function useSendMessage() {
 
   const attempt = async ({ bookId: id, text, key }: Attempt) => {
     setPending({ text, key, failure: null });
-    const queryKey = latestConversationQueryKey(id);
-    let sinceId: string | null | undefined;
+    const query = openConversationQuery(id);
+    const queryKey = query.queryKey;
+    let anchor: Anchor | undefined;
     try {
-      const conversation = await queryClient.ensureQueryData({ queryKey, queryFn: () => fetchLatestConversation(id) }) ?? await createConversation(id);
+      const existing = await queryClient.ensureQueryData(query);
+      const conversation = existing ?? await createConversation(id);
+      if (!existing)
+        select({ bookId: id, conversationId: conversation.id });
       queryClient.setQueryData(queryKey, conversation);
-      sinceId = conversation.messages.at(-1)?.id ?? null;
+      anchor = { conversationId: conversation.id, sinceId: conversation.messages.at(-1)?.id ?? null };
       const result = await sendMessage(conversation.id, text, key);
       queryClient.setQueryData<Conversation | null>(queryKey, current => current && { ...current, messages: [...current.messages, result.userMessage, result.aiMessage] });
       queryClient.setQueryData<{ balance: number }>(creditBalanceQueryKey, current => current && { ...current, balance: result.credits.balance });
@@ -90,7 +100,7 @@ export function useSendMessage() {
       setPending(isProviderFailure(result.aiMessage, result.credits.charged) ? { text, key, failure: { reason: 'provider', retryKey: 'new' } } : null);
     }
     catch (error) {
-      await recover({ bookId: id, text, key, sinceId, error: toApiError(error) });
+      await recover({ bookId: id, text, key, anchor, error: toApiError(error) });
     }
   };
 

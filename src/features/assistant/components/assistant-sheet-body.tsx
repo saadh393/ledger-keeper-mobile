@@ -32,5 +32,5 @@ export function AssistantSheetBody({ conversation }: { conversation: UseQueryRes
   if (!conversation.data?.messages.length && !hasPending)
     return <AssistantEmptyState />;
 
-  return <AssistantThread messages={conversation.data?.messages ?? []} currency={conversation.data?.currency} />;
+  return <AssistantThread conversation={conversation.data} />;
 }

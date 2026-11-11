@@ -23,14 +23,21 @@ export const conversationSchema = z.object({
   hasMore: z.boolean(),
 });
 
+export const bookChatSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 export const bookChatPageSchema = z.object({
-  items: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-  })),
+  items: z.array(bookChatSchema),
   nextCursor: z.string().nullable(),
+});
+
+export const messagePageSchema = z.object({
+  messages: z.array(chatMessageSchema),
+  hasMore: z.boolean(),
 });
 
 export const createdConversationSchema = z.object({
@@ -49,4 +56,7 @@ export const sendMessageResponseSchema = z.object({
 export type MessageArtifact = z.infer<typeof messageArtifactSchema>;
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
 export type Conversation = z.infer<typeof conversationSchema>;
+export type BookChat = z.infer<typeof bookChatSchema>;
+export type BookChatPage = z.infer<typeof bookChatPageSchema>;
+export type MessagePage = z.infer<typeof messagePageSchema>;
 export type SendMessageResponse = z.infer<typeof sendMessageResponseSchema>;

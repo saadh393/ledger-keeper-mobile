@@ -43,6 +43,14 @@
       "title": "Needs one more detail",
       "unavailable": "AI replies are temporarily unavailable"
     },
+    "deleteChat": {
+      "body": "Its messages are removed. Transactions it created stay in your ledger.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "error": "Couldn't delete this chat. Try again.",
+      "title": "Delete this chat?"
+    },
     "draft": {
       "addAmount": "Add the amount to save this",
       "amount": "Amount",
@@ -69,6 +77,12 @@
       "undo": "Undo",
       "untitled": "Transaction"
     },
+    "earlier": {
+      "error": "Couldn't load earlier messages.",
+      "load": "Load earlier messages",
+      "loading": "Loading…",
+      "retry": "Retry"
+    },
     "failure": {
       "buyCredits": "Buy credits",
       "credits": "This needs {{required}} credits; you have {{available}}.",
@@ -80,6 +94,19 @@
       "title": "Not sent",
       "too_long": "Message is too long — max {{limit}} characters",
       "uncertain": "Couldn't reach the assistant. Retrying won't charge you twice."
+    },
+    "history": {
+      "back": "Back to chat",
+      "delete": "Delete chat {{title}}",
+      "empty": "No chats yet in this book",
+      "error": "Couldn't load your chats",
+      "loadingOlder": "Loading…",
+      "newChat": "New chat",
+      "olderError": "Couldn't load older chats.",
+      "open": "Chat history",
+      "retry": "Retry",
+      "showOlder": "Show older chats",
+      "title": "Chat history"
     },
     "send": {
       "sending": "Sending…",
