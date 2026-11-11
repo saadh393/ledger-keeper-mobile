@@ -22,14 +22,11 @@ export function AssistantThread({ conversation }: { conversation: Conversation |
   const today = toDayKey(new Date());
   const currency = conversation?.currency;
   const listRef = React.useRef<React.ComponentRef<typeof BottomSheetFlatList<ThreadItem>>>(null);
-  const holdPosition = React.useRef(false);
   const pending = useAssistantStore(state => state.pending);
   const items = React.useMemo(() => groupMessagesByDay(conversation?.messages ?? []), [conversation?.messages]);
-  const lastKey = items.at(-1)?.key;
-
-  React.useEffect(() => {
-    holdPosition.current = false;
-  }, [lastKey, pending]);
+  const tail = `${items.at(-1)?.key}:${pending?.key}`;
+  const [heldAt, setHeldAt] = React.useState<string | null>(null);
+  const holding = heldAt === tail;
 
   const renderItem = React.useCallback<ListRenderItem<ThreadItem>>(
     ({ item }) => (item.type === 'day'
@@ -38,9 +35,12 @@ export function AssistantThread({ conversation }: { conversation: Conversation |
     [locale, today, currency],
   );
 
-  const holdScroll = React.useCallback(() => {
-    holdPosition.current = true;
-  }, []);
+  const holdScroll = React.useCallback(() => setHeldAt(tail), [tail]);
+
+  const scrollToEnd = () => {
+    if (!holding)
+      listRef.current?.scrollToEnd({ animated: false });
+  };
 
   return (
     <BottomSheetFlatList
@@ -51,12 +51,10 @@ export function AssistantThread({ conversation }: { conversation: Conversation |
       keyExtractor={item => item.key}
       ListHeaderComponent={conversation?.hasMore ? <AssistantLoadEarlier conversation={conversation} onLoad={holdScroll} /> : null}
       ListFooterComponent={AssistantPendingMessage}
-      maintainVisibleContentPosition={keepVisiblePosition}
+      maintainVisibleContentPosition={holding ? keepVisiblePosition : undefined}
       contentContainerStyle={{ paddingBottom: 16 }}
-      onContentSizeChange={() => {
-        if (!holdPosition.current)
-          listRef.current?.scrollToEnd({ animated: false });
-      }}
+      onLayout={scrollToEnd}
+      onContentSizeChange={scrollToEnd}
     />
   );
 }

@@ -76,6 +76,6 @@ describe('loanArtifact', () => {
 
   it('shows the fallback card for an invalid payload', () => {
     render(<LoanArtifact type="debt" data={{ id: 'broken' }} />);
-    expect(screen.getByTestId('artifact-unavailable')).toHaveTextContent(/This card can't be shown/);
+    expect(screen.getByTestId('artifact-unavailable')).toHaveTextContent(/This item can't be shown in this version/);
   });
 });

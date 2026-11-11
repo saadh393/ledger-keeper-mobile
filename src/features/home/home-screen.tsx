@@ -48,7 +48,7 @@ export function HomeScreen() {
         <LedgerToolbar />
         <View className="mt-2 flex-1">
           <TransactionList month={ledgerMonth.month} firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
-          <AddTransactionButton bottomInset={0} onPress={() => setIsAddOpen(true)} />
+          {isAssistantOpen ? null : <AddTransactionButton bottomInset={0} onPress={() => setIsAddOpen(true)} />}
         </View>
         {isAssistantOpen ? <AssistantSheet /> : null}
       </View>

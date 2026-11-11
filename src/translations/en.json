@@ -10,8 +10,8 @@
       "summary": "Summary",
       "transactions_one": "{{total}} transaction",
       "transactions_other": "{{total}} transactions",
-      "unavailable": "This card can't be shown",
-      "unavailableBody": "The reply had details this version of the app can't display."
+      "unavailable": "This item can't be shown in this version",
+      "unavailableBody": "Update the app to see it."
     },
     "bar": {
       "camera": "Scan a receipt",

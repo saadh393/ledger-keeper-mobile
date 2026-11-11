@@ -10,8 +10,8 @@
       "summary": "সারসংক্ষেপ",
       "transactions_one": "{{total}}টি লেনদেন",
       "transactions_other": "{{total}}টি লেনদেন",
-      "unavailable": "এই কার্ডটি দেখানো যাচ্ছে না",
-      "unavailableBody": "উত্তরে এমন তথ্য আছে যা অ্যাপের এই সংস্করণ দেখাতে পারে না।"
+      "unavailable": "এই আইটেমটি এই সংস্করণে দেখানো যাচ্ছে না",
+      "unavailableBody": "এটি দেখতে অ্যাপটি আপডেট করুন।"
     },
     "bar": {
       "camera": "রসিদ স্ক্যান করুন",
