@@ -15,6 +15,20 @@
       "placeholder": "Type, speak, or snap a receipt",
       "send": "Send message",
       "unavailable": "AI chat is unavailable right now"
+    },
+    "sheet": {
+      "close": "Close Assistant",
+      "emptyTitle": "Type, speak, or snap a receipt below.",
+      "error": "Couldn't load this chat",
+      "examples": {
+        "food": "How much did I spend on food this month?",
+        "lent": "Lent 2,000 to Rahim",
+        "salary": "Got salary 50,000",
+        "spent": "Spent 250 on lunch"
+      },
+      "open": "Open Assistant",
+      "retry": "Retry",
+      "title": "Assistant"
     }
   },
   "auth": {

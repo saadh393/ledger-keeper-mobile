@@ -3,6 +3,8 @@ import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { View } from '@/components/ui';
 import { AiBar } from '@/features/assistant/components/ai-bar';
+import { AssistantSheet } from '@/features/assistant/components/assistant-sheet';
+import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { CurrencyPickerSheet } from '@/features/currency';
 import {
@@ -22,6 +24,7 @@ export function HomeScreen() {
   const ledgerMonth = useLedgerMonth();
   const activeBook = useActiveBook();
   const [isAddOpen, setIsAddOpen] = React.useState(false);
+  const isAssistantOpen = useAssistantStore(state => state.isOpen);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,11 +41,14 @@ export function HomeScreen() {
 
   return (
     <View className="flex-1 bg-paper-100 pt-1">
-      <LedgerStats firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
-      <LedgerToolbar />
-      <View className="mt-2 flex-1">
-        <TransactionList month={ledgerMonth.month} firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
-        <AddTransactionButton bottomInset={0} onPress={() => setIsAddOpen(true)} />
+      <View className="flex-1">
+        <LedgerStats firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
+        <LedgerToolbar />
+        <View className="mt-2 flex-1">
+          <TransactionList month={ledgerMonth.month} firstDay={ledgerMonth.firstDay} lastDay={ledgerMonth.lastDay} />
+          <AddTransactionButton bottomInset={0} onPress={() => setIsAddOpen(true)} />
+        </View>
+        {isAssistantOpen ? <AssistantSheet /> : null}
       </View>
       <AiBar onSend={ignore} onCamera={ignore} onMic={ignore} />
       {isAddOpen

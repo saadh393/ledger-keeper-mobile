@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AiBarCounter } from '@/features/assistant/components/ai-bar-counter';
 import { AiBarHint } from '@/features/assistant/components/ai-bar-hint';
 import { AiBarIconButton } from '@/features/assistant/components/ai-bar-icon-button';
+import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 import { getMessageLimit } from '@/features/assistant/utils/get-message-limit';
 import { getChatCredits, useRateCard } from '@/features/credits';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
@@ -22,7 +23,8 @@ export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
   const insets = useSafeAreaInsets();
   const themeColors = useThemeColors();
   const rateCard = useRateCard();
-  const [text, setText] = React.useState('');
+  const text = useAssistantStore(state => state.draft);
+  const setText = useAssistantStore(state => state.setDraft);
   const trimmed = text.trim();
   const maxChars = rateCard.data?.limits.maxMessageChars;
   const chatCredits = rateCard.data ? getChatCredits(rateCard.data) : undefined;
