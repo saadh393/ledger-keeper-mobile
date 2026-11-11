@@ -10,7 +10,10 @@ export function useUpdateTransaction(bookId: string) {
     mutationFn: ({ transactionId, patch }: { transactionId: string; patch: UpdateTransactionInput }) =>
       updateTransaction(bookId, transactionId, patch),
     onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: booksKeys.table(bookId) });
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: booksKeys.table(bookId) }),
+        queryClient.invalidateQueries({ queryKey: booksKeys.conversations(bookId) }),
+      ]);
     },
   });
 }

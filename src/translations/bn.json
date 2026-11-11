@@ -1,7 +1,15 @@
 {
   "assistant": {
     "artifacts": {
+      "deleted": "মুছে ফেলা হয়েছে",
+      "insight": "পরামর্শ",
+      "noTransactions": "এখনো কোনো লেনদেন মেলেনি।",
+      "saved_one": "{{total}}টি লেনদেন সেভ হয়েছে",
+      "saved_other": "{{total}}টি লেনদেন সেভ হয়েছে",
       "showAll": "সব {{total}}টি দেখুন",
+      "summary": "সারসংক্ষেপ",
+      "transactions_one": "{{total}}টি লেনদেন",
+      "transactions_other": "{{total}}টি লেনদেন",
       "unavailable": "এই কার্ডটি দেখানো যাচ্ছে না",
       "unavailableBody": "উত্তরে এমন তথ্য আছে যা অ্যাপের এই সংস্করণ দেখাতে পারে না।"
     },

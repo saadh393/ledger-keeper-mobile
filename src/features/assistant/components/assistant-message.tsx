@@ -2,9 +2,9 @@ import type { ChatMessage } from '@/features/assistant/schemas/conversation-sche
 import * as React from 'react';
 import { View } from 'react-native';
 import { Text } from '@/components/ui';
-import { ArtifactUnavailableCard } from '@/features/assistant/components/artifacts/artifact-unavailable-card';
+import { ArtifactRenderer } from '@/features/assistant/components/artifacts/artifact-renderer';
 
-export function AssistantMessage({ message }: { message: ChatMessage }) {
+export function AssistantMessage({ message, currency = 'BDT' }: { message: ChatMessage; currency?: string }) {
   const isUser = message.role === 'user';
 
   return (
@@ -17,7 +17,7 @@ export function AssistantMessage({ message }: { message: ChatMessage }) {
           )
         : null}
       {message.text && !isUser ? <Text selectable className="text-body text-ink-900">{message.text}</Text> : null}
-      {message.artifacts?.map(artifact => <ArtifactUnavailableCard key={artifact.id} />)}
+      {message.artifacts?.map(artifact => <ArtifactRenderer key={artifact.id} artifact={artifact} currency={currency} />)}
     </View>
   );
 }

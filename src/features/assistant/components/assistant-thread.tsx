@@ -12,7 +12,7 @@ import { formatDayHeader } from '@/lib/format/day-header';
 import { toDayKey } from '@/lib/format/day-key';
 import { resolveLanguage } from '@/lib/i18n/resolve-language';
 
-export function AssistantThread({ messages }: { messages: ChatMessage[] }) {
+export function AssistantThread({ messages, currency }: { messages: ChatMessage[]; currency?: string }) {
   const { i18n } = useTranslation();
   const locale = resolveLanguage(i18n.language);
   const today = toDayKey(new Date());
@@ -22,8 +22,8 @@ export function AssistantThread({ messages }: { messages: ChatMessage[] }) {
   const renderItem = React.useCallback<ListRenderItem<ThreadItem>>(
     ({ item }) => (item.type === 'day'
       ? <AssistantDayDivider label={formatDayHeader(item.day, locale, today)} />
-      : <AssistantMessage message={item.message} />),
-    [locale, today],
+      : <AssistantMessage message={item.message} currency={currency} />),
+    [locale, today, currency],
   );
 
   return (

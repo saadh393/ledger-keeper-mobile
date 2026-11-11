@@ -11,7 +11,10 @@ export function useDeleteTransaction(bookId: string) {
     onSuccess: (_data, transactionId) => {
       const queryKey = booksKeys.table(bookId);
       queryClient.setQueriesData<BookTable>({ queryKey }, table => table && { ...table, rows: table.rows.filter(row => row.id !== transactionId) });
-      return queryClient.invalidateQueries({ queryKey });
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey }),
+        queryClient.invalidateQueries({ queryKey: booksKeys.conversations(bookId) }),
+      ]);
     },
   });
 }

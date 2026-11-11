@@ -1,7 +1,15 @@
 {
   "assistant": {
     "artifacts": {
+      "deleted": "Deleted",
+      "insight": "Insight",
+      "noTransactions": "No transactions match yet.",
+      "saved_one": "{{total}} transaction saved",
+      "saved_other": "{{total}} transactions saved",
       "showAll": "Show all {{total}}",
+      "summary": "Summary",
+      "transactions_one": "{{total}} transaction",
+      "transactions_other": "{{total}} transactions",
       "unavailable": "This card can't be shown",
       "unavailableBody": "The reply had details this version of the app can't display."
     },
