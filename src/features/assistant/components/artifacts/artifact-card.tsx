@@ -38,7 +38,7 @@ export function ArtifactCard({ label, icon, meta, tone = 'info', summary, footer
           ? (
               <View className="flex-row items-center gap-2">
                 {icon ? <ToneTile tone={tone} icon={icon} size="sm" iconSize={16} /> : null}
-                <Text numberOfLines={1} className="min-w-0 flex-1 text-label text-ink-700">{label}</Text>
+                <Text className="min-w-0 flex-1 text-label text-ink-700">{label}</Text>
                 {meta}
               </View>
             )

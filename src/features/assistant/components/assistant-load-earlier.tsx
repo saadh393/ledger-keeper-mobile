@@ -5,12 +5,7 @@ import { View } from 'react-native';
 import { Button, Text } from '@/components/ui';
 import { useLoadEarlierMessages } from '@/features/assistant/api/use-load-earlier-messages';
 
-export type AssistantLoadEarlierProps = {
-  conversation: Conversation;
-  onLoad: () => void;
-};
-
-export function AssistantLoadEarlier({ conversation, onLoad }: AssistantLoadEarlierProps) {
+export function AssistantLoadEarlier({ conversation }: { conversation: Conversation }) {
   const { t } = useTranslation();
   const mutation = useLoadEarlierMessages(conversation.bookId, conversation);
   const busy = React.useRef(false);
@@ -20,7 +15,6 @@ export function AssistantLoadEarlier({ conversation, onLoad }: AssistantLoadEarl
     if (busy.current || !oldestId)
       return;
     busy.current = true;
-    onLoad();
     mutation.mutate(oldestId, {
       onSettled: () => {
         busy.current = false;
