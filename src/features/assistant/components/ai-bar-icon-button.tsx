@@ -7,12 +7,14 @@ export type AiBarIconButtonProps = {
   icon: LucideIcon;
   label: string;
   onPress: () => void;
+  onLongPress?: () => void;
+  onPressOut?: () => void;
   disabled?: boolean;
   accent?: boolean;
   testID?: string;
 };
 
-export function AiBarIconButton({ icon: Icon, label, onPress, disabled = false, accent = false, testID }: AiBarIconButtonProps) {
+export function AiBarIconButton({ icon: Icon, label, onPress, onLongPress, onPressOut, disabled = false, accent = false, testID }: AiBarIconButtonProps) {
   const themeColors = useThemeColors();
 
   return (
@@ -23,6 +25,8 @@ export function AiBarIconButton({ icon: Icon, label, onPress, disabled = false, 
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
+      onLongPress={onLongPress}
+      onPressOut={onPressOut}
       className={`size-11 items-center justify-center rounded-full ${accent ? 'bg-accent active:opacity-90' : 'active:bg-paper-200'} ${disabled ? 'opacity-40' : ''}`}
     >
       <Icon size={20} strokeWidth={1.75} color={accent ? themeColors['on-accent'] : themeColors['ink-700']} />

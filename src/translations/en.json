@@ -86,13 +86,16 @@
     "failure": {
       "buyCredits": "Buy credits",
       "credits": "This needs {{required}} credits; you have {{available}}.",
+      "disabled": "This feature is temporarily unavailable.",
       "dismiss": "Dismiss",
       "failed": "Your message couldn't be sent. Try again.",
       "provider": "The assistant couldn't finish this reply. Try again.",
       "rate_limited": "Too many requests, try again in a moment.",
       "retry": "Retry",
       "title": "Not sent",
+      "too_large": "Recording is too large",
       "too_long": "Message is too long — max {{limit}} characters",
+      "transcription": "Couldn't transcribe this note. Try again.",
       "uncertain": "Couldn't reach the assistant. Retrying won't charge you twice."
     },
     "history": {
@@ -526,5 +529,20 @@
     "sections": {
       "ledger": "Ledger"
     }
+  },
+  "voice": {
+    "credits": "≈{{credits}} credits",
+    "discard": "Discard recording",
+    "failed": "Couldn't transcribe this note",
+    "limitReached": "Time limit reached",
+    "noSpeech": "No speech detected",
+    "note": "Voice note · {{duration}}",
+    "openSettings": "Open settings",
+    "permission": "Microphone access is needed to record",
+    "recordingFailed": "Couldn't record. Try again.",
+    "send": "Send recording",
+    "timer": "{{elapsed}} / {{max}}",
+    "tooShort": "Recording is too short",
+    "unavailable": "Voice notes are unavailable right now"
   }
 }

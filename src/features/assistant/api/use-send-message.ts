@@ -1,4 +1,5 @@
 import type { Conversation } from '@/features/assistant/schemas/conversation-schema';
+import type { VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
 import type { ApiError } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { randomUUID } from 'expo-crypto';
@@ -7,10 +8,13 @@ import { fetchConversation } from '@/features/assistant/api/fetch-conversation';
 import { AI_TIMEOUT_MS, sendMessage } from '@/features/assistant/api/send-message';
 import { openConversationQuery, openConversationQueryKey } from '@/features/assistant/api/use-open-conversation';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
-import { classifySendError, getRetryKey, hasServerReply, isOperationInProgress, isProviderFailure } from '@/features/assistant/utils/send-retry';
+import { releasePending } from '@/features/assistant/utils/release-pending';
+import { classifySendError, getReplyFailure, getRetryKey, hasServerReply, isOperationInProgress } from '@/features/assistant/utils/send-retry';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { booksKeys } from '@/features/books/utils/query-keys';
 import { creditBalanceQueryKey } from '@/features/credits/api/credit-balance-query-key';
+import { sendVoice } from '@/features/voice/api/send-voice';
+import { deleteRecordingFile } from '@/features/voice/utils/delete-recording-file';
 import { toApiError } from '@/lib/api';
 
 const POLL_INTERVAL_MS = 3000;
@@ -19,6 +23,7 @@ type Attempt = {
   bookId: string;
   text: string;
   key: string;
+  voice?: VoiceRecording;
 };
 
 type Anchor = {
@@ -45,10 +50,10 @@ export function useSendMessage() {
 
   const refreshBook = (id: string) => queryClient.invalidateQueries({ queryKey: booksKeys.book(id) });
 
-  const reloadHasReply = async ({ bookId: id, anchor: { conversationId, sinceId }, text }: { bookId: string; anchor: Anchor; text: string }) => {
+  const reloadHasReply = async ({ bookId: id, anchor: { conversationId, sinceId }, text, key }: Attempt & { anchor: Anchor }) => {
     try {
       const fresh = await queryClient.fetchQuery({ queryKey: openConversationQueryKey(id), queryFn: () => fetchConversation(conversationId), staleTime: 0 });
-      return Boolean(fresh && hasServerReply(fresh.messages, sinceId, text));
+      return Boolean(fresh && hasServerReply(fresh.messages, sinceId, { text, key }));
     }
     catch {
       return false;
@@ -68,21 +73,22 @@ export function useSendMessage() {
   };
 
   const recover = async (recovery: Recovery) => {
-    const { text, key, error, anchor } = recovery;
+    const { text, key, voice, error, anchor } = recovery;
     const failure = classifySendError(error);
     if (failure.reason === 'uncertain' && anchor && await settleFromServer({ ...recovery, anchor })) {
+      deleteRecordingFile(voice?.uri ?? null);
       setPending(null);
       void queryClient.invalidateQueries({ queryKey: creditBalanceQueryKey });
       void refreshBook(recovery.bookId);
       return;
     }
-    if (failure.reason === 'too_long')
+    if (failure.reason === 'too_long' && !voice)
       setDraft(text);
-    setPending({ text, key, failure });
+    setPending({ text, key, voice, failure });
   };
 
-  const attempt = async ({ bookId: id, text, key }: Attempt) => {
-    setPending({ text, key, failure: null });
+  const attempt = async ({ bookId: id, text, key, voice }: Attempt) => {
+    setPending({ text, key, voice, failure: null });
     const query = openConversationQuery(id);
     const queryKey = query.queryKey;
     let anchor: Anchor | undefined;
@@ -93,37 +99,43 @@ export function useSendMessage() {
         select({ bookId: id, conversationId: conversation.id });
       queryClient.setQueryData(queryKey, conversation);
       anchor = { conversationId: conversation.id, sinceId: conversation.messages.at(-1)?.id ?? null };
-      const result = await sendMessage(conversation.id, text, key);
+      const result = voice ? await sendVoice(conversation.id, voice, key) : await sendMessage(conversation.id, text, key);
       queryClient.setQueryData<Conversation | null>(queryKey, current => current && { ...current, messages: [...current.messages, result.userMessage, result.aiMessage] });
       queryClient.setQueryData<{ balance: number }>(creditBalanceQueryKey, current => current && { ...current, balance: result.credits.balance });
       void refreshBook(id);
-      setPending(isProviderFailure(result.aiMessage, result.credits.charged) ? { text, key, failure: { reason: 'provider', retryKey: 'new' } } : null);
+      const failure = getReplyFailure(result);
+      if (!failure)
+        deleteRecordingFile(voice?.uri ?? null);
+      setPending(failure && { text, key, voice, failure });
     }
     catch (error) {
-      await recover({ bookId: id, text, key, anchor, error: toApiError(error) });
+      await recover({ bookId: id, text, key, voice, anchor, error: toApiError(error) });
     }
   };
 
-  const send = (text: string) => {
-    if (!bookId || useAssistantStore.getState().pending?.failure === null)
-      return;
+  const start = (text: string, voice?: VoiceRecording) => {
+    const pending = useAssistantStore.getState().pending;
+    if (!bookId || pending?.failure === null)
+      return false;
+    if (pending?.voice)
+      releasePending();
     open();
-    void attempt({ bookId, text, key: randomUUID() });
+    void attempt({ bookId, text, voice, key: randomUUID() });
+    return true;
   };
+
+  const send = (text: string) => {
+    start(text);
+  };
+
+  const sendRecording = (voice: VoiceRecording) => start('', voice);
 
   const retry = () => {
     const pending = useAssistantStore.getState().pending;
     if (!bookId || !pending?.failure)
       return;
-    void attempt({ bookId, text: pending.text, key: getRetryKey(pending.failure, pending.key, randomUUID) });
+    void attempt({ bookId, text: pending.text, voice: pending.voice, key: getRetryKey(pending.failure, pending.key, randomUUID) });
   };
 
-  const dismiss = () => {
-    const pending = useAssistantStore.getState().pending;
-    if (pending)
-      setDraft(pending.text);
-    setPending(null);
-  };
-
-  return { send, retry, dismiss };
+  return { send, sendRecording, retry, dismiss: releasePending };
 }

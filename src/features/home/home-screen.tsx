@@ -26,7 +26,7 @@ export function HomeScreen() {
   const activeBook = useActiveBook();
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const isAssistantOpen = useAssistantStore(state => state.isOpen);
-  const { send } = useSendMessage();
+  const { send, sendRecording } = useSendMessage();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -52,7 +52,7 @@ export function HomeScreen() {
         </View>
         {isAssistantOpen ? <AssistantSheet /> : null}
       </View>
-      <AiBar onSend={send} onCamera={ignore} onMic={ignore} />
+      <AiBar onSend={send} onCamera={ignore} onRecording={sendRecording} />
       {isAddOpen
         ? (
             <TransactionFormSheet

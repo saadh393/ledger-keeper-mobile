@@ -1,3 +1,4 @@
+import type { VoiceRecorderStatus, VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
 import { ArrowUp, Camera, Mic } from 'lucide-react-native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,16 +10,21 @@ import { AiBarHint } from '@/features/assistant/components/ai-bar-hint';
 import { AiBarIconButton } from '@/features/assistant/components/ai-bar-icon-button';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 import { getMessageLimit } from '@/features/assistant/utils/get-message-limit';
-import { getChatCredits, useRateCard } from '@/features/credits';
+import { getChatCredits, getVoiceCredits, getVoiceLimit, useRateCard } from '@/features/credits';
+import { VoiceNotice } from '@/features/voice/components/voice-notice';
+import { VoiceRecordingBar } from '@/features/voice/components/voice-recording-bar';
+import { useVoiceInput } from '@/features/voice/hooks/use-voice-input';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type AiBarProps = {
   onSend: (text: string) => void;
   onCamera: () => void;
-  onMic: () => void;
+  onRecording: (recording: VoiceRecording) => boolean;
 };
 
-export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
+const recordingStatuses: VoiceRecorderStatus[] = ['requesting-permission', 'recording', 'stopped'];
+
+export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const themeColors = useThemeColors();
@@ -26,12 +32,16 @@ export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
   const text = useAssistantStore(state => state.draft);
   const setText = useAssistantStore(state => state.setDraft);
   const isSending = useAssistantStore(state => state.pending?.failure === null);
+  const isVoiceDisabled = useAssistantStore(state => Boolean(state.pending?.voice) && state.pending?.failure?.reason === 'disabled');
+  const voice = useVoiceInput(onRecording);
   const trimmed = text.trim();
   const maxChars = rateCard.data?.limits.maxMessageChars;
   const chatCredits = rateCard.data ? getChatCredits(rateCard.data) : undefined;
   const isChatOff = chatCredits === null;
   const limit = getMessageLimit(trimmed.length, maxChars);
   const canSend = Boolean(trimmed) && !limit.isOverLimit && !isChatOff && !isSending;
+  const isVoiceOff = isVoiceDisabled || Boolean(rateCard.data && getVoiceLimit(rateCard.data) === null);
+  const voiceNotice = isVoiceOff ? 'voice-unavailable' : voice.status === 'error' ? voice.reason : null;
 
   const send = () => {
     onSend(trimmed);
@@ -41,7 +51,7 @@ export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
   return (
     <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
       <View testID="ai-bar" className="bg-paper-100 px-4 pt-2" style={{ paddingBottom: insets.bottom + 8 }}>
-        <View className="min-h-[56px] flex-row items-end rounded-[32px] bg-surface-container p-1.5">
+        <View className="relative min-h-[56px] flex-row items-end rounded-[32px] bg-surface-container p-1.5">
           <AiBarIconButton testID="ai-bar-camera" icon={Camera} label={t('assistant.bar.camera')} onPress={onCamera} />
           <TextInput
             testID="ai-bar-input"
@@ -55,11 +65,33 @@ export function AiBar({ onSend, onCamera, onMic }: AiBarProps) {
             className={`max-h-[160px] min-h-[44px] flex-1 px-2 py-[11px] text-body-l text-ink-900 ${isChatOff ? 'opacity-40' : ''}`}
             style={{ textAlignVertical: 'top' }}
           />
-          <AiBarIconButton testID="ai-bar-mic" icon={Mic} label={t('assistant.bar.mic')} onPress={onMic} />
+          <AiBarIconButton
+            testID="ai-bar-mic"
+            icon={Mic}
+            label={t(isVoiceOff ? 'voice.unavailable' : 'assistant.bar.mic')}
+            onPress={voice.tap}
+            onLongPress={voice.hold}
+            onPressOut={voice.release}
+            disabled={isChatOff || isVoiceOff || isSending}
+          />
           <AiBarIconButton testID="ai-bar-send" icon={ArrowUp} label={t('assistant.bar.send')} onPress={send} disabled={!canSend} accent />
+          {recordingStatuses.includes(voice.status)
+            ? (
+                <VoiceRecordingBar
+                  elapsedSeconds={voice.elapsedSeconds}
+                  maxSeconds={voice.maxSeconds}
+                  hitLimit={voice.hitLimit}
+                  level={voice.level}
+                  credits={rateCard.data ? getVoiceCredits(rateCard.data, voice.elapsedSeconds) : null}
+                  canSend={voice.status === 'recording' || Boolean(voice.recording)}
+                  onDiscard={voice.discard}
+                  onSend={voice.send}
+                />
+              )
+            : null}
         </View>
         <View className="mt-1.5 flex-row items-center px-2">
-          <AiBarHint chatCredits={chatCredits} />
+          {voiceNotice && !isChatOff ? <VoiceNotice reason={voiceNotice} /> : <AiBarHint chatCredits={chatCredits} />}
           {limit.showCounter && maxChars
             ? <AiBarCounter count={trimmed.length} max={maxChars} isOverLimit={limit.isOverLimit} />
             : null}

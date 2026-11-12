@@ -82,6 +82,8 @@ export function useVoiceRecorder() {
     deleteRecordingFile(uri);
   }, [recorder, send]);
 
+  const release = useCallback(() => send({ type: 'reset' }), [send]);
+
   const isRecording = state.status === 'recording';
 
   useEffect(() => {
@@ -110,5 +112,6 @@ export function useVoiceRecorder() {
     start,
     stop,
     discard,
+    release,
   };
 }

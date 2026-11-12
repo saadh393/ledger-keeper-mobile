@@ -7,6 +7,9 @@ import { AssistantFailureCard } from '@/features/assistant/components/assistant-
 import { AssistantMessage } from '@/features/assistant/components/assistant-message';
 import { AssistantTypingIndicator } from '@/features/assistant/components/assistant-typing-indicator';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
+import { toPendingMessage } from '@/features/assistant/utils/to-pending-message';
+
+const serverFailures = new Set(['provider', 'transcription']);
 
 export function AssistantPendingMessage() {
   const { t } = useTranslation();
@@ -18,9 +21,9 @@ export function AssistantPendingMessage() {
 
   return (
     <View testID="assistant-pending">
-      {pending.failure?.reason === 'provider'
+      {pending.failure && serverFailures.has(pending.failure.reason)
         ? null
-        : <AssistantMessage message={{ id: pending.key, role: 'user', text: pending.text, createdAt: '' }} />}
+        : <AssistantMessage message={toPendingMessage(pending)} />}
       {pending.failure
         ? <AssistantFailureCard failure={pending.failure} onRetry={retry} onDismiss={dismiss} />
         : (

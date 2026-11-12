@@ -1,10 +1,12 @@
 import type { SendFailure } from '@/features/assistant/utils/send-retry';
+import type { VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
 import { create } from 'zustand';
 
 export type PendingSend = {
   text: string;
   key: string;
   failure: SendFailure | null;
+  voice?: VoiceRecording;
 };
 
 export type ConversationSelection = {
