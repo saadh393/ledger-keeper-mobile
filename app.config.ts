@@ -76,6 +76,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['expo-localization', { supportsRTL: false }],
     'expo-router',
     'expo-secure-store',
+    [
+      'expo-audio',
+      {
+        microphonePermission: `Allow ${Env.EXPO_PUBLIC_NAME} to use the microphone to record voice notes for your ledger.`,
+        recordAudioAndroid: true,
+      },
+    ],
     ['app-icon-badge', appIconBadgeConfig],
     [
       '@sentry/react-native/expo',
