@@ -1,17 +1,24 @@
-import type { TransactionDraftArtifactData } from '@/features/assistant/schemas/draft-artifact-schemas';
+import type { z } from 'zod';
 import type { DraftConfirmInput } from '@/features/assistant/utils/draft-confirm-input';
-import { transactionDraftArtifactSchema } from '@/features/assistant/schemas/draft-artifact-schemas';
+import type { PayInstallmentInput, ReceiptConfirmInput } from '@/features/receipts/utils/receipt-draft-values';
 import { apiClient, parse } from '@/lib/api';
 
 export type DraftAction
   = | { type: 'confirm'; input: DraftConfirmInput }
+    | { type: 'confirm-receipt'; input: ReceiptConfirmInput }
+    | { type: 'pay-installment'; input: PayInstallmentInput }
     | { type: 'dismiss' }
     | { type: 'restore' };
 
-export async function runDraftAction(conversationId: string, artifactId: string, action: DraftAction): Promise<TransactionDraftArtifactData> {
+export type DraftTarget = {
+  conversationId: string;
+  artifactId: string;
+};
+
+export async function runDraftAction<T>({ conversationId, artifactId }: DraftTarget, action: DraftAction, schema: z.ZodType<T>): Promise<T> {
   const response = await apiClient.post(
     `/conversations/${conversationId}/artifacts/${artifactId}/${action.type}`,
-    action.type === 'confirm' ? action.input : undefined,
+    'input' in action ? action.input : undefined,
   );
-  return parse(transactionDraftArtifactSchema, response.data);
+  return parse(schema, response.data);
 }

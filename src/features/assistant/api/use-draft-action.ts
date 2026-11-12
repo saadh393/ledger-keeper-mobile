@@ -1,6 +1,6 @@
+import type { z } from 'zod';
 import type { DraftAction } from '@/features/assistant/api/run-draft-action';
 import type { Conversation } from '@/features/assistant/schemas/conversation-schema';
-import type { TransactionDraftArtifactData } from '@/features/assistant/schemas/draft-artifact-schemas';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { runDraftAction } from '@/features/assistant/api/run-draft-action';
@@ -11,7 +11,7 @@ import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { booksKeys } from '@/features/books/utils/query-keys';
 import { toApiError } from '@/lib/api';
 
-export function useDraftAction(artifactId: string, data: TransactionDraftArtifactData) {
+export function useDraftAction<T extends { status: 'draft' | 'saved' | 'dismissed' }>(artifactId: string, data: T, schema: z.ZodType<T>) {
   const queryClient = useQueryClient();
   const bookId = useActiveBook().activeBookId ?? '';
   const queryKey = openConversationQueryKey(bookId);
@@ -23,7 +23,7 @@ export function useDraftAction(artifactId: string, data: TransactionDraftArtifac
       if (!conversationId)
         throw new Error('Conversation not loaded');
       try {
-        return await runDraftAction(conversationId, artifactId, action);
+        return await runDraftAction({ conversationId, artifactId }, action, schema);
       }
       catch (error) {
         const resolved = resolveDraftConflict(toApiError(error), data);

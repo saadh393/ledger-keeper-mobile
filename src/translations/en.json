@@ -62,7 +62,9 @@
       "discarding": "Discarding…",
       "errors": {
         "confirm": "Couldn't save this transaction.",
+        "confirm-receipt": "Couldn't save this receipt.",
         "dismiss": "Couldn't discard this draft.",
+        "pay-installment": "Couldn't save this payment.",
         "restore": "Couldn't restore this draft."
       },
       "original": "Converted from {{original}}",
@@ -89,6 +91,7 @@
       "disabled": "This feature is temporarily unavailable.",
       "dismiss": "Dismiss",
       "failed": "Your message couldn't be sent. Try again.",
+      "image_too_large": "This image is too large. Try cropping closer.",
       "provider": "The assistant couldn't finish this reply. Try again.",
       "rate_limited": "Too many requests, try again in a moment.",
       "retry": "Retry",
@@ -526,6 +529,34 @@
     "banner": "You're offline"
   },
   "receipts": {
+    "draft": {
+      "add": "Add item",
+      "adjustment": "Tax & adjustments",
+      "badge": "Draft",
+      "count": "Number of installments",
+      "createPlan": "Create plan",
+      "duplicate": "Looks like a receipt you already saved: {{title}}, {{date}}, {{amount}}",
+      "emi": "Paid in installments (EMI)",
+      "item": "Item",
+      "itemLabel": "Item {{number}}",
+      "label": "Not saved yet",
+      "merchant": "Shop",
+      "merchantPlaceholder": "Where did you buy?",
+      "needsItems": "Every item needs a name, category, and amount.",
+      "needsPlan": "Choose a plan and enter the amount paid.",
+      "paid": "Amount paid",
+      "payInstallment": "Pay installment",
+      "paymentSaved": "Installment payment saved",
+      "perInstallment": "Amount per installment",
+      "plan": "Installment plan",
+      "planCreated": "Installment plan created",
+      "planCreatedBody": "Each payment is recorded as an expense when you pay it.",
+      "quantity": "Qty",
+      "remove": "Remove item {{number}}",
+      "save": "Save receipt",
+      "subtotal": "Subtotal",
+      "total": "Total"
+    },
     "editor": {
       "cancel": "Cancel",
       "image": "Receipt photo",
@@ -535,8 +566,15 @@
       "use": "Use photo"
     },
     "failed": "Couldn't open this image. Try again.",
+    "image": {
+      "close": "Close",
+      "label": "Receipt",
+      "open": "View receipt",
+      "unavailable": "Preview unavailable"
+    },
     "openSettings": "Open settings",
     "permission": "Camera access is needed to scan receipts",
+    "scanning": "Scanning receipt…",
     "source": {
       "camera": "Take photo",
       "gallery": "Choose from gallery",

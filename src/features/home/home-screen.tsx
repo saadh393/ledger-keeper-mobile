@@ -18,15 +18,13 @@ import {
   useLedgerMonthSync,
 } from '@/features/ledger';
 
-function ignore() {}
-
 export function HomeScreen() {
   useLedgerMonthSync();
   const ledgerMonth = useLedgerMonth();
   const activeBook = useActiveBook();
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const isAssistantOpen = useAssistantStore(state => state.isOpen);
-  const { send, sendRecording } = useSendMessage();
+  const { send, sendRecording, sendReceipt } = useSendMessage();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -52,7 +50,7 @@ export function HomeScreen() {
         </View>
         {isAssistantOpen ? <AssistantSheet /> : null}
       </View>
-      <AiBar onSend={send} onReceipt={ignore} onRecording={sendRecording} />
+      <AiBar onSend={send} onReceipt={sendReceipt} onRecording={sendRecording} />
       {isAddOpen
         ? (
             <TransactionFormSheet

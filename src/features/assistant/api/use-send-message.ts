@@ -1,4 +1,5 @@
 import type { Conversation } from '@/features/assistant/schemas/conversation-schema';
+import type { ReceiptImage } from '@/features/receipts/types';
 import type { VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
 import type { ApiError } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
@@ -13,6 +14,7 @@ import { classifySendError, getReplyFailure, getRetryKey, hasServerReply, isOper
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { booksKeys } from '@/features/books/utils/query-keys';
 import { creditBalanceQueryKey } from '@/features/credits/api/credit-balance-query-key';
+import { sendReceipt } from '@/features/receipts/api/send-receipt';
 import { sendVoice } from '@/features/voice/api/send-voice';
 import { deleteRecordingFile } from '@/features/voice/utils/delete-recording-file';
 import { toApiError } from '@/lib/api';
@@ -24,6 +26,7 @@ type Attempt = {
   text: string;
   key: string;
   voice?: VoiceRecording;
+  receipt?: ReceiptImage;
 };
 
 type Anchor = {
@@ -40,6 +43,18 @@ function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function getFileUri({ voice, receipt }: Attempt) {
+  return voice?.uri ?? receipt?.uri ?? null;
+}
+
+function deliver(conversationId: string, { text, key, voice, receipt }: Attempt) {
+  if (voice)
+    return sendVoice(conversationId, voice, key);
+  if (receipt)
+    return sendReceipt(conversationId, receipt, key);
+  return sendMessage(conversationId, text, key);
+}
+
 export function useSendMessage() {
   const queryClient = useQueryClient();
   const bookId = useActiveBook().activeBookId;
@@ -50,10 +65,10 @@ export function useSendMessage() {
 
   const refreshBook = (id: string) => queryClient.invalidateQueries({ queryKey: booksKeys.book(id) });
 
-  const reloadHasReply = async ({ bookId: id, anchor: { conversationId, sinceId }, text, key }: Attempt & { anchor: Anchor }) => {
+  const reloadHasReply = async ({ bookId: id, anchor: { conversationId, sinceId }, text, key, receipt }: Attempt & { anchor: Anchor }) => {
     try {
       const fresh = await queryClient.fetchQuery({ queryKey: openConversationQueryKey(id), queryFn: () => fetchConversation(conversationId), staleTime: 0 });
-      return Boolean(fresh && hasServerReply(fresh.messages, sinceId, { text, key }));
+      return Boolean(fresh && hasServerReply(fresh.messages, sinceId, { text, key, isReceipt: Boolean(receipt) }));
     }
     catch {
       return false;
@@ -73,10 +88,10 @@ export function useSendMessage() {
   };
 
   const recover = async (recovery: Recovery) => {
-    const { text, key, voice, error, anchor } = recovery;
-    const failure = classifySendError(error);
+    const { text, key, voice, receipt, error, anchor } = recovery;
+    const failure = classifySendError(error, Boolean(receipt));
     if (failure.reason === 'uncertain' && anchor && await settleFromServer({ ...recovery, anchor })) {
-      deleteRecordingFile(voice?.uri ?? null);
+      deleteRecordingFile(getFileUri(recovery));
       setPending(null);
       void queryClient.invalidateQueries({ queryKey: creditBalanceQueryKey });
       void refreshBook(recovery.bookId);
@@ -84,11 +99,12 @@ export function useSendMessage() {
     }
     if (failure.reason === 'too_long' && !voice)
       setDraft(text);
-    setPending({ text, key, voice, failure });
+    setPending({ text, key, voice, receipt, failure });
   };
 
-  const attempt = async ({ bookId: id, text, key, voice }: Attempt) => {
-    setPending({ text, key, voice, failure: null });
+  const attempt = async (current: Attempt) => {
+    const { bookId: id, text, key, voice, receipt } = current;
+    setPending({ text, key, voice, receipt, failure: null });
     const query = openConversationQuery(id);
     const queryKey = query.queryKey;
     let anchor: Anchor | undefined;
@@ -99,43 +115,48 @@ export function useSendMessage() {
         select({ bookId: id, conversationId: conversation.id });
       queryClient.setQueryData(queryKey, conversation);
       anchor = { conversationId: conversation.id, sinceId: conversation.messages.at(-1)?.id ?? null };
-      const result = voice ? await sendVoice(conversation.id, voice, key) : await sendMessage(conversation.id, text, key);
+      const result = await deliver(conversation.id, current);
       queryClient.setQueryData<Conversation | null>(queryKey, current => current && { ...current, messages: [...current.messages, result.userMessage, result.aiMessage] });
       queryClient.setQueryData<{ balance: number }>(creditBalanceQueryKey, current => current && { ...current, balance: result.credits.balance });
       void refreshBook(id);
       const failure = getReplyFailure(result);
       if (!failure)
-        deleteRecordingFile(voice?.uri ?? null);
-      setPending(failure && { text, key, voice, failure });
+        deleteRecordingFile(getFileUri(current));
+      setPending(failure && { text, key, voice, receipt, failure });
     }
     catch (error) {
-      await recover({ bookId: id, text, key, voice, anchor, error: toApiError(error) });
+      await recover({ ...current, anchor, error: toApiError(error) });
     }
   };
 
-  const start = (text: string, voice?: VoiceRecording) => {
+  const start = (input: Pick<Attempt, 'text' | 'voice' | 'receipt'>) => {
     const pending = useAssistantStore.getState().pending;
     if (!bookId || pending?.failure === null)
       return false;
-    if (pending?.voice)
+    if (pending?.voice || pending?.receipt)
       releasePending();
     open();
-    void attempt({ bookId, text, voice, key: randomUUID() });
+    void attempt({ ...input, bookId, key: randomUUID() });
     return true;
   };
 
   const send = (text: string) => {
-    start(text);
+    start({ text });
   };
 
-  const sendRecording = (voice: VoiceRecording) => start('', voice);
+  const sendRecording = (voice: VoiceRecording) => start({ text: '', voice });
+
+  const sendReceiptImage = (receipt: ReceiptImage) => {
+    if (!start({ text: '', receipt }))
+      deleteRecordingFile(receipt.uri);
+  };
 
   const retry = () => {
     const pending = useAssistantStore.getState().pending;
     if (!bookId || !pending?.failure)
       return;
-    void attempt({ bookId, text: pending.text, voice: pending.voice, key: getRetryKey(pending.failure, pending.key, randomUUID) });
+    void attempt({ bookId, text: pending.text, voice: pending.voice, receipt: pending.receipt, key: getRetryKey(pending.failure, pending.key, randomUUID) });
   };
 
-  return { send, sendRecording, retry, dismiss: releasePending };
+  return { send, sendRecording, sendReceipt: sendReceiptImage, retry, dismiss: releasePending };
 }

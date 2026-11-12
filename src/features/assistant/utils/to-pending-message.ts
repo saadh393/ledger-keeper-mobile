@@ -1,11 +1,14 @@
-import type { ChatMessage } from '@/features/assistant/schemas/conversation-schema';
+import type { ChatMessage, MessageArtifact } from '@/features/assistant/schemas/conversation-schema';
 import type { PendingSend } from '@/features/assistant/store/use-assistant-store';
 
-export function toPendingMessage({ key, text, voice }: PendingSend): ChatMessage {
-  const artifacts = voice && [{
-    id: key,
-    type: 'voice',
-    data: { state: 'transcribing', durationSeconds: voice.durationSeconds, clientAudioId: key, transcript: null },
-  }];
-  return { id: key, role: 'user', text, artifacts, createdAt: '' };
+function toPendingArtifacts({ key, voice, receipt }: PendingSend): MessageArtifact[] | undefined {
+  if (voice)
+    return [{ id: key, type: 'voice', data: { state: 'transcribing', durationSeconds: voice.durationSeconds, clientAudioId: key, transcript: null } }];
+  if (receipt)
+    return [{ id: key, type: 'receipt', data: { byteSize: receipt.sizeBytes, image: null, previewUri: receipt.uri } }];
+  return undefined;
+}
+
+export function toPendingMessage(pending: PendingSend): ChatMessage {
+  return { id: pending.key, role: 'user', text: pending.text, artifacts: toPendingArtifacts(pending), createdAt: '' };
 }

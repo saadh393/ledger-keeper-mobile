@@ -66,7 +66,7 @@ export function AiBar({ onSend, onReceipt, onRecording }: AiBarProps) {
             icon={Camera}
             label={t(isReceiptOff ? 'receipts.unavailable' : 'assistant.bar.camera')}
             onPress={receipt.open}
-            disabled={receiptLimit === null || receipt.step !== 'idle'}
+            disabled={receiptLimit === null || receipt.step !== 'idle' || isSending}
           />
           <TextInput
             testID="ai-bar-input"

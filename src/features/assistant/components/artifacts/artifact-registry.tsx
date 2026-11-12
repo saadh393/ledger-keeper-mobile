@@ -27,6 +27,9 @@ import {
 } from '@/features/assistant/schemas/transaction-artifact-schemas';
 import { installmentSchema } from '@/features/installments/schemas/installment-schema';
 import { debtSchema } from '@/features/loans/schemas/debt-schema';
+import { ReceiptDraftArtifact } from '@/features/receipts/components/receipt-draft-artifact';
+import { ReceiptImageArtifact } from '@/features/receipts/components/receipt-image-artifact';
+import { receiptDraftArtifactSchema, receiptImageArtifactSchema } from '@/features/receipts/schemas/receipt-artifact-schemas';
 
 export type ArtifactComponentProps<T> = {
   data: T;
@@ -58,4 +61,6 @@ export const artifactRegistry: Partial<Record<string, ArtifactEntry>> = {
   'debt-list': entry(debtListArtifactSchema, DebtListArtifact),
   'installment': entry(installmentSchema, InstallmentArtifact),
   'installment-list': entry(installmentListArtifactSchema, InstallmentListArtifact),
+  'receipt': entry(receiptImageArtifactSchema, ReceiptImageArtifact),
+  'receipt-draft': entry(receiptDraftArtifactSchema, ReceiptDraftArtifact),
 };

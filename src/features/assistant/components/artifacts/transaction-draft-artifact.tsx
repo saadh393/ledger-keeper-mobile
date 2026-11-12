@@ -4,6 +4,7 @@ import { useDraftAction } from '@/features/assistant/api/use-draft-action';
 import { DraftDiscardedCard } from '@/features/assistant/components/artifacts/draft-discarded-card';
 import { DraftEditorCard } from '@/features/assistant/components/artifacts/draft-editor-card';
 import { DraftSavedCard } from '@/features/assistant/components/artifacts/draft-saved-card';
+import { transactionDraftArtifactSchema } from '@/features/assistant/schemas/draft-artifact-schemas';
 import { toDraftValues } from '@/features/assistant/utils/draft-confirm-input';
 
 export type TransactionDraftArtifactProps = {
@@ -14,7 +15,7 @@ export type TransactionDraftArtifactProps = {
 
 export function TransactionDraftArtifact({ data, currency, artifactId }: TransactionDraftArtifactProps) {
   const [values, setValues] = React.useState(() => toDraftValues(data));
-  const action = useDraftAction(artifactId, data);
+  const action = useDraftAction(artifactId, data, transactionDraftArtifactSchema);
 
   if (data.status === 'saved')
     return <DraftSavedCard data={data} currency={currency} />;

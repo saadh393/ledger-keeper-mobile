@@ -28,7 +28,7 @@ export function AssistantPendingMessage() {
         ? <AssistantFailureCard failure={pending.failure} onRetry={retry} onDismiss={dismiss} />
         : (
             <>
-              <Text testID="assistant-sending" className="px-4 text-right text-meta text-ink-500">{t('assistant.send.sending')}</Text>
+              {pending.receipt ? null : <Text testID="assistant-sending" className="px-4 text-right text-meta text-ink-500">{t('assistant.send.sending')}</Text>}
               <AssistantTypingIndicator />
             </>
           )}

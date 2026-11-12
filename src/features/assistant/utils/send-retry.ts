@@ -2,7 +2,7 @@ import type { ChatMessage, SendMessageResponse } from '@/features/assistant/sche
 import type { ApiError } from '@/lib/api';
 import { getVoiceArtifact } from '@/features/voice/utils/get-voice-artifact';
 
-export type SendFailureReason = 'uncertain' | 'failed' | 'credits' | 'too_long' | 'too_large' | 'rate_limited' | 'disabled' | 'provider' | 'transcription';
+export type SendFailureReason = 'uncertain' | 'failed' | 'credits' | 'too_long' | 'too_large' | 'rate_limited' | 'disabled' | 'provider' | 'transcription' | 'image_too_large';
 
 export type SendFailure = {
   reason: SendFailureReason;
@@ -18,7 +18,9 @@ export function isOperationInProgress(error: ApiError) {
   return error.kind === 'conflict' && error.code === 'operation_in_progress';
 }
 
-export function classifySendError(error: ApiError): SendFailure {
+export function classifySendError(error: ApiError, isReceipt = false): SendFailure {
+  if (isReceipt && (error.status === 413 || error.code === 'limit_exceeded'))
+    return { reason: 'image_too_large', retryKey: null };
   if (error.status === 413)
     return { reason: 'too_large', retryKey: null };
   if (uncertainKinds.has(error.kind) || isOperationInProgress(error))
@@ -52,9 +54,12 @@ export function getReplyFailure(result: SendMessageResponse): SendFailure | null
 export type SentMessage = {
   text: string;
   key: string;
+  isReceipt?: boolean;
 };
 
-export function isSentMessage(message: ChatMessage, { text, key }: SentMessage) {
+export function isSentMessage(message: ChatMessage, { text, key, isReceipt }: SentMessage) {
+  if (isReceipt)
+    return Boolean(message.artifacts?.some(artifact => artifact.type === 'receipt'));
   const voice = getVoiceArtifact(message);
   return voice ? voice.clientAudioId === key : message.text === text;
 }
