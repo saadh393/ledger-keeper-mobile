@@ -83,6 +83,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         recordAudioAndroid: true,
       },
     ],
+    [
+      'expo-image-picker',
+      {
+        cameraPermission: `Allow ${Env.EXPO_PUBLIC_NAME} to use the camera to scan receipts.`,
+        photosPermission: `Allow ${Env.EXPO_PUBLIC_NAME} to open your photos to scan receipts.`,
+        microphonePermission: false,
+      },
+    ],
     ['app-icon-badge', appIconBadgeConfig],
     [
       '@sentry/react-native/expo',

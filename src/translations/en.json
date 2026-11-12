@@ -525,6 +525,26 @@
   "offline": {
     "banner": "You're offline"
   },
+  "receipts": {
+    "editor": {
+      "cancel": "Cancel",
+      "image": "Receipt photo",
+      "reset": "Reset",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "use": "Use photo"
+    },
+    "failed": "Couldn't open this image. Try again.",
+    "openSettings": "Open settings",
+    "permission": "Camera access is needed to scan receipts",
+    "source": {
+      "camera": "Take photo",
+      "gallery": "Choose from gallery",
+      "title": "Scan a receipt"
+    },
+    "tooLarge": "This image is too large. Try cropping closer.",
+    "unavailable": "Receipt scanning is unavailable right now"
+  },
   "settings": {
     "sections": {
       "ledger": "Ledger"

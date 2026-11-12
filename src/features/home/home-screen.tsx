@@ -52,7 +52,7 @@ export function HomeScreen() {
         </View>
         {isAssistantOpen ? <AssistantSheet /> : null}
       </View>
-      <AiBar onSend={send} onCamera={ignore} onRecording={sendRecording} />
+      <AiBar onSend={send} onReceipt={ignore} onRecording={sendRecording} />
       {isAddOpen
         ? (
             <TransactionFormSheet

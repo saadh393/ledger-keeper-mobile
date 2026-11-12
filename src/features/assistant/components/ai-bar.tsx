@@ -1,3 +1,4 @@
+import type { ReceiptImage } from '@/features/receipts/types';
 import type { VoiceRecorderStatus, VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
 import { ArrowUp, Camera, Mic } from 'lucide-react-native';
 import * as React from 'react';
@@ -10,7 +11,11 @@ import { AiBarHint } from '@/features/assistant/components/ai-bar-hint';
 import { AiBarIconButton } from '@/features/assistant/components/ai-bar-icon-button';
 import { useAssistantStore } from '@/features/assistant/store/use-assistant-store';
 import { getMessageLimit } from '@/features/assistant/utils/get-message-limit';
-import { getChatCredits, getVoiceCredits, getVoiceLimit, useRateCard } from '@/features/credits';
+import { getChatCredits, getReceiptLimit, getVoiceCredits, getVoiceLimit, useRateCard } from '@/features/credits';
+import { ReceiptEditor } from '@/features/receipts/components/receipt-editor';
+import { ReceiptNotice } from '@/features/receipts/components/receipt-notice';
+import { ReceiptSourceSheet } from '@/features/receipts/components/receipt-source-sheet';
+import { useReceiptCapture } from '@/features/receipts/hooks/use-receipt-capture';
 import { VoiceNotice } from '@/features/voice/components/voice-notice';
 import { VoiceRecordingBar } from '@/features/voice/components/voice-recording-bar';
 import { useVoiceInput } from '@/features/voice/hooks/use-voice-input';
@@ -18,13 +23,13 @@ import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type AiBarProps = {
   onSend: (text: string) => void;
-  onCamera: () => void;
+  onReceipt: (image: ReceiptImage) => void;
   onRecording: (recording: VoiceRecording) => boolean;
 };
 
 const recordingStatuses: VoiceRecorderStatus[] = ['requesting-permission', 'recording', 'stopped'];
 
-export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
+export function AiBar({ onSend, onReceipt, onRecording }: AiBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const themeColors = useThemeColors();
@@ -34,6 +39,7 @@ export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
   const isSending = useAssistantStore(state => state.pending?.failure === null);
   const isVoiceDisabled = useAssistantStore(state => Boolean(state.pending?.voice) && state.pending?.failure?.reason === 'disabled');
   const voice = useVoiceInput(onRecording);
+  const receipt = useReceiptCapture(onReceipt);
   const trimmed = text.trim();
   const maxChars = rateCard.data?.limits.maxMessageChars;
   const chatCredits = rateCard.data ? getChatCredits(rateCard.data) : undefined;
@@ -42,6 +48,9 @@ export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
   const canSend = Boolean(trimmed) && !limit.isOverLimit && !isChatOff && !isSending;
   const isVoiceOff = isVoiceDisabled || Boolean(rateCard.data && getVoiceLimit(rateCard.data) === null);
   const voiceNotice = isVoiceOff ? 'voice-unavailable' : voice.status === 'error' ? voice.reason : null;
+  const receiptLimit = getReceiptLimit(rateCard.data);
+  const isReceiptOff = Boolean(rateCard.data) && receiptLimit === null;
+  const receiptNotice = receipt.error ?? (isReceiptOff ? 'unavailable' : null);
 
   const send = () => {
     onSend(trimmed);
@@ -52,7 +61,13 @@ export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
     <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
       <View testID="ai-bar" className="bg-paper-100 px-4 pt-2" style={{ paddingBottom: insets.bottom + 8 }}>
         <View className="relative min-h-[56px] flex-row items-end rounded-[32px] bg-surface-container p-1.5">
-          <AiBarIconButton testID="ai-bar-camera" icon={Camera} label={t('assistant.bar.camera')} onPress={onCamera} />
+          <AiBarIconButton
+            testID="ai-bar-camera"
+            icon={Camera}
+            label={t(isReceiptOff ? 'receipts.unavailable' : 'assistant.bar.camera')}
+            onPress={receipt.open}
+            disabled={receiptLimit === null || receipt.step !== 'idle'}
+          />
           <TextInput
             testID="ai-bar-input"
             value={text}
@@ -91,12 +106,20 @@ export function AiBar({ onSend, onCamera, onRecording }: AiBarProps) {
             : null}
         </View>
         <View className="mt-1.5 flex-row items-center px-2">
-          {voiceNotice && !isChatOff ? <VoiceNotice reason={voiceNotice} /> : <AiBarHint chatCredits={chatCredits} />}
+          {voiceNotice && !isChatOff
+            ? <VoiceNotice reason={voiceNotice} />
+            : receiptNotice && !isChatOff
+              ? <ReceiptNotice reason={receiptNotice} />
+              : <AiBarHint chatCredits={chatCredits} />}
           {limit.showCounter && maxChars
             ? <AiBarCounter count={trimmed.length} max={maxChars} isOverLimit={limit.isOverLimit} />
             : null}
         </View>
       </View>
+      {receipt.step === 'choosing' ? <ReceiptSourceSheet onSelect={receipt.choose} onDismiss={receipt.dismiss} /> : null}
+      {receipt.source && receiptLimit !== null
+        ? <ReceiptEditor source={receipt.source} maxBytes={receiptLimit} onReady={receipt.finish} onCancel={receipt.cancel} />
+        : null}
     </KeyboardStickyView>
   );
 }

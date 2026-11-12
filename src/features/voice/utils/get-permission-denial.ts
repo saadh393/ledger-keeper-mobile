@@ -1,6 +1,4 @@
-import type { VoiceRecorderError } from '@/features/voice/utils/voice-recorder-reducer';
-
-export function getPermissionDenial(permission: { granted: boolean; canAskAgain: boolean }): VoiceRecorderError | null {
+export function getPermissionDenial(permission: { granted: boolean; canAskAgain: boolean }): 'permission-denied' | 'permission-blocked' | null {
   if (permission.granted)
     return null;
   return permission.canAskAgain ? 'permission-denied' : 'permission-blocked';
