@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsAutoCaptureRow } from '@/features/auto-capture/components/settings-auto-capture-row';
 import { useUserProfile } from '@/features/currency';
 import { LedgerSummaryToggle } from '@/features/ledger';
+import { PrivacyPolicyLink } from '@/features/legal/components/privacy-policy-link';
 import { SettingsAccountSection } from '@/features/settings/components/settings-account-section';
 import { SettingsFooter } from '@/features/settings/components/settings-footer';
 import { SettingsLanguageRow } from '@/features/settings/components/settings-language-row';
@@ -29,6 +30,7 @@ export function SettingsScreen() {
       <SettingsMoneySection profile={profile} />
       <SettingsAutoCaptureRow />
       <SettingsAccountSection profile={profile} />
+      <PrivacyPolicyLink />
       <SettingsFooter />
     </ScrollView>
   );

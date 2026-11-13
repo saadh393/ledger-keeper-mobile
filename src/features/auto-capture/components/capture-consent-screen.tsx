@@ -9,6 +9,7 @@ import { ConsentSection } from '@/features/auto-capture/components/consent-secti
 import { useBackTo } from '@/features/auto-capture/hooks/use-back-to';
 import { useOnAppActive } from '@/features/auto-capture/hooks/use-on-app-active';
 import { notificationCapture } from '@/features/auto-capture/native/notification-capture';
+import { PrivacyPolicyLink } from '@/features/legal/components/privacy-policy-link';
 
 const sections = ['why', 'read', 'never', 'where', 'off'] as const;
 
@@ -52,6 +53,7 @@ export function CaptureConsentScreen() {
         {sections.map(key => (
           <ConsentSection key={key} title={t(`autoCapture.consent.${key}.title`)} body={t(`autoCapture.consent.${key}.body`)} />
         ))}
+        <PrivacyPolicyLink />
       </ScrollView>
       <View className="gap-2 border-t border-border px-4 pt-3" style={{ paddingBottom: insets.bottom + 12 }}>
         {stillOff ? <Text testID="capture-consent-still-off" accessibilityRole="alert" className="text-center text-meta text-clay-500">{t('autoCapture.consent.stillOff')}</Text> : null}

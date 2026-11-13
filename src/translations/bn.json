@@ -645,6 +645,9 @@
       "income": "আয়"
     }
   },
+  "legal": {
+    "privacyPolicy": "গোপনীয়তা নীতি"
+  },
   "loans": {
     "a11y": {
       "original": "মূল {{amount}}",

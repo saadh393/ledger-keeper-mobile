@@ -8,6 +8,7 @@ import { EmailPasswordForm } from '@/features/auth/components/email-password-for
 import { GoogleSignInButton } from '@/features/auth/components/google-sign-in-button';
 import { Logo } from '@/features/auth/components/logo';
 import { useAuthSessionNotice } from '@/features/auth/use-auth-store';
+import { PrivacyPolicyLink } from '@/features/legal/components/privacy-policy-link';
 
 export function AuthScreen() {
   const { t } = useTranslation();
@@ -89,6 +90,7 @@ export function AuthScreen() {
             disabled={isGooglePending}
             onSubmittingChange={setIsEmailSubmitting}
           />
+          <PrivacyPolicyLink />
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

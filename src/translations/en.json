@@ -645,6 +645,9 @@
       "income": "Income"
     }
   },
+  "legal": {
+    "privacyPolicy": "Privacy policy"
+  },
   "loans": {
     "a11y": {
       "original": "original {{amount}}",
