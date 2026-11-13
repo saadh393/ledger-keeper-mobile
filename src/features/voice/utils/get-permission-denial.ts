@@ -1,5 +1,7 @@
-export function getPermissionDenial(permission: { granted: boolean; canAskAgain: boolean }): 'permission-denied' | 'permission-blocked' | null {
-  if (permission.granted)
+type Permission = { granted: boolean; canAskAgain: boolean };
+
+export function getPermissionDenial(before: Permission, after: Permission): 'permission-denied' | 'permission-blocked' | null {
+  if (after.granted)
     return null;
-  return permission.canAskAgain ? 'permission-denied' : 'permission-blocked';
+  return before.canAskAgain ? 'permission-denied' : 'permission-blocked';
 }

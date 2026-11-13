@@ -1,5 +1,5 @@
 import type { ReceiptCaptureError, ReceiptImage, ReceiptSource, ReceiptSourceKind } from '@/features/receipts/types';
-import { requestCameraPermissionsAsync } from 'expo-image-picker';
+import { getCameraPermissionsAsync, requestCameraPermissionsAsync } from 'expo-image-picker';
 import { useCallback, useState } from 'react';
 import { pickReceiptImage } from '@/features/receipts/utils/pick-receipt-image';
 import { renderReceiptSource } from '@/features/receipts/utils/render-receipt-source';
@@ -7,6 +7,11 @@ import { deleteRecordingFile } from '@/features/voice/utils/delete-recording-fil
 import { getPermissionDenial } from '@/features/voice/utils/get-permission-denial';
 
 type ReceiptCaptureStep = 'idle' | 'choosing' | 'picking';
+
+async function getCameraDenial() {
+  const before = await getCameraPermissionsAsync();
+  return getPermissionDenial(before, before.granted ? before : await requestCameraPermissionsAsync());
+}
 
 export function useReceiptCapture(onReady: (image: ReceiptImage) => void) {
   const [step, setStep] = useState<ReceiptCaptureStep>('idle');
@@ -25,7 +30,7 @@ export function useReceiptCapture(onReady: (image: ReceiptImage) => void) {
   const choose = useCallback(async (kind: ReceiptSourceKind) => {
     setStep('picking');
     try {
-      const denial = kind === 'camera' ? getPermissionDenial(await requestCameraPermissionsAsync()) : null;
+      const denial = kind === 'camera' ? await getCameraDenial() : null;
       if (denial) {
         setError(denial);
         return;

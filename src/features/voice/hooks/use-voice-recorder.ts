@@ -1,5 +1,5 @@
 import type { VoiceRecorderError, VoiceRecorderEvent, VoiceRecording } from '@/features/voice/utils/voice-recorder-reducer';
-import { requestRecordingPermissionsAsync, setAudioModeAsync, useAudioRecorder, useAudioRecorderState } from 'expo-audio';
+import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, setAudioModeAsync, useAudioRecorder, useAudioRecorderState } from 'expo-audio';
 import { File } from 'expo-file-system';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
@@ -51,7 +51,8 @@ export function useVoiceRecorder() {
     if (stateRef.current.status !== 'requesting-permission')
       return stateRef.current.reason;
     try {
-      const denial = getPermissionDenial(await requestRecordingPermissionsAsync());
+      const before = await getRecordingPermissionsAsync();
+      const denial = getPermissionDenial(before, before.granted ? before : await requestRecordingPermissionsAsync());
       if (denial) {
         send({ type: 'fail', reason: denial });
         return denial;

@@ -1,3 +1,4 @@
+export const getRecordingPermissionsAsync = jest.fn(async () => ({ granted: false, canAskAgain: true }));
 export const requestRecordingPermissionsAsync = jest.fn(async () => ({ granted: true }));
 export const setAudioModeAsync = jest.fn(async () => undefined);
 export const useAudioRecorder = jest.fn(() => ({

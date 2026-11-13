@@ -17,7 +17,7 @@ export function VoiceNotice({ reason }: { reason: VoiceRecorderError }) {
 
   return (
     <View testID="voice-notice" className="flex-1 flex-row items-center justify-center gap-2">
-      <Text numberOfLines={1} className="shrink text-meta text-ink-500">{t(noticeKeys[reason])}</Text>
+      <Text testID="voice-notice-text" className="shrink text-center text-meta text-ink-500">{t(noticeKeys[reason])}</Text>
       {reason === 'permission-blocked'
         ? <Button testID="voice-open-settings" variant="text" size="sm" fullWidth={false} label={t('voice.openSettings')} onPress={() => void Linking.openSettings()} />
         : null}
