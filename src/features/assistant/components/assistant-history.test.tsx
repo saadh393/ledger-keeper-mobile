@@ -64,6 +64,7 @@ describe('assistant chat history', () => {
     renderSheet();
     fireEvent.press(await screen.findByTestId('assistant-history-delete-c1'));
     fireEvent.press(await screen.findByTestId('assistant-delete-chat-confirm'));
+    await waitFor(() => expect(mock.history.delete).toHaveLength(1));
     await waitFor(() => expect(screen.queryByTestId('assistant-history-row-c1')).toBeNull());
     expect(screen.getByTestId('assistant-history-row-c2')).toBeOnTheScreen();
     expect(useAssistantStore.getState().selection).toEqual({ bookId: 'b1', conversationId: null });
