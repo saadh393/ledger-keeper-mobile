@@ -31,6 +31,7 @@ describe('bottomSheet rendering and styles', () => {
     expect(screen.getByTestId('sheet-content')).toHaveTextContent('Hello Sheet');
     expect(screen.getByTestId('my-sheet-grabber')).toBeOnTheScreen();
     expect(screen.getByTestId('my-sheet-title')).toHaveTextContent('Test Sheet');
+    expect(screen.getByTestId('my-sheet-title').props.numberOfLines).toBeUndefined();
 
     const closeBtn = screen.getByLabelText('Close');
     expect(closeBtn).toBeOnTheScreen();

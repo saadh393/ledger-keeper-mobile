@@ -172,7 +172,6 @@ function BottomSheetHeader({
                   <Text
                     testID={testID ? `${testID}-title` : 'bottom-sheet-title'}
                     className="flex-1 text-center text-title font-medium text-ink-900"
-                    numberOfLines={1}
                   >
                     {title}
                   </Text>
