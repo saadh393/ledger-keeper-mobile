@@ -1,8 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
+import { authClient } from '@/features/auth/api/auth-client';
 import { ResetPasswordScreen } from '@/features/auth/components/reset-password-screen';
 import { useAuthStore } from '@/features/auth/use-auth-store';
 import { apiClient } from '@/lib/api/client';
+import { storage } from '@/lib/storage';
 import { fireEvent, render, screen, waitFor } from '@/lib/test-utils';
 
 const mockReplace = jest.fn();
@@ -22,9 +24,45 @@ describe('resetPasswordScreen', () => {
     mockParams = { token: 'reset-token' };
   });
 
+  const originalSignIn = useAuthStore.getState().signIn;
+  const signIn = jest.fn(async (_token: string) => {});
+
   afterEach(() => {
     mock.restore();
-    useAuthStore.setState({ sessionNotice: null });
+    jest.restoreAllMocks();
+    jest.mocked(storage.getString).mockReset();
+    signIn.mockClear();
+    useAuthStore.setState({ sessionNotice: null, signIn: originalSignIn });
+  });
+
+  function rememberResetEmail(email: string) {
+    jest.mocked(storage.getString).mockImplementation(key => (key === 'password_reset_email' ? email : undefined));
+    useAuthStore.setState({ signIn });
+  }
+
+  it('signs in with the new password and opens the Ledger after a valid reset', async () => {
+    mock.onPost('/auth/reset-password').reply(200, { status: true });
+    rememberResetEmail('reset@example.com');
+    const signInWithEmail = jest.spyOn(authClient, 'signInWithEmail').mockResolvedValue('session-token');
+    render(<ResetPasswordScreen />);
+    fill('secret123', 'secret123');
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/'));
+    expect(signInWithEmail).toHaveBeenCalledWith('reset@example.com', 'secret123');
+    expect(signIn).toHaveBeenCalledWith('session-token');
+    expect(storage.remove).toHaveBeenCalledWith('password_reset_email');
+    expect(useAuthStore.getState().sessionNotice).toBeNull();
+  });
+
+  it('sends the user to sign in manually with a readable message when auto sign-in fails', async () => {
+    mock.onPost('/auth/reset-password').reply(200, { status: true });
+    rememberResetEmail('reset@example.com');
+    jest.spyOn(authClient, 'signInWithEmail').mockRejectedValue(new Error('network'));
+    render(<ResetPasswordScreen />);
+    fill('secret123', 'secret123');
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/auth'));
+    expect(mockReplace).not.toHaveBeenCalledWith('/');
+    expect(signIn).not.toHaveBeenCalled();
+    expect(useAuthStore.getState().sessionNotice).toBe('Your password was changed. Sign in with your new password.');
   });
 
   function fill(password: string, confirm: string) {
