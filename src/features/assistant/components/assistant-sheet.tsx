@@ -50,6 +50,7 @@ export function AssistantSheet() {
       enableDynamicSizing={false}
       enablePanDownToClose
       enableContentPanningGesture={false}
+      android_keyboardInputMode="adjustResize"
       handleComponent={AssistantSheetHandle}
       onClose={handleClose}
       style={{ elevation: 12, borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
