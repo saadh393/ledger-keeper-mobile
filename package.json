@@ -59,6 +59,7 @@
     "axios": "^1.13.2",
     "better-auth": "^1.7.18",
     "expo": "~54.0.38",
+    "expo-application": "~7.0.8",
     "expo-audio": "~1.1.1",
     "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.14",

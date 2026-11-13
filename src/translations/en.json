@@ -644,9 +644,52 @@
     "unavailable": "Receipt scanning is unavailable right now"
   },
   "settings": {
+    "cancel": "Cancel",
+    "categories": "Categories",
+    "currency": {
+      "error": "Couldn't change your currency. Try again.",
+      "help": "Existing books keep their currency. Your default book changes only while it is empty.",
+      "label": "Default currency",
+      "save": "Save",
+      "saved": "New books will use {{code}}",
+      "saving": "Saving…"
+    },
+    "deleteAccount": {
+      "confirm": "Delete my account",
+      "continue": "Continue",
+      "deleted": "Your account was deleted",
+      "deleting": "Deleting…",
+      "error": "Couldn't delete your account. Try again.",
+      "explain": "This permanently deletes all your books, transactions, loans, installment plans, chats, and categories. Unused credits are lost and not refunded. This cannot be undone.",
+      "label": "Delete account",
+      "signInAgain": "Sign in again to delete your account.",
+      "title": "Delete your account?",
+      "typePrompt": "Type DELETE to confirm"
+    },
+    "language": {
+      "label": "Language",
+      "system": "Phone language"
+    },
+    "profileError": "Couldn't load your profile",
+    "retry": "Retry",
     "sections": {
-      "ledger": "Ledger"
-    }
+      "account": "Account",
+      "appearance": "Appearance",
+      "ledger": "Ledger",
+      "money": "Money"
+    },
+    "signOut": {
+      "confirm": "Sign out",
+      "label": "Sign out",
+      "pending": "Signing out…",
+      "title": "Sign out of Ledger Keeper?"
+    },
+    "theme": {
+      "dark": "Dark",
+      "label": "Theme",
+      "light": "Light"
+    },
+    "version": "Version {{version}} ({{build}})"
   },
   "voice": {
     "credits": "≈{{credits}} credits",

@@ -1,0 +1,29 @@
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUserProfile } from '@/features/currency';
+import { SettingsAccountSection } from '@/features/settings/components/settings-account-section';
+import { SettingsFooter } from '@/features/settings/components/settings-footer';
+import { SettingsLanguageRow } from '@/features/settings/components/settings-language-row';
+import { SettingsMoneySection } from '@/features/settings/components/settings-money-section';
+import { SettingsSection } from '@/features/settings/components/settings-section';
+import { SettingsThemeRow } from '@/features/settings/components/settings-theme-row';
+
+export function SettingsScreen() {
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const profile = useUserProfile();
+
+  return (
+    <ScrollView testID="settings-screen" className="flex-1 bg-paper-100" contentContainerClassName="px-4" contentContainerStyle={{ paddingBottom: insets.bottom }}>
+      <SettingsSection title={t('settings.sections.appearance')} testID="settings-appearance">
+        <SettingsThemeRow />
+        <SettingsLanguageRow />
+      </SettingsSection>
+      <SettingsMoneySection profile={profile} />
+      <SettingsAccountSection profile={profile} />
+      <SettingsFooter />
+    </ScrollView>
+  );
+}

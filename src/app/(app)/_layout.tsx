@@ -13,6 +13,7 @@ import {
   DRAWER_WIDTH,
   SectionTopBar,
 } from '@/features/navigation';
+import { useLanguageSync } from '@/features/settings/hooks/use-language-sync';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export default function AppLayout() {
@@ -21,6 +22,7 @@ export default function AppLayout() {
   const { t } = useTranslation();
   const { width: windowWidth } = useWindowDimensions();
   const themeColors = useThemeColors();
+  useLanguageSync();
 
   if (!decision.canRender) {
     if (decision.redirect) {

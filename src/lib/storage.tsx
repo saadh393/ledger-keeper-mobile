@@ -56,6 +56,10 @@ export function clearUserStorage(): void {
   }
 }
 
+export function clearAllStorage(): void {
+  storage.clearAll();
+}
+
 export const zustandStorage: StateStorage = {
   getItem: name => storage.getString(name) ?? null,
   setItem: (name, value) => storage.set(name, value),
