@@ -91,6 +91,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         microphonePermission: false,
       },
     ],
+    ['./modules/notification-capture/app.plugin.js', { label: Env.EXPO_PUBLIC_NAME }],
     ['app-icon-badge', appIconBadgeConfig],
     [
       '@sentry/react-native/expo',

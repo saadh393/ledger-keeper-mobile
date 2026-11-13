@@ -187,6 +187,91 @@
     "switchToSignIn": "Sign in",
     "switchToSignUp": "Create account"
   },
+  "autoCapture": {
+    "actions": {
+      "changeApps": "Change apps",
+      "openSettings": "Open Android settings",
+      "reenable": "Re-enable",
+      "turnOff": "Turn off",
+      "turnOn": "Turn on"
+    },
+    "androidNote": "You can also remove notification access in Android settings.",
+    "apps": {
+      "all": "All apps",
+      "chooseOne": "Choose at least one app",
+      "done": "Done",
+      "error": "Couldn't load your apps",
+      "hiddenNote": "Some apps hide notification text on the lock screen. Those payments may be missed.",
+      "noMatch": "No apps match",
+      "search": "Search apps",
+      "suggested": "Suggested",
+      "title": "Choose apps"
+    },
+    "cancel": "Cancel",
+    "consent": {
+      "continue": "Continue",
+      "never": {
+        "body": "Notifications from other apps, one-time codes, and anything from before you turned this on.",
+        "title": "What we never read or send"
+      },
+      "notNow": "Not now",
+      "off": {
+        "body": "Here at any time, or by removing notification access in Android settings.",
+        "title": "How to turn it off"
+      },
+      "read": {
+        "body": "Notifications from the apps you choose, only while this is on.",
+        "title": "What we read"
+      },
+      "stillOff": "Notification access is still off",
+      "title": "Add payments automatically",
+      "where": {
+        "body": "Only transaction-like text from the apps you choose is sent to Ledger Keeper's server to be read, then shown to you to confirm.",
+        "title": "Where it goes"
+      },
+      "why": {
+        "body": "To add bank and wallet payments to your ledger automatically.",
+        "title": "Why"
+      }
+    },
+    "inbox": {
+      "confirm": "Confirm",
+      "confirmError": "Couldn't confirm this payment. Try again.",
+      "detected": "Detected",
+      "discard": "Discard",
+      "discardError": "Couldn't discard this payment. Try again.",
+      "discarded": "Discarded",
+      "duplicate": "Possible duplicate of {{title}} · {{date}} · {{amount}}",
+      "edit": "Edit",
+      "editTitle": "Edit and confirm",
+      "emptyBody": "New payments from your chosen apps appear here.",
+      "emptyTitle": "Nothing to review",
+      "error": "Couldn't load detected transactions",
+      "hiddenNote": "Apps that hide notification text may cause missed payments.",
+      "missing": "—",
+      "open": "Detected transactions",
+      "openWithCount": "Detected transactions, {{count}} waiting",
+      "title": "Detected transactions",
+      "undo": "Tap to undo",
+      "undoError": "Couldn't undo. Try again."
+    },
+    "retry": "Retry",
+    "status": {
+      "accessRemoved": "Off — access was removed",
+      "off": "Off",
+      "on": "On",
+      "pending_one": "{{count}} detected item waiting for review",
+      "pending_other": "{{count}} detected items waiting for review"
+    },
+    "title": "Auto-capture",
+    "turnOff": {
+      "confirm": "Turn off",
+      "deletePending": "Also delete pending detected items",
+      "error": "Couldn't delete pending items. Auto-capture is off.",
+      "title": "Turn off auto-capture?"
+    },
+    "unsupported": "Auto-capture works on Android only"
+  },
   "books": {
     "activeBookHint": "Opens list of books to switch",
     "default": "Default",
@@ -694,6 +779,7 @@
     "sections": {
       "account": "Account",
       "appearance": "Appearance",
+      "automation": "Automation",
       "ledger": "Ledger",
       "money": "Money"
     },

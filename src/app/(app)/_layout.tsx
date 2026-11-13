@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useWindowDimensions } from 'react-native';
 
 import { getRouteDecision, useAuthStatus } from '@/features/auth';
+import { useAutoCaptureSync } from '@/features/auto-capture/hooks/use-auto-capture-sync';
 import { LedgerMoreButton } from '@/features/ledger';
 import {
   AppDrawerContent,
@@ -23,6 +24,7 @@ export default function AppLayout() {
   const { width: windowWidth } = useWindowDimensions();
   const themeColors = useThemeColors();
   useLanguageSync();
+  useAutoCaptureSync();
 
   if (!decision.canRender) {
     if (decision.redirect) {
@@ -95,6 +97,30 @@ export default function AppLayout() {
         name="settings"
         options={{
           title: t('navigation.settings'),
+        }}
+      />
+      <Drawer.Screen
+        name="auto-capture"
+        options={{
+          title: t('autoCapture.title'),
+        }}
+      />
+      <Drawer.Screen
+        name="auto-capture-consent"
+        options={{
+          title: t('autoCapture.title'),
+        }}
+      />
+      <Drawer.Screen
+        name="auto-capture-apps"
+        options={{
+          title: t('autoCapture.apps.title'),
+        }}
+      />
+      <Drawer.Screen
+        name="detected"
+        options={{
+          title: t('autoCapture.inbox.title'),
         }}
       />
     </Drawer>

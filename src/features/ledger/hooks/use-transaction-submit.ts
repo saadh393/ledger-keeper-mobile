@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import type { z } from 'zod';
-import type { CreateTransactionInput } from '@/features/ledger/api/create-transaction';
+import type { createTransaction, CreateTransactionInput } from '@/features/ledger/api/create-transaction';
 import type { TransactionRow } from '@/features/ledger/schemas/book-table-schema';
 import type {
   createTransactionFormSchema,
@@ -29,6 +29,7 @@ export type UseTransactionSubmitOptions = {
   formValues: TransactionFormValues;
   schema: ReturnType<typeof createTransactionFormSchema>;
   t: TFunction;
+  create?: typeof createTransaction;
 };
 
 type MonthToastOptions = {
@@ -86,11 +87,12 @@ export function useTransactionSubmit({
   formValues,
   schema,
   t,
+  create,
 }: UseTransactionSubmitOptions) {
   const [fieldErrors, setFieldErrors] = React.useState<Partial<Record<TransactionFieldKey, string>>>({});
   const [formError, setFormError] = React.useState<string | null>(null);
 
-  const createMutation = useCreateTransaction(bookId);
+  const createMutation = useCreateTransaction(bookId, create);
   const updateMutation = useUpdateTransaction(bookId);
   const isPending = createMutation.isPending || updateMutation.isPending;
 

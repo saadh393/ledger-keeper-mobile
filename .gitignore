@@ -23,3 +23,6 @@ expo-env.d.ts
 # @end expo-cli
 # local env (copy from .env.example)
 .env
+
+# local native module build output
+modules/*/android/build/

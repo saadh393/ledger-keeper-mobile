@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SettingsAutoCaptureRow } from '@/features/auto-capture/components/settings-auto-capture-row';
 import { useUserProfile } from '@/features/currency';
 import { SettingsAccountSection } from '@/features/settings/components/settings-account-section';
 import { SettingsFooter } from '@/features/settings/components/settings-footer';
@@ -22,6 +23,7 @@ export function SettingsScreen() {
         <SettingsLanguageRow />
       </SettingsSection>
       <SettingsMoneySection profile={profile} />
+      <SettingsAutoCaptureRow />
       <SettingsAccountSection profile={profile} />
       <SettingsFooter />
     </ScrollView>

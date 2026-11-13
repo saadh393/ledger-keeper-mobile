@@ -1,3 +1,5 @@
+import type { createTransaction } from '@/features/ledger/api/create-transaction';
+import type { TransactionFormInitial } from '@/features/ledger/hooks/use-transaction-form';
 import type { TransactionRow } from '@/features/ledger/schemas/book-table-schema';
 import type { Month } from '@/features/ledger/utils/month';
 import * as React from 'react';
@@ -16,6 +18,9 @@ export type TransactionFormSheetProps = {
   row?: TransactionRow;
   viewedMonth?: Month;
   onDismiss: () => void;
+  initial?: TransactionFormInitial;
+  create?: typeof createTransaction;
+  title?: string;
   testID?: string;
 };
 
@@ -25,6 +30,9 @@ export function TransactionFormSheet({
   row,
   viewedMonth,
   onDismiss,
+  initial,
+  create,
+  title,
   testID = 'transaction-form-sheet',
 }: TransactionFormSheetProps) {
   const { t } = useTranslation();
@@ -39,6 +47,8 @@ export function TransactionFormSheet({
     currency,
     row,
     viewedMonth,
+    initial,
+    create,
     onDismiss: () => {
       modal.dismiss();
       onDismiss();
@@ -92,7 +102,7 @@ export function TransactionFormSheet({
   return (
     <BottomSheet
       ref={modal.ref}
-      title={t(row ? 'ledger.form.editTitle' : 'ledger.form.createTitle')}
+      title={title ?? t(row ? 'ledger.form.editTitle' : 'ledger.form.createTitle')}
       dismissible={!form.isPending}
       showCloseButton
       onRequestClose={form.requestClose}

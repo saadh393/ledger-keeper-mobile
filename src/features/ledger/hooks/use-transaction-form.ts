@@ -1,4 +1,5 @@
 import type { SegmentOption } from '@/components/ui';
+import type { createTransaction } from '@/features/ledger/api/create-transaction';
 import type { TransactionRow } from '@/features/ledger/schemas/book-table-schema';
 import type { TransactionFormValues } from '@/features/ledger/schemas/transaction-form-schema';
 import type { Month } from '@/features/ledger/utils/month';
@@ -18,22 +19,28 @@ export type UseTransactionFormOptions = {
   row?: TransactionRow;
   viewedMonth?: Month;
   onDismiss: () => void;
+  initial?: TransactionFormInitial;
+  create?: typeof createTransaction;
 };
+
+export type TransactionFormInitial = Partial<Pick<TransactionFormValues, 'type' | 'amount' | 'title' | 'category' | 'date'>>;
 
 export function useTransactionForm({
   bookId,
   row,
   viewedMonth,
   onDismiss,
+  initial,
+  create,
 }: UseTransactionFormOptions) {
   const { t, i18n } = useTranslation();
   const locale = resolveLanguage(i18n.language);
-  const initialDateRef = React.useRef(row ? row.dateIso : new Date().toISOString());
+  const initialDateRef = React.useRef(row ? row.dateIso : initial?.date ?? new Date().toISOString());
 
-  const [type, setType] = React.useState<'income' | 'expense'>(row?.kind ?? 'expense');
-  const [amount, setAmount] = React.useState(row ? String(row.amount) : '');
-  const [title, setTitle] = React.useState(row ? row.name : '');
-  const [category, setCategory] = React.useState(row ? row.category : '');
+  const [type, setType] = React.useState<'income' | 'expense'>(row?.kind ?? initial?.type ?? 'expense');
+  const [amount, setAmount] = React.useState(row ? String(row.amount) : initial?.amount ?? '');
+  const [title, setTitle] = React.useState(row ? row.name : initial?.title ?? '');
+  const [category, setCategory] = React.useState(row ? row.category : initial?.category ?? '');
   const [date, setDate] = React.useState(initialDateRef.current);
   const [note, setNote] = React.useState(row?.note ?? '');
 
@@ -63,6 +70,7 @@ export function useTransactionForm({
     formValues,
     schema,
     t,
+    create,
   });
 
   const handleTypeChange = (newType: 'income' | 'expense') => {

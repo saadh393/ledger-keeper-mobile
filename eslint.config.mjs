@@ -35,6 +35,7 @@ export default antfu(
       '.expo',
       '.expo-shared',
       'android',
+      'modules/*/android/build',
       'ios',
       '.vscode',
       'docs/',
