@@ -25,6 +25,8 @@ jest.mock('expo-router/drawer', () => {
   return { Drawer };
 });
 
+jest.mock('@/features/settings/hooks/use-language-sync', () => ({ useLanguageSync: jest.fn() }));
+
 describe('appLayout and AuthLayout route guards', () => {
   beforeEach(() => {
     jest.clearAllMocks();

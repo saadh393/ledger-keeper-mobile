@@ -11,6 +11,7 @@ import { getFieldError } from '@/components/ui/form-utils';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { authClient, getAuthErrorMessage } from '@/features/auth/api/auth-client';
+import { ForgotPasswordLink } from '@/features/auth/components/forgot-password-link';
 import {
   createEmailSchema,
   createNameSchema,
@@ -434,7 +435,7 @@ export function EmailPasswordForm({
         iconColor={themeColors['ink-500']}
         keyboard={{ ref: passwordRef, returnKeyType: 'done', onSubmitEditing: () => form.handleSubmit() }}
       />
-
+      {!isSignUp && <ForgotPasswordLink disabled={isFormDisabled} getEmail={() => form.getFieldValue('email') ?? ''} />}
       {formError && <FormErrorMessage message={formError} />}
 
       <Button
