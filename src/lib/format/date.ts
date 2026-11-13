@@ -1,5 +1,6 @@
 import type { Language } from '@/lib/i18n/resources';
 import { resolveLocale, timeZone } from '@/lib/format/locale';
+import { toLocaleDigits } from '@/lib/format/locale-digits';
 
 export type DateInput = Date | string;
 
@@ -24,7 +25,7 @@ function formatOrderedDate(value: DateInput, locale: Language, { month, includeY
   const monthValue = parts.find(part => part.type === 'month')?.value ?? '';
   const year = parts.find(part => part.type === 'year')?.value ?? '';
 
-  return includeYear ? `${day} ${monthValue} ${year}` : `${day} ${monthValue}`;
+  return toLocaleDigits(includeYear ? `${day} ${monthValue} ${year}` : `${day} ${monthValue}`, locale);
 }
 
 export function formatDate(value: DateInput, locale: Language) {
@@ -32,12 +33,12 @@ export function formatDate(value: DateInput, locale: Language) {
 }
 
 export function formatTime(value: DateInput, locale: Language) {
-  return new Intl.DateTimeFormat(resolveLocale(locale), {
+  return toLocaleDigits(new Intl.DateTimeFormat(resolveLocale(locale), {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
     timeZone,
-  }).format(resolveDate(value));
+  }).format(resolveDate(value)), locale);
 }
 
 export function formatDateTime(value: DateInput, locale: Language) {
@@ -49,9 +50,9 @@ export function formatMonthDay(value: DateInput, locale: Language) {
 }
 
 export function formatMonthYear(value: DateInput, locale: Language) {
-  return new Intl.DateTimeFormat(resolveLocale(locale), {
+  return toLocaleDigits(new Intl.DateTimeFormat(resolveLocale(locale), {
     month: 'long',
     year: 'numeric',
     timeZone,
-  }).format(resolveDate(value));
+  }).format(resolveDate(value)), locale);
 }
