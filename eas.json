@@ -65,6 +65,11 @@
   },
   "submit": {
     "preview": {},
-    "production": {}
+    "production": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed"
+      }
+    }
   }
 }

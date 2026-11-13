@@ -45,6 +45,52 @@ To run the app on Android
 pnpm android
 ```
 
+## Release (Android)
+
+### Prerequisites
+
+- An Expo account with access to the EAS project, and `eas-cli` logged in (`npx eas login`).
+- The Play Console app `com.ledgerkeeper.app` created, with Play App Signing on. The first `.aab` must be uploaded by hand in Play Console; later uploads go through EAS Submit.
+- A Google Cloud service account with the "Release manager" role in Play Console. Upload its JSON key to EAS (`npx eas credentials` → Android → Google Service Account). Never commit it.
+
+### Secrets and environment
+
+Set these as EAS environment variables for the `production` environment (not in `.env` files in git):
+
+| Variable | Notes |
+|---|---|
+| `EXPO_PUBLIC_API_URL` | Production API, must be HTTPS |
+| `EXPO_PUBLIC_SENTRY_DSN` | Production Sentry DSN |
+| `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Source map upload; the token is a secret |
+| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` | RevenueCat public Android key |
+| `EXPO_PUBLIC_PRIVACY_POLICY_URL` | Public privacy policy page (#58) |
+
+Production builds have no environment badge on the icon. `versionCode` increases on every build (`appVersionSource: remote`, `autoIncrement`); `version` comes from `package.json`.
+
+### Build and submit
+
+```bash
+pnpm build:production:android
+```
+
+```bash
+pnpm submit:production:android
+```
+
+The build is a signed `.aab`; submit uploads the latest build to the internal testing track.
+
+### Promote
+
+In Play Console → Testing → Internal testing, check the pre-launch report, then promote the release to closed testing or production. Store listing, Data safety (`_docs/data-safety.md`), content rating, target audience and financial features declarations must be complete before the first review.
+
+### Regenerate icons and splash
+
+```bash
+pnpm brand:assets
+```
+
+Edits go in `assets/brand/ledger-mark.svg`; the script writes the launcher, adaptive, themed, splash, Play Store and favicon images.
+
 ## Continuous Integration & Workflows
 
 Automated CI/CD workflows are documented in [`.github/workflows/README.md`](./.github/workflows/README.md). Every pull request to `main` and push to `main` runs a consolidated Android-focused CI pipeline with Node 22 and pnpm caching, executing ESLint, TypeScript validation, translation key parity checks, Jest unit tests, and Expo doctor.
