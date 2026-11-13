@@ -30,6 +30,14 @@ describe('forgotPasswordScreen', () => {
     expect(JSON.parse(mock.history.post[0].data)).toEqual(expect.objectContaining({ email: 'rahim@example.com' }));
   });
 
+  it('shows the same neutral message for a Google-only account', async () => {
+    mock.onPost('/auth/request-password-reset').reply(200, { status: true, message: 'If this email exists in our system, check your email for the reset link' });
+    render(<ForgotPasswordScreen />);
+    fireEvent.press(screen.getByTestId('forgot-submit'));
+    expect(await screen.findByText('If an account exists for this email, we sent a reset link.')).toBeOnTheScreen();
+    expect(screen.queryByText(/Google/)).toBeNull();
+  });
+
   it('sends nothing for an invalid email', async () => {
     render(<ForgotPasswordScreen />);
     fireEvent.changeText(screen.getByTestId('forgot-email-input'), 'not-an-email');
