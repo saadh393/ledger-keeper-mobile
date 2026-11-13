@@ -9,6 +9,7 @@ import { Text } from '@/components/ui';
 import { useCreditBalance } from '@/features/credits/api/use-credit-balance';
 import { useCreditLedger } from '@/features/credits/api/use-credit-ledger';
 import { useCreditUsage } from '@/features/credits/api/use-credit-usage';
+import { BuyCreditsSheet } from '@/features/credits/components/buy-credits-sheet';
 import { CreditsBalance } from '@/features/credits/components/credits-balance';
 import { CreditsHistoryEmpty } from '@/features/credits/components/credits-history-empty';
 import { CreditsHistoryRow } from '@/features/credits/components/credits-history-row';
@@ -25,6 +26,7 @@ export function CreditsScreen() {
   const usage = useCreditUsage();
   const ledger = useCreditLedger();
   const [refreshing, setRefreshing] = React.useState(false);
+  const [buying, setBuying] = React.useState(false);
   const entries = React.useMemo(() => collapseLedgerEntries(ledger.data?.pages.flatMap(page => page.items) ?? []), [ledger.data]);
 
   const renderItem = React.useCallback<ListRenderItem<CreditLedgerEntry>>(
@@ -57,7 +59,7 @@ export function CreditsScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
         ListHeaderComponent={(
           <>
-            <CreditsBalance locale={locale} onBuy={() => {}} />
+            <CreditsBalance locale={locale} onBuy={() => setBuying(true)} />
             <CreditsUsage locale={locale} />
             <Text className="px-4 pt-2 pb-1 text-label text-ink-500">{t('credits.history.title')}</Text>
           </>
@@ -65,6 +67,7 @@ export function CreditsScreen() {
         ListEmptyComponent={<CreditsHistoryEmpty query={ledger} />}
         ListFooterComponent={<LoanListFooter loading={ledger.isFetchingNextPage} />}
       />
+      {buying ? <BuyCreditsSheet onDismiss={() => setBuying(false)} /> : null}
     </View>
   );
 }

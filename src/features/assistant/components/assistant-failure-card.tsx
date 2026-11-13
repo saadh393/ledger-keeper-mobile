@@ -1,11 +1,11 @@
 import type { SendFailure } from '@/features/assistant/utils/send-retry';
-import { useRouter } from 'expo-router';
 import { CircleAlert } from 'lucide-react-native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, Text } from '@/components/ui';
 import { ArtifactCard } from '@/features/assistant/components/artifacts/artifact-card';
+import { BuyCreditsSheet } from '@/features/credits/components/buy-credits-sheet';
 import { formatNumber } from '@/lib/format/number';
 import { resolveLanguage } from '@/lib/i18n/resolve-language';
 
@@ -17,7 +17,7 @@ export type AssistantFailureCardProps = {
 
 export function AssistantFailureCard({ failure, onRetry, onDismiss }: AssistantFailureCardProps) {
   const { t, i18n } = useTranslation();
-  const router = useRouter();
+  const [buying, setBuying] = React.useState(false);
   const locale = resolveLanguage(i18n.language);
   const message = t(`assistant.failure.${failure.reason}`, {
     required: formatNumber(failure.required ?? 0, locale),
@@ -36,13 +36,14 @@ export function AssistantFailureCard({ failure, onRetry, onDismiss }: AssistantF
         footer={(
           <>
             {failure.retryKey ? <Button testID="assistant-failure-retry" variant="text" size="sm" fullWidth={false} label={t('assistant.failure.retry')} onPress={onRetry} /> : null}
-            {failure.reason === 'credits' ? <Button testID="assistant-failure-buy" variant="text" size="sm" fullWidth={false} label={t('assistant.failure.buyCredits')} onPress={() => router.push('/credits')} /> : null}
+            {failure.reason === 'credits' ? <Button testID="assistant-failure-buy" variant="text" size="sm" fullWidth={false} label={t('assistant.failure.buyCredits')} onPress={() => setBuying(true)} /> : null}
             <Button testID="assistant-failure-dismiss" variant="ghost" size="sm" fullWidth={false} label={t('assistant.failure.dismiss')} onPress={onDismiss} />
           </>
         )}
       >
         <Text className="py-2 text-body text-ink-900">{message}</Text>
       </ArtifactCard>
+      {buying ? <BuyCreditsSheet onDismiss={() => setBuying(false)} /> : null}
     </View>
   );
 }
