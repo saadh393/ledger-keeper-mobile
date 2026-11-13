@@ -20,7 +20,10 @@ describe('language choice', () => {
 
   it('applies a saved profile locale only when nothing was chosen on the device', () => {
     expect(getProfileLanguage('system', 'bn')).toBe('bn');
-    expect(getProfileLanguage('system', 'en')).toBeNull();
+    expect(getProfileLanguage('system', 'en')).toBe('en');
+    expect(getProfileLanguage('system', undefined)).toBeNull();
+    expect(getProfileLanguage('system', 'fr')).toBeNull();
     expect(getProfileLanguage('en', 'bn')).toBeNull();
+    expect(getProfileLanguage('bn', 'en')).toBeNull();
   });
 });

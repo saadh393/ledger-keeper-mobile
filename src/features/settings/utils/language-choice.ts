@@ -12,5 +12,7 @@ export function resolveLanguageChoice(choice: LanguageChoice, deviceTag?: string
 }
 
 export function getProfileLanguage(choice: LanguageChoice, profileLocale?: string | null): Language | null {
-  return choice === 'system' && profileLocale === 'bn' ? 'bn' : null;
+  if (choice !== 'system')
+    return null;
+  return profileLocale === 'en' || profileLocale === 'bn' ? profileLocale : null;
 }
