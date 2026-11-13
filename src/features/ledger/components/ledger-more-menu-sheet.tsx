@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheet, BottomSheetView, useBottomSheetModalRef } from '@/components/ui/bottom-sheet';
 import { LedgerRowMenuOption } from '@/features/ledger/components/ledger-row-menu-option';
+import { LedgerSummaryToggle } from '@/features/ledger/components/ledger-summary-toggle';
 
 export type LedgerMoreMenuSheetProps = {
   onManageCategories: () => void;
@@ -29,6 +30,7 @@ export function LedgerMoreMenuSheet({ onManageCategories, onDismiss }: LedgerMor
             onManageCategories();
           }}
         />
+        <LedgerSummaryToggle />
       </BottomSheetView>
     </BottomSheet>
   );

@@ -2,14 +2,16 @@ import type { MonthRange } from '@/features/ledger/utils/month';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowDimensions, View } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
+import { StatTile } from '@/components/ui/stat-tile';
 import { useActiveBook } from '@/features/books/hooks/use-active-book';
 import { useBookTable } from '@/features/ledger/api/use-book-table';
-import { LedgerSummaryCell } from '@/features/ledger/components/ledger-summary-cell';
 import { LedgerSummaryError } from '@/features/ledger/components/ledger-summary-error';
+import { LedgerSummaryMenuSheet } from '@/features/ledger/components/ledger-summary-menu-sheet';
+import { useLedgerPreferencesStore } from '@/features/ledger/store/use-ledger-preferences-store';
 import { formatCompactStat } from '@/features/ledger/utils/format-compact-stat';
 import { formatStat } from '@/features/ledger/utils/format-stat';
-import { getStatLabelKey, getStatShortLabelKey, placeholderStats } from '@/features/ledger/utils/stat-labels';
+import { getSummaryLayout } from '@/features/ledger/utils/get-summary-layout';
+import { averageLabel, getStatLabelKey, getStatShortLabelKey, placeholderStats } from '@/features/ledger/utils/stat-labels';
 import { resolveLanguage } from '@/lib/i18n/resolve-language';
 import { twMerge } from '@/lib/tw-merge';
 
@@ -22,7 +24,12 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
   const { t, i18n } = useTranslation();
   const activeBook = useActiveBook();
   const table = useBookTable(activeBook.activeBookId, firstDay, lastDay);
-  const stacked = useWindowDimensions().fontScale > 1;
+  const { width, fontScale } = useWindowDimensions();
+  const showSummary = useLedgerPreferencesStore(state => state.showSummary);
+  const [exactValue, setExactValue] = React.useState<string | null>(null);
+
+  if (!showSummary)
+    return null;
 
   if (activeBook.isError || (table.isError && !table.data)) {
     return (
@@ -36,34 +43,38 @@ export function LedgerStats({ firstDay, lastDay }: MonthRange) {
   }
 
   const loading = !table.data;
-  const stats = table.data?.stats ?? placeholderStats;
+  const stats = (table.data?.stats ?? placeholderStats).filter(stat => stat.label !== averageLabel);
   const locale = resolveLanguage(i18n.language);
   const currency = activeBook.activeBook?.currency ?? 'BDT';
+  const compactValues = stats.map(stat => formatCompactStat(stat, locale, currency));
+  const { stacked, fontSize } = getSummaryLayout(width - 32, compactValues.map(value => value.value), fontScale);
 
   return (
     <View
       testID="ledger-stats"
-      className={twMerge('mx-4 flex-row rounded-2xl bg-surface-container px-1 py-2', stacked && 'flex-wrap gap-y-1')}
+      className={twMerge('mx-4 gap-2', !stacked && 'flex-row')}
     >
-      {stats.map((stat) => {
+      {stats.map((stat, index) => {
         const fullKey = getStatLabelKey(stat.label);
         const shortKey = getStatShortLabelKey(stat.label);
-        const compact = formatCompactStat(stat, locale, currency);
+        const compact = compactValues[index]!;
         const exact = loading ? t('common.loading') : formatStat(stat, locale, currency).value;
         const fullLabel = fullKey ? t(fullKey) : stat.label;
         return (
-          <LedgerSummaryCell
+          <StatTile
             key={stat.label}
+            testID="ledger-summary-cell"
             label={shortKey ? t(shortKey) : stat.label}
-            value={compact.value}
+            value={loading ? null : compact.value}
             valueClassName={compact.valueClassName ?? (stat.kind && kindValueClassName[stat.kind])}
-            loading={loading}
+            fontSize={fontSize}
+            stacked={stacked}
             accessibilityLabel={`${fullLabel}, ${exact}`}
-            className={stacked ? 'basis-1/2' : 'flex-1 basis-0'}
-            onLongPress={loading ? undefined : () => showMessage({ message: `${fullLabel} ${exact}`, type: 'info' })}
+            onLongPress={loading ? undefined : () => setExactValue(`${fullLabel} ${exact}`)}
           />
         );
       })}
+      {exactValue ? <LedgerSummaryMenuSheet exactValue={exactValue} onDismiss={() => setExactValue(null)} /> : null}
     </View>
   );
 }

@@ -22,7 +22,7 @@ src/
 ├── features/         # Feature modules - auth, feed, settings are EXAMPLES
 ├── components/ui/    # Pre-built UI components (button, input, modal, etc.)
 ├── lib/              # Pre-configured utilities (api, auth, i18n, storage)
-├── translations/     # i18n files (en.json, ar.json - add more languages)
+├── translations/     # i18n files (en.json, bn.json)
 └── global.css        # TailwindCSS configuration
 
 Root Files:

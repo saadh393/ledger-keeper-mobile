@@ -34,9 +34,8 @@ describe('homeScreen basic layout and currency', () => {
     await act(() => i18n.changeLanguage('en'));
   });
 
-  it('shows the month switcher, stat tiles, search toolbar and the transaction list placeholders', () => {
+  it('shows the stat tiles, search toolbar and the transaction list placeholders', () => {
     render(<HomeScreen />);
-    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
     expect(screen.getByTestId('ledger-stats')).toBeOnTheScreen();
     expect(screen.getByTestId('ledger-toolbar')).toBeOnTheScreen();
     expect(screen.getAllByTestId('ledger-row-placeholder')).toHaveLength(6);
@@ -62,8 +61,6 @@ describe('homeScreen basic layout and currency', () => {
         <HomeScreen />
       </QueryClientProvider>,
     );
-
-    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
 
     await waitFor(() => {
       expect(screen.getByTestId('currency-picker-sheet')).toBeOnTheScreen();
@@ -92,8 +89,6 @@ describe('homeScreen basic layout and currency', () => {
         <HomeScreen />
       </QueryClientProvider>,
     );
-
-    expect(screen.getByTestId('month-switcher')).toBeOnTheScreen();
 
     await waitFor(() => {
       expect(screen.queryByTestId('currency-picker-sheet')).not.toBeOnTheScreen();

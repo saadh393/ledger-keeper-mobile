@@ -101,7 +101,8 @@ Brand hues (logo, gradient text, category colors): blue `#4285f4`, green `#34a85
 | **AI bar** | Radius 32, `surface-container`, min height 56. Left: camera. Middle: multiline input (grows to 160). Right: mic, send (`accent`). While recording: discard, timer + credit estimate, waveform, send recording. Hint line below: "≈N credits per message · AI can make mistakes" |
 | **Artifact card** | Radius 24, `surface-container`, tone-tinted gradient border and corner glow (tones: info, income, expense, warning). Optional header (tone tile + label + meta) and footer |
 | **Ledger row** | Tone tile (income green / expense red) · title + meta (date, category) · signed amount right-aligned. Tap expands details (category, note, items). Long-press: Copy, Edit, Delete |
-| Summary strip | One `surface-container` row, radius 16, 16 gutter, at most 64 tall at default font size. Four equal cells with short labels (Income, Expense, Net, Avg; Label 13, `ink-500`) above a compact value (Row title 15, tabular, one line, shrinks to 12): no decimals, lakh/crore for BDT (L/Cr, লাখ/কোটি) or K/M/B for other currencies, at most 3 significant digits. This is the one place where principle 4 ("Money is precise") is relaxed for display; the exact value is always in the accessibility label ("Net position, +৳12,34,56,789.00"). Values: income `forest-500`, expense `clay-500`, signed net green / red / neutral at zero, others `ink-900`. Loading shows same-height placeholders; error shows the message with Retry in place of the strip. At larger font sizes the cells become two rows of two |
+| Stat tile | The one way to show a headline total (Ledger summary, Loans totals). `surface-container`, radius 16, padding 12 × 10, no border. Short label (Meta 12, `ink-500`) above the value (Title 20, semibold, tabular, one line, shrinks to fit). Tiles sit side by side with equal width and an 8 gap, 16 gutter. Value colour carries meaning: income / owed to you `forest-500`, expense `clay-500`, signed net green / red / neutral at zero, others `ink-900`. Loading shows a placeholder bar in place of the value |
+| Summary strip | A row of stat tiles: Income, Expense, Net. Compact values: no decimals, lakh/crore for BDT (L/Cr, লাখ/কোটি) or K/M/B for other currencies, at most 3 significant digits. This is the one place where principle 4 ("Money is precise") is relaxed for display; the exact value is always in the accessibility label ("Net position, +৳12,34,56,789.00") and on long-press. All values share one size (20 down to 12) picked from the longest value; if it can't fit at 12, or at larger font sizes, the tiles stack full width with label left and value right. Error shows the message with Retry in place of the strip |
 | Tone tile | 40 (r12) or 48 (r16) square with the tone tint and icon |
 | Chip | Pill, `paper-200`, 12–13 label |
 | Bottom sheet | Top radius 28, grabber, title row with close |
@@ -117,10 +118,9 @@ Brand hues (logo, gradient text, category colors): blue `#4285f4`, green `#34a85
 Logo, "Your money, in plain words." headline, Google button, divider, email + password form, switch between Sign in and Create account. Then the **currency picker** sheet on first sign-in.
 
 ### 7.2 Ledger (home)
-- Top bar: menu (opens drawer) · "Ledger" · **Assistant** pill button · ⋯ (Manage categories).
-- Month switcher: ‹ November 2026 › with "This month" link; › disabled on the current month.
-- Summary strip (secondary): Income, Expense, Net, Avg in one row, always for the whole month.
-- Search field + All / Income / Expense segmented filter + sort.
+- Top bar: menu (opens drawer) · month switcher ‹ November 2026 › in place of the title (label turns `link` on a past month; tapping it returns to this month) · **Assistant** pill button · search · ⋯ (Manage categories, Show summary). Search opens a field above the filter row (focused); its × clears the text, then closes it.
+- Summary strip (secondary, optional): Income, Expense, Net as three stat tiles, always for the whole month. All values share one size picked from the longest value; if it can't fit at 12 the tiles stack one per row. Long-press a tile for its exact amount and "Hide summary"; turn it back on from ⋯ or Settings.
+- One compact row: All / Income / Expense chips + icon-only sort chip (selected tone when not "Newest first"). The list keeps at least ~2/3 of the viewport.
 - FlashList of ledger rows grouped by day (primary, takes the rest of the screen); footer with count and totals. Pull to refresh.
 - **Add transaction** floating pill above the AI bar (manual mode).
 - **AI bar** pinned at the bottom.
@@ -133,7 +133,9 @@ Logo, "Your money, in plain words." headline, Google button, divider, email + pa
 - History view: chat rows (title, last-activity date, delete) and "Show older chats".
 
 ### 7.4 Loans, Installments
-Same structure as the web views: totals, status tabs (Open/Settled/All, Active/Completed/All), list, add form in a bottom sheet, expandable rows.
+- Totals as stat tiles at the top (Loans: "Owed to you" `forest-500`, "You owe" `ink-900`).
+- Status filter as one compact row of chips, same as the Ledger kind filter (Open / Settled / All; Active / Completed / All), so the list keeps most of the viewport.
+- List with expandable rows (note, history, actions), add form in a bottom sheet, floating Add pill at the bottom.
 
 ### 7.5 Receipt flow
 Camera/gallery → full-screen editor (crop, rotate left/right, reset) → "Scanning receipt…" in the Assistant → receipt draft card (items, total, tax line, Save / Discard).

@@ -7,6 +7,7 @@ import MockAdapter from 'axios-mock-adapter';
 import * as React from 'react';
 import { useAuthStore } from '@/features/auth';
 import { useActiveBookStore } from '@/features/books/store/use-active-book-store';
+import { LedgerSearchButton } from '@/features/ledger/components/ledger-search-button';
 import { LedgerStats } from '@/features/ledger/components/ledger-stats';
 import { LedgerToolbar } from '@/features/ledger/components/ledger-toolbar';
 import { TransactionList } from '@/features/ledger/components/transaction-list';
@@ -70,7 +71,7 @@ function rowTitles() {
 }
 
 function statValues() {
-  return screen.getAllByTestId('ledger-summary-value').map(node => node.props.children);
+  return screen.getAllByTestId('stat-tile-value').map(node => node.props.children);
 }
 
 function tableRequests(mock: MockAdapter) {
@@ -80,6 +81,7 @@ function tableRequests(mock: MockAdapter) {
 function Ledger({ month, firstDay, lastDay }: MonthRange & { month: Month }) {
   return (
     <>
+      <LedgerSearchButton />
       <LedgerStats firstDay={firstDay} lastDay={lastDay} />
       <LedgerToolbar />
       <TransactionList month={month} firstDay={firstDay} lastDay={lastDay} />
@@ -91,11 +93,13 @@ async function renderLedger(rows = novemberRows) {
   mockRef.current.onGet('/books/book-1/table').reply(200, table(rows));
   const view = render(<Ledger {...november} />);
   await screen.findByText(rows[0]?.name ?? '');
-  await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
+  await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(3));
   return view;
 }
 
 async function search(text: string) {
+  if (!screen.queryByTestId('ledger-search'))
+    fireEvent.press(screen.getByTestId('ledger-search-button'));
   fireEvent.changeText(screen.getByTestId('ledger-search'), text);
 }
 
@@ -120,14 +124,16 @@ describe('ledger search, filter and sort', () => {
     act(() => {
       useAuthStore.setState({ status: 'idle' });
       useActiveBookStore.setState({ activeBookId: null });
-      useLedgerFiltersStore.setState({ query: '', kind: 'all', sort: 'newest' });
+      useLedgerFiltersStore.setState({ query: '', kind: 'all', sort: 'newest', isSearchOpen: false });
     });
     await act(() => i18n.changeLanguage('en'));
   });
 
-  it('shows a search field, an All / Income / Expense control and a sort button above the list', async () => {
+  it('hides the search field until search is opened, and shows All / Income / Expense chips and a sort button above the list', async () => {
     await renderLedger();
 
+    expect(screen.queryByTestId('ledger-search')).not.toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: 'Search transactions' }));
     expect(screen.getByPlaceholderText('Search transactions')).toBeOnTheScreen();
     expect(screen.getAllByRole('tab').map(tab => tab.props.accessibilityLabel)).toEqual(['All', 'Income', 'Expense']);
     expect(screen.getByRole('tab', { name: 'All' }).props.accessibilityState.selected).toBe(true);
@@ -163,17 +169,35 @@ describe('ledger search, filter and sort', () => {
     await waitFor(() => expect(rowTitles()).toEqual(['বাজার']));
   });
 
-  it('shows a clear button only when the search is not empty, and clearing shows every row', async () => {
+  it('clears a non-empty search first, then closes the empty search field', async () => {
     await renderLedger();
-    expect(screen.queryByRole('button', { name: 'Clear search' })).not.toBeOnTheScreen();
 
     await search('lunch');
     await waitFor(() => expect(rowTitles()).toEqual(['Lunch']));
     fireEvent.press(screen.getByRole('button', { name: 'Clear search' }));
 
     expect(screen.getByTestId('ledger-search').props.value).toBe('');
-    expect(screen.queryByRole('button', { name: 'Clear search' })).not.toBeOnTheScreen();
     expect(rowTitles()).toHaveLength(4);
+    fireEvent.press(screen.getAllByRole('button', { name: 'Close search' })[1]!);
+    expect(screen.queryByTestId('ledger-search')).not.toBeOnTheScreen();
+  });
+
+  it('closes and clears search from the top bar search button', async () => {
+    await renderLedger();
+    await search('lunch');
+    await waitFor(() => expect(rowTitles()).toEqual(['Lunch']));
+
+    fireEvent.press(screen.getByTestId('ledger-search-button'));
+
+    expect(screen.queryByTestId('ledger-search')).not.toBeOnTheScreen();
+    expect(rowTitles()).toHaveLength(4);
+  });
+
+  it('marks the sort button selected only when the sort is not the default', async () => {
+    await renderLedger();
+    expect(screen.getByTestId('ledger-sort-button').props.accessibilityState.selected).toBe(false);
+    await chooseSort('Oldest first');
+    expect(screen.getByTestId('ledger-sort-button').props.accessibilityState.selected).toBe(true);
   });
 
   it('shows only income, only expense, or both, combined with search', async () => {
@@ -256,6 +280,7 @@ describe('ledger search, filter and sort', () => {
     await act(() => i18n.changeLanguage('bn'));
     await renderLedger();
 
+    fireEvent.press(screen.getByRole('button', { name: 'লেনদেন খুঁজুন' }));
     expect(screen.getByPlaceholderText('লেনদেন খুঁজুন')).toBeOnTheScreen();
     fireEvent.press(screen.getByRole('tab', { name: 'আয়' }));
     expect(screen.getByTestId('ledger-list-footer-shown')).toHaveTextContent('৪টির মধ্যে ২টি লেনদেন');
@@ -287,7 +312,7 @@ describe('ledger search, filter and sort', () => {
 
     expect(screen.queryByText('No matching transactions')).not.toBeOnTheScreen();
     expect(listOrder()).toEqual(['Refund', 'Lunch', 'Groceries', 'Salary']);
-    expect(screen.getByTestId('ledger-search').props.value).toBe('');
+    expect(screen.queryByTestId('ledger-search')).not.toBeOnTheScreen();
     expect(screen.getByRole('tab', { name: 'All' }).props.accessibilityState.selected).toBe(true);
     expect(screen.getByRole('button', { name: 'Sort: Lowest amount' })).toBeOnTheScreen();
   });
@@ -298,7 +323,7 @@ describe('ledger search, filter and sort', () => {
     render(<Ledger {...november} />);
 
     expect(await screen.findByText('No transactions in November 2026')).toBeOnTheScreen();
-    await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
+    await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(3));
     expect(screen.queryByText('No matching transactions')).not.toBeOnTheScreen();
   });
 
@@ -334,7 +359,7 @@ describe('ledger search, filter and sort', () => {
     act(() => useActiveBookStore.setState({ activeBookId: business.id }));
 
     expect(await screen.findByText('Client lunch')).toBeOnTheScreen();
-    await waitFor(() => expect(screen.getAllByTestId('ledger-summary-value')).toHaveLength(4));
+    await waitFor(() => expect(screen.getAllByTestId('stat-tile-value')).toHaveLength(3));
     expect(rowTitles()).toEqual(['Client lunch']);
     expect(screen.getByTestId('ledger-search').props.value).toBe('lunch');
   });

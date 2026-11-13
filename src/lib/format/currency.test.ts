@@ -35,11 +35,25 @@ describe('formatCurrency', () => {
     expect(formatCurrency(value, locale, 'BDT')).toBe(expected);
   });
 
-  it('falls back to the code when formatToParts is missing', () => {
+  it('falls back to the known symbol when formatToParts is missing', () => {
     const { formatToParts } = Intl.NumberFormat.prototype;
     Reflect.deleteProperty(Intl.NumberFormat.prototype, 'formatToParts');
     try {
-      expect(formatCurrency(1200, 'en', 'BDT')).toBe('BDT 1,200');
+      expect(formatCurrency(1200, 'en', 'BDT')).toBe('৳1,200');
+      expect(formatCurrency(1200, 'en', 'XYZ')).toBe('XYZ 1,200');
+    }
+    finally {
+      Intl.NumberFormat.prototype.formatToParts = formatToParts;
+    }
+  });
+
+  it('uses the known symbol when the runtime only returns the code', () => {
+    const { formatToParts } = Intl.NumberFormat.prototype;
+    Intl.NumberFormat.prototype.formatToParts = function () {
+      return [{ type: 'currency', value: 'BDT' }, { type: 'integer', value: '0' }];
+    };
+    try {
+      expect(formatCurrency(1200, 'en', 'BDT')).toBe('৳1,200');
     }
     finally {
       Intl.NumberFormat.prototype.formatToParts = formatToParts;

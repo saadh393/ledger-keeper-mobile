@@ -11,6 +11,7 @@ export function LedgerSearchField() {
   const themeColors = useThemeColors();
   const query = useLedgerFiltersStore(state => state.query);
   const setQuery = useLedgerFiltersStore(state => state.setQuery);
+  const closeSearch = useLedgerFiltersStore(state => state.closeSearch);
 
   return (
     <View className="relative justify-center">
@@ -25,22 +26,21 @@ export function LedgerSearchField() {
         accessibilityLabel={t('ledger.search.placeholder')}
         returnKeyType="search"
         autoCorrect={false}
+        autoFocus={!query}
         containerClassName="mb-0"
         className="pl-11"
-        rightAccessory={query
-          ? (
-              <Pressable
-                testID="ledger-search-clear"
-                accessibilityRole="button"
-                accessibilityLabel={t('ledger.search.clear')}
-                onPress={() => setQuery('')}
-                hitSlop={8}
-                className="size-9 items-center justify-center rounded-full active:bg-paper-200"
-              >
-                <X size={18} strokeWidth={1.75} color={themeColors['ink-500']} />
-              </Pressable>
-            )
-          : undefined}
+        rightAccessory={(
+          <Pressable
+            testID="ledger-search-clear"
+            accessibilityRole="button"
+            accessibilityLabel={t(query ? 'ledger.search.clear' : 'ledger.search.close')}
+            onPress={() => (query ? setQuery('') : closeSearch())}
+            hitSlop={8}
+            className="size-9 items-center justify-center rounded-full active:bg-paper-200"
+          >
+            <X size={18} strokeWidth={1.75} color={themeColors['ink-500']} />
+          </Pressable>
+        )}
       />
     </View>
   );

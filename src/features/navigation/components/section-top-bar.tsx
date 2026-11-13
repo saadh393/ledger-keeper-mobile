@@ -8,11 +8,12 @@ import { useThemeColors } from '@/lib/theme/use-theme-colors';
 
 export type SectionTopBarProps = {
   title: string;
+  titleElement?: React.ReactNode;
   onOpenMenu: () => void;
   rightElement?: React.ReactNode;
 };
 
-export function SectionTopBar({ title, onOpenMenu, rightElement }: SectionTopBarProps) {
+export function SectionTopBar({ title, titleElement, onOpenMenu, rightElement }: SectionTopBarProps) {
   const { t } = useTranslation();
   const insets = React.use(SafeAreaInsetsContext) ?? { top: 0, bottom: 0, left: 0, right: 0 };
   const themeColors = useThemeColors();
@@ -38,13 +39,15 @@ export function SectionTopBar({ title, onOpenMenu, rightElement }: SectionTopBar
             color={themeColors['ink-900']}
           />
         </Pressable>
-        <Text
-          numberOfLines={1}
-          className="flex-1 text-title font-medium text-ink-900"
-          testID="top-bar-title"
-        >
-          {title}
-        </Text>
+        {titleElement ?? (
+          <Text
+            numberOfLines={1}
+            className="flex-1 text-title font-medium text-ink-900"
+            testID="top-bar-title"
+          >
+            {title}
+          </Text>
+        )}
         {rightElement}
       </View>
     </View>

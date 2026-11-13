@@ -12,6 +12,7 @@ export type TransactionDatePickerProps = {
   selected: string;
   onSelect: (isoDate: string) => void;
   onBack: () => void;
+  allowFuture?: boolean;
   testID?: string;
 };
 
@@ -19,19 +20,19 @@ type DaysGridProps = {
   days: number[];
   currentYear: number;
   currentMonth: number;
-  todayKey: string;
+  maxDayKey: string;
   selectedDayKey: string;
   onSelectDay: (day: number) => void;
 };
 
-function DaysGrid({ days, currentYear, currentMonth, todayKey, selectedDayKey, onSelectDay }: DaysGridProps) {
+function DaysGrid({ days, currentYear, currentMonth, maxDayKey, selectedDayKey, onSelectDay }: DaysGridProps) {
   return (
     <View className="mb-4 flex-row flex-wrap justify-center gap-1">
       {days.map((day) => {
         const dayStr = String(day).padStart(2, '0');
         const monthStr = String(currentMonth).padStart(2, '0');
         const dayKey = `${currentYear}-${monthStr}-${dayStr}`;
-        const isFuture = dayKey > todayKey;
+        const isFuture = dayKey > maxDayKey;
         const isSelected = dayKey === selectedDayKey;
 
         return (
@@ -65,12 +66,14 @@ function DaysGrid({ days, currentYear, currentMonth, todayKey, selectedDayKey, o
   );
 }
 
-function useDatePickerNavigation(selected: string, onSelect: (isoDate: string) => void) {
-  const todayKey = React.useMemo(() => toDayKey(new Date()), []);
+const MAX_DAY_KEY = '9999-12-31';
+
+function useDatePickerNavigation(selected: string, onSelect: (isoDate: string) => void, allowFuture: boolean) {
+  const maxDayKey = React.useMemo(() => (allowFuture ? MAX_DAY_KEY : toDayKey(new Date())), [allowFuture]);
   const [todayYear, todayMonth] = React.useMemo(() => {
-    const parts = todayKey.split('-').map(Number);
+    const parts = toDayKey(new Date()).split('-').map(Number);
     return [parts[0] ?? 0, parts[1] ?? 1];
-  }, [todayKey]);
+  }, []);
 
   const selectedDayKey = React.useMemo(() => toDayKey(selected), [selected]);
   const [initialYear, initialMonth] = React.useMemo(() => {
@@ -82,7 +85,7 @@ function useDatePickerNavigation(selected: string, onSelect: (isoDate: string) =
   const [currentMonth, setCurrentMonth] = React.useState(initialMonth);
 
   const isCurrentOrFutureMonth
-    = currentYear > todayYear || (currentYear === todayYear && currentMonth >= todayMonth);
+    = !allowFuture && (currentYear > todayYear || (currentYear === todayYear && currentMonth >= todayMonth));
 
   const prevMonth = () => {
     if (currentMonth === 1) {
@@ -113,13 +116,13 @@ function useDatePickerNavigation(selected: string, onSelect: (isoDate: string) =
     const dayStr = String(day).padStart(2, '0');
     const monthStr = String(currentMonth).padStart(2, '0');
     const dayKey = `${currentYear}-${monthStr}-${dayStr}`;
-    if (dayKey <= todayKey) {
+    if (dayKey <= maxDayKey) {
       onSelect(`${dayKey}T12:00:00.000Z`);
     }
   };
 
   return {
-    todayKey,
+    maxDayKey,
     selectedDayKey,
     currentYear,
     currentMonth,
@@ -135,6 +138,7 @@ export function TransactionDatePicker({
   selected,
   onSelect,
   onBack,
+  allowFuture = false,
   testID = 'transaction-date-picker',
 }: TransactionDatePickerProps) {
   const { t, i18n } = useTranslation();
@@ -142,7 +146,7 @@ export function TransactionDatePicker({
   const locale = resolveLanguage(i18n.language);
 
   const {
-    todayKey,
+    maxDayKey,
     selectedDayKey,
     currentYear,
     currentMonth,
@@ -151,7 +155,7 @@ export function TransactionDatePicker({
     nextMonth,
     days,
     selectDay,
-  } = useDatePickerNavigation(selected, onSelect);
+  } = useDatePickerNavigation(selected, onSelect, allowFuture);
 
   return (
     <View testID={testID} className="flex-1">
@@ -186,7 +190,7 @@ export function TransactionDatePicker({
         days={days}
         currentYear={currentYear}
         currentMonth={currentMonth}
-        todayKey={todayKey}
+        maxDayKey={maxDayKey}
         selectedDayKey={selectedDayKey}
         onSelectDay={selectDay}
       />

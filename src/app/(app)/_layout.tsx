@@ -7,7 +7,7 @@ import { useWindowDimensions } from 'react-native';
 
 import { getRouteDecision, useAuthStatus } from '@/features/auth';
 import { useAutoCaptureSync } from '@/features/auto-capture/hooks/use-auto-capture-sync';
-import { LedgerMoreButton } from '@/features/ledger';
+import { LedgerHeaderActions, MonthSwitcher } from '@/features/ledger';
 import {
   AppDrawerContent,
   DRAWER_SCRIM_COLOR,
@@ -45,6 +45,7 @@ export default function AppLayout() {
         header: ({ navigation, route, options }) => (
           <SectionTopBar
             title={options.title ?? route.name}
+            titleElement={route.name === 'index' ? <MonthSwitcher /> : undefined}
             onOpenMenu={() => navigation.dispatch(DrawerActions.openDrawer())}
             rightElement={options.headerRight ? options.headerRight({ canGoBack: false }) : undefined}
           />
@@ -66,7 +67,7 @@ export default function AppLayout() {
         name="index"
         options={{
           title: t('navigation.ledger'),
-          headerRight: () => <LedgerMoreButton />,
+          headerRight: () => <LedgerHeaderActions />,
         }}
       />
       <Drawer.Screen

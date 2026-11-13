@@ -1,62 +1,64 @@
-import type { Month } from '@/features/ledger/utils/month';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
-import { Button, Text } from '@/components/ui';
+import { Pressable, View } from 'react-native';
+import { Text } from '@/components/ui/text';
+import { useLedgerMonth } from '@/features/ledger/hooks/use-ledger-month';
 import { formatMonthLabel } from '@/features/ledger/utils/month';
 import { resolveLanguage } from '@/lib/i18n/resolve-language';
 import { useThemeColors } from '@/lib/theme/use-theme-colors';
+import { twMerge } from '@/lib/tw-merge';
 
-export type MonthSwitcherProps = {
-  month: Month;
-  isCurrentMonth: boolean;
-  onPrevious: () => void;
-  onNext: () => void;
-  onCurrent: () => void;
-};
+const arrowHitSlop = { top: 0, bottom: 0, left: 4, right: 4 };
 
-export function MonthSwitcher({ month, isCurrentMonth, onPrevious, onNext, onCurrent }: MonthSwitcherProps) {
+export function MonthSwitcher() {
   const { t, i18n } = useTranslation();
   const themeColors = useThemeColors();
+  const { month, isCurrentMonth, goToPreviousMonth, goToNextMonth, goToCurrentMonth } = useLedgerMonth();
+  const label = formatMonthLabel(month, resolveLanguage(i18n.language));
 
   return (
-    <View testID="month-switcher" className="min-h-[44px] flex-row items-center justify-between px-2">
-      <View className="flex-row items-center">
-        <Button
-          testID="month-switcher-previous"
-          variant="ghost"
-          size="icon"
-          fullWidth={false}
-          accessibilityLabel={t('ledger.previousMonth')}
-          onPress={onPrevious}
+    <View testID="month-switcher" className="min-w-0 flex-1 flex-row items-center">
+      <Pressable
+        testID="month-switcher-previous"
+        accessibilityRole="button"
+        accessibilityLabel={t('ledger.previousMonth')}
+        onPress={goToPreviousMonth}
+        hitSlop={arrowHitSlop}
+        className="h-11 w-9 items-center justify-center rounded-full active:bg-paper-200"
+      >
+        <ChevronLeft size={20} strokeWidth={1.75} color={themeColors['ink-900']} />
+      </Pressable>
+      <Pressable
+        testID={isCurrentMonth ? 'month-switcher-current' : 'month-switcher-this-month'}
+        accessibilityRole={isCurrentMonth ? 'header' : 'button'}
+        accessibilityLabel={isCurrentMonth ? label : `${label}, ${t('ledger.thisMonth')}`}
+        disabled={isCurrentMonth}
+        onPress={goToCurrentMonth}
+        className="h-11 min-w-0 shrink justify-center rounded-full px-1 active:bg-paper-200"
+      >
+        <Text
+          testID="month-switcher-label"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+          className={twMerge('text-title font-medium text-ink-900 tabular-nums', !isCurrentMonth && 'text-link')}
         >
-          <ChevronLeft size={20} strokeWidth={1.75} color={themeColors['ink-900']} />
-        </Button>
-        <Text testID="month-switcher-label" className="text-row-title font-medium text-ink-900 tabular-nums">
-          {formatMonthLabel(month, resolveLanguage(i18n.language))}
+          {label}
         </Text>
-        <Button
-          testID="month-switcher-next"
-          variant="ghost"
-          size="icon"
-          fullWidth={false}
-          disabled={isCurrentMonth}
-          accessibilityLabel={t('ledger.nextMonth')}
-          onPress={onNext}
-        >
-          <ChevronRight size={20} strokeWidth={1.75} color={themeColors['ink-900']} />
-        </Button>
-      </View>
-      {!isCurrentMonth && (
-        <Button
-          testID="month-switcher-this-month"
-          variant="text"
-          fullWidth={false}
-          label={t('ledger.thisMonth')}
-          onPress={onCurrent}
-        />
-      )}
+      </Pressable>
+      <Pressable
+        testID="month-switcher-next"
+        accessibilityRole="button"
+        accessibilityLabel={t('ledger.nextMonth')}
+        accessibilityState={{ disabled: isCurrentMonth }}
+        disabled={isCurrentMonth}
+        onPress={goToNextMonth}
+        hitSlop={arrowHitSlop}
+        className={twMerge('h-11 w-9 items-center justify-center rounded-full active:bg-paper-200', isCurrentMonth && 'opacity-40')}
+      >
+        <ChevronRight size={20} strokeWidth={1.75} color={themeColors['ink-900']} />
+      </Pressable>
     </View>
   );
 }
