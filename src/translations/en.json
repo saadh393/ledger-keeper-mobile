@@ -432,6 +432,12 @@
     "title": "Ledger Keeper"
   },
   "installments": {
+    "actions": {
+      "add": "Add plan",
+      "delete": "Delete",
+      "edit": "Edit",
+      "pay": "Record payment"
+    },
     "card": {
       "completed": "Completed",
       "each": "{{amount}} each",
@@ -441,6 +447,69 @@
       "remaining": "{{amount}} remaining",
       "title": "Installment plan",
       "viewInInstallments": "View in Installments"
+    },
+    "delete": {
+      "body": "Delete this plan? Its payments stay in your ledger as expenses.",
+      "confirm": "Delete",
+      "pending": "Deleting…",
+      "title": "Delete {{title}}?"
+    },
+    "details": {
+      "error": "Couldn't load payments",
+      "noPayments": "No payments yet",
+      "payments": "Payments",
+      "undoLabel": "Undo payment of {{amount}} on {{date}}"
+    },
+    "empty": {
+      "active": "No active plans",
+      "all": "No installment plans yet",
+      "completed": "No completed plans"
+    },
+    "error": "Couldn't load installment plans",
+    "errors": {
+      "categoryRequired": "Choose a category",
+      "completed": "This plan is already complete",
+      "countBelowPaid": "{{paid}} already paid, so the total can't be lower",
+      "countInvalid": "Enter a whole number from 1 to 600",
+      "notFound": "This plan no longer exists",
+      "offline": "You're offline. Try again.",
+      "server": "Something went wrong. Try again.",
+      "titleRequired": "Enter a title",
+      "titleTooLong": "Use 200 characters or fewer"
+    },
+    "form": {
+      "addTitle": "Add plan",
+      "alreadyPaid": "{{paid}} already paid",
+      "amount": "Amount per installment",
+      "category": "Category",
+      "categoryPlaceholder": "Choose a category",
+      "count": "Number of installments",
+      "editTitle": "Edit plan",
+      "save": "Save",
+      "saving": "Saving…",
+      "title": "Title",
+      "titlePlaceholder": "e.g. Phone EMI",
+      "total": "{{times}} × {{amount}} = {{total}}"
+    },
+    "pay": {
+      "next": "{{title}} · Installment {{next}} of {{total}}",
+      "save": "Record payment",
+      "saving": "Recording…",
+      "title": "Record payment"
+    },
+    "refreshError": "Couldn't refresh installment plans",
+    "remaining": "Remaining on active plans",
+    "retry": "Retry",
+    "status": {
+      "active": "Active",
+      "all": "All",
+      "completed": "Completed"
+    },
+    "undo": {
+      "body": "Remove the payment of {{amount}} on {{date}}? It is also deleted from your ledger.",
+      "confirm": "Undo",
+      "pending": "Undoing…",
+      "title": "Undo payment?"
     }
   },
   "ledger": {
