@@ -249,6 +249,66 @@
   "common": {
     "loading": "লোড হচ্ছে"
   },
+  "credits": {
+    "balance": {
+      "error": "আপনার ব্যালান্স লোড করা যায়নি",
+      "held": "চলমান অনুরোধের জন্য {{held}} সংরক্ষিত",
+      "label": "ব্যবহারযোগ্য ক্রেডিট"
+    },
+    "buy": "ক্রেডিট কিনুন",
+    "history": {
+      "empty": "এখনো কোনো ক্রেডিট কার্যক্রম নেই",
+      "error": "ক্রেডিট ইতিহাস লোড করা যায়নি",
+      "operation": {
+        "chat_one": "চ্যাট মেসেজ · {{credits}} ক্রেডিট",
+        "chat_other": "চ্যাট মেসেজ · {{credits}} ক্রেডিট",
+        "receipt_one": "রসিদ স্ক্যান · {{credits}} ক্রেডিট",
+        "receipt_other": "রসিদ স্ক্যান · {{credits}} ক্রেডিট",
+        "voice_one": "ভয়েস নোট · {{credits}} ক্রেডিট",
+        "voice_other": "ভয়েস নোট · {{credits}} ক্রেডিট"
+      },
+      "purchase": "{{planName}} কেনা হয়েছে",
+      "title": "ইতিহাস",
+      "type": {
+        "admin_adjustment": "সমন্বয়",
+        "purchase": "ক্রেডিট কেনা",
+        "referral": "রেফারেল বোনাস",
+        "release": "এআই ব্যবহার ফেরত",
+        "reserve": "এআই ব্যবহার",
+        "trial": "ফ্রি ট্রায়াল ক্রেডিট"
+      }
+    },
+    "purchase": {
+      "added_one": "{{credits}} ক্রেডিট যোগ হয়েছে",
+      "added_other": "{{credits}} ক্রেডিট যোগ হয়েছে",
+      "credits_one": "{{credits}} ক্রেডিট",
+      "credits_other": "{{credits}} ক্রেডিট",
+      "errors": {
+        "alreadyOwned": "এই প্যাকের আগের কেনাকাটা এখনো প্রক্রিয়াধীন। একটু পরে আবার চেষ্টা করুন।",
+        "billingUnavailable": "এই ডিভাইসে গুগল প্লে বিলিং পাওয়া যাচ্ছে না।",
+        "generic": "কেনাকাটা সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।",
+        "network": "আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+        "notAllowed": "এই ডিভাইস বা অ্যাকাউন্টে কেনাকাটা অনুমোদিত নয়।"
+      },
+      "pending": "আপনার পেমেন্ট অপেক্ষমাণ। এটি সম্পন্ন হলে ক্রেডিট যোগ হবে।",
+      "processing": "পেমেন্ট প্রক্রিয়াধীন; শীঘ্রই ক্রেডিট দেখা যাবে",
+      "purchasing": "কেনা হচ্ছে…",
+      "title": "ক্রেডিট কিনুন",
+      "unavailable": "এখন কেনাকাটা করা যাচ্ছে না"
+    },
+    "retry": "আবার চেষ্টা করুন",
+    "usage": {
+      "chat_one": "চ্যাট · {{operations}} বার",
+      "chat_other": "চ্যাট · {{operations}} বার",
+      "empty": "গত ৩০ দিনে কোনো ব্যবহার নেই",
+      "error": "ব্যবহার লোড করা যায়নি",
+      "receipt_one": "রসিদ · {{operations}} বার",
+      "receipt_other": "রসিদ · {{operations}} বার",
+      "title": "গত ৩০ দিন",
+      "voice_one": "ভয়েস · {{operations}} বার",
+      "voice_other": "ভয়েস · {{operations}} বার"
+    }
+  },
   "currency": {
     "continue": "চালিয়ে যান",
     "noCurrencyFound": "কোনো মুদ্রা পাওয়া যায়নি",

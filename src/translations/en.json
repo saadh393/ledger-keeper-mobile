@@ -249,6 +249,66 @@
   "common": {
     "loading": "Loading"
   },
+  "credits": {
+    "balance": {
+      "error": "Couldn't load your balance",
+      "held": "{{held}} reserved by requests in progress",
+      "label": "Available credits"
+    },
+    "buy": "Buy credits",
+    "history": {
+      "empty": "No credit activity yet",
+      "error": "Couldn't load credit history",
+      "operation": {
+        "chat_one": "Chat message · {{credits}} credit",
+        "chat_other": "Chat message · {{credits}} credits",
+        "receipt_one": "Receipt scan · {{credits}} credit",
+        "receipt_other": "Receipt scan · {{credits}} credits",
+        "voice_one": "Voice note · {{credits}} credit",
+        "voice_other": "Voice note · {{credits}} credits"
+      },
+      "purchase": "Bought {{planName}}",
+      "title": "History",
+      "type": {
+        "admin_adjustment": "Adjustment",
+        "purchase": "Credit purchase",
+        "referral": "Referral bonus",
+        "release": "AI usage refund",
+        "reserve": "AI usage",
+        "trial": "Free trial credits"
+      }
+    },
+    "purchase": {
+      "added_one": "{{credits}} credit added",
+      "added_other": "{{credits}} credits added",
+      "credits_one": "{{credits}} credit",
+      "credits_other": "{{credits}} credits",
+      "errors": {
+        "alreadyOwned": "Your last purchase of this pack is still being processed. Try again in a moment.",
+        "billingUnavailable": "Google Play Billing isn't available on this device.",
+        "generic": "Couldn't complete the purchase. Try again.",
+        "network": "Check your connection and try again.",
+        "notAllowed": "Purchases aren't allowed on this device or account."
+      },
+      "pending": "Your payment is pending. Credits are added when it completes.",
+      "processing": "Payment is processing; credits will appear shortly",
+      "purchasing": "Purchasing…",
+      "title": "Buy credits",
+      "unavailable": "Purchases aren't available right now"
+    },
+    "retry": "Retry",
+    "usage": {
+      "chat_one": "Chat · {{operations}} use",
+      "chat_other": "Chat · {{operations}} uses",
+      "empty": "No usage in the last 30 days",
+      "error": "Couldn't load usage",
+      "receipt_one": "Receipts · {{operations}} use",
+      "receipt_other": "Receipts · {{operations}} uses",
+      "title": "Last 30 days",
+      "voice_one": "Voice · {{operations}} use",
+      "voice_other": "Voice · {{operations}} uses"
+    }
+  },
   "currency": {
     "continue": "Continue",
     "noCurrencyFound": "No currency found",
